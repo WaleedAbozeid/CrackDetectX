@@ -123,12 +123,14 @@ flutter:
   assets:
     - assets/icons/
     - assets/lottie/
+    - assets/fonts/Cairo/
+    - assets/fonts/Cairo/static/
 
   fonts:
     - family: Cairo
       fonts:
-        - asset: assets\fonts\Cairo\static\Cairo-Regular.ttf
-        - asset: assets\fonts\Cairo\static\Cairo-SemiBold.ttf
+        - asset: assets/fonts/Cairo/static/Cairo-Regular.ttf
+        - asset: assets/fonts/Cairo/static/Cairo-SemiBold.ttf
           weight: 600
-        - asset: assets\fonts\Cairo\static\Cairo-Bold.ttf
+        - asset: assets/fonts/Cairo/static/Cairo-Bold.ttf
           weight: 700
