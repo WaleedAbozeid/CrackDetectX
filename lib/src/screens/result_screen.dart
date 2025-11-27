@@ -27,7 +27,7 @@ class ResultScreen extends StatelessWidget {
           children: [
             Text('النتيجة', style: AppTypography.headline2),
             const SizedBox(height: AppSpacing.sm),
-            if (error) Text('حدث خطأ أثناء المعالجة', style: AppTypography.bodyText1.copyWith(color: AppColors.error)),
+            if (error) Text('حدث خطأ أثناء المعالجة', style: AppTypography.bodyText1.copyWith(color: AppColors.dangerRed)),
             if (result == null && !error) Text('لا توجد نتيجة متاحة', style: AppTypography.bodyText2),
             if (result != null) ...[
               const SizedBox(height: AppSpacing.sm),

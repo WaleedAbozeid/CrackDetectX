@@ -30,7 +30,7 @@ class ImageReviewScreen extends StatelessWidget {
                 ),
               )
             else
-              AppCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('لا توجد صورة محددة', style: AppTypography.bodyText2.copyWith(color: AppColors.gray600)))),
+              AppCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('لا توجد صورة محددة', style: AppTypography.bodyText2.copyWith(color: AppColors.grey600)))),
             const SizedBox(height: AppSpacing.md),
             AppButton(title: 'تحليل الصورة', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AIProcessingScreen()))),
           ],

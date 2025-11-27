@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'src/store/app_state.dart';
 import 'src/screens/welcome_screen.dart';
+import 'src/screens/login_screen.dart';
+import 'src/screens/signup_screen.dart';
+import 'src/screens/home_screen.dart';
 import 'src/design/colors.dart';
-// typography token is applied via GoogleFonts in ThemeData
 
 void main() {
   runApp(const MyApp());
@@ -25,13 +27,36 @@ class MyApp extends StatelessWidget {
             primaryColor: AppColors.primary500,
             scaffoldBackgroundColor: AppColors.background,
             textTheme: GoogleFonts.cairoTextTheme(base.textTheme),
-            appBarTheme: AppBarTheme(backgroundColor: AppColors.primary500, elevation: 0),
-            colorScheme: base.colorScheme.copyWith(primary: AppColors.primary500),
+            appBarTheme: AppBarTheme(
+              backgroundColor: AppColors.primary500,
+              elevation: 0,
+            ),
+            colorScheme: base.colorScheme.copyWith(
+              primary: AppColors.primary500,
+            ),
           ),
           home: const Directionality(
             textDirection: TextDirection.rtl,
             child: WelcomeScreen(),
           ),
+          routes: {
+            '/welcome': (_) => const Directionality(
+              textDirection: TextDirection.rtl,
+              child: WelcomeScreen(),
+            ),
+            '/login': (_) => const Directionality(
+              textDirection: TextDirection.rtl,
+              child: LoginScreen(),
+            ),
+            '/signup': (_) => const Directionality(
+              textDirection: TextDirection.rtl,
+              child: SignupScreen(),
+            ),
+            '/home': (_) => const Directionality(
+              textDirection: TextDirection.rtl,
+              child: HomeScreen(),
+            ),
+          },
         );
       }),
     );
