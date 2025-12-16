@@ -1,3 +1,4 @@
+/// Todo item model
 class Todo {
   final String id;
   final String title;
@@ -6,6 +7,16 @@ class Todo {
   final DateTime createdAt;
   final DateTime? completedAt;
 
+  /// Creates a Todo instance
+  /// 
+  /// [id] - Unique identifier (must be non-empty)
+  /// [title] - Todo title (must be non-empty)
+  /// [description] - Optional description
+  /// [isCompleted] - Completion status (default: false)
+  /// [createdAt] - Creation timestamp
+  /// [completedAt] - Completion timestamp (null if not completed)
+  /// 
+  /// Throws [ArgumentError] if id or title is empty
   Todo({
     required this.id,
     required this.title,
@@ -13,7 +24,14 @@ class Todo {
     this.isCompleted = false,
     required this.createdAt,
     this.completedAt,
-  });
+  }) {
+    if (id.trim().isEmpty) {
+      throw ArgumentError.value(id, 'id', 'ID must be non-empty');
+    }
+    if (title.trim().isEmpty) {
+      throw ArgumentError.value(title, 'title', 'Title must be non-empty');
+    }
+  }
 
   Todo copyWith({
     String? id,

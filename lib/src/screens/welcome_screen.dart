@@ -4,7 +4,8 @@ import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
-import 'scan_screen.dart';
+import 'login_screen.dart';
+import 'signup_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -98,16 +99,49 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xxl),
 
-                  // Start Button
-                  AppButton(
-                    title: 'Start Inspection',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ScanScreen(),
+                  // Auth Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.lg,
+                              vertical: 12,
+                            ),
+                            side: const BorderSide(color: AppColors.grey300),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.r12),
+                            ),
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: AppTypography.button.copyWith(
+                              color: AppColors.primary900,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    height: 56,
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: AppButton(
+                          title: 'Create Account',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignupScreen(),
+                            ),
+                          ),
+                          height: 48,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

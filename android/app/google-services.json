@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "903849044102",
+    "project_id": "crackdetectx",
+    "storage_bucket": "crackdetectx.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903849044102:android:70d346b3c015ee61364907",
+        "android_client_info": {
+          "package_name": "com.example.crackdetectx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlsIepuqyJmHbPf2hA3yDblZNGUSnw2VI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

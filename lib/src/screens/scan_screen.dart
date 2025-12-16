@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_button.dart';
+import '../widgets/scanner_animation.dart';
 import 'image_review_screen.dart';
 import 'ai_processing_screen.dart';
 import 'package:provider/provider.dart';
 import '../store/app_state.dart';
 import '../design/spacing.dart';
 import '../widgets/top_bar.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ScanScreen extends StatelessWidget {
+class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
 
-  void _pickMockImage(BuildContext context) {
-    // For scaffold: use a placeholder URI
-    final path = 'https://via.placeholder.com/800x600.png?text=crack';
-    Provider.of<AppState>(context, listen: false).setSelectedImage(path);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ImageReviewScreen()));
+  @override
+  State<ScanScreen> createState() => _ScanScreenState();
+}
+
+class _ScanScreenState extends State<ScanScreen> {
+  bool _loading = false;
+
+  Future<void> _pickImage(BuildContext context) async {
+    setState(() {
+      _loading = true;
+    });
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        Provider.of<AppState>(context, listen: false).setSelectedImage(picked.path);
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const ImageReviewScreen()));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('حدث خطأ أثناء اختيار الصورة: $e')));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -25,7 +45,11 @@ class ScanScreen extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
-            AppButton(title: 'اختر من المعرض (تجريبي)', onPressed: () => _pickMockImage(context)),
+            const ScannerAnimation(),
+            const SizedBox(height: AppSpacing.md),
+            _loading
+                ? const CircularProgressIndicator()
+                : AppButton(title: 'اختر من المعرض', onPressed: () => _pickImage(context)),
             const SizedBox(height: AppSpacing.sm),
             AppButton(title: 'تحليل بواسطة الذكاء الاصطناعي', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AIProcessingScreen()))),
           ],

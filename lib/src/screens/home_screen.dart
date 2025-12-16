@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                             ),
-                            IconButton(
+                        /*   IconButton(
                               icon: const Icon(
                                 Icons.menu,
                                 color: AppColors.white,
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               onPressed: () =>
                                   _scaffoldKey.currentState?.openEndDrawer(),
-                            ),
+                            ),*/
                           ],
                         ),
                         const SizedBox(height: AppSpacing.lg),

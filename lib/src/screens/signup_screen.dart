@@ -4,6 +4,7 @@ import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _showPassword = false;
   bool _showConfirmPassword = false;
   String _passwordError = '';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -40,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _handleSignup() {
+  Future<void> _handleSignup() async {
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -61,8 +63,43 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    // Mock signup - navigate to home
-    Navigator.pushReplacementNamed(context, '/home');
+    setState(() {
+      _passwordError = '';
+      _isLoading = true;
+    });
+
+    try {
+      await AuthService.instance.signUpWithEmail(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Account created successfully')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          // Show full error text to help debugging (can be refined later)
+          _passwordError = 'Signup failed: $e';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -179,8 +216,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 // Create Account Button
                 AppButton(
-                  title: 'Create Account',
-                  onPressed: _handleSignup,
+                  title: _isLoading ? 'Creating...' : 'Create Account',
+                  onPressed: _isLoading ? null : _handleSignup,
                   height: 56,
                 ),
                 const SizedBox(height: AppSpacing.xl),

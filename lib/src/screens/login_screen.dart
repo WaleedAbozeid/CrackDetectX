@@ -4,6 +4,7 @@ import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../services/auth_service.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _showPassword = false;
   bool _hasError = false;
   String _errorMessage = '';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -34,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       setState(() {
         _hasError = true;
@@ -43,8 +45,36 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Mock login - navigate to home
-    Navigator.pushReplacementNamed(context, '/home');
+    setState(() {
+      _hasError = false;
+      _errorMessage = '';
+      _isLoading = true;
+    });
+
+    try {
+      await AuthService.instance.signInWithEmail(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          // Show full error text to help debugging (can be refined later)
+          _errorMessage = 'Login failed: $e';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -156,64 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Sign In Button
                 AppButton(
-                  title: 'Sign In',
-                  onPressed: _handleLogin,
+                  title: _isLoading ? 'Signing In...' : 'Sign In',
+                  onPressed: _isLoading ? null : _handleLogin,
                   height: 56,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-
-                // Divider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.grey200,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                      child: Text(
-                        'or',
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.grey500,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.grey200,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-
-                // Continue as Guest Button
-                OutlinedButton(
-                  onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: 12,
-                    ),
-                    side: const BorderSide(color: AppColors.grey300),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.r12),
-                    ),
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Center(
-                      child: Text(
-                        'Continue as Guest',
-                        style: AppTypography.button.copyWith(
-                          color: AppColors.primary900,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
