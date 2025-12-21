@@ -47,8 +47,17 @@ class AppTypography {
   );
 
   // ==================== BODY TEXT ====================
-  /// Body: 14px Regular
-  static const TextStyle bodyText = TextStyle(
+  /// Body Large: 16px Regular
+  static const TextStyle bodyLarge = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16.0,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+    height: 1.5,
+  );
+
+  /// Body Medium: 14px Regular
+  static const TextStyle bodyMedium = TextStyle(
     fontFamily: fontFamily,
     fontSize: 14.0,
     fontWeight: FontWeight.normal,
@@ -56,10 +65,13 @@ class AppTypography {
     height: 1.5,
   );
 
-  /// Body Small: 13px Regular
+  /// Body: 14px Regular (alias for bodyMedium)
+  static const TextStyle bodyText = bodyMedium;
+
+  /// Body Small: 12px Regular
   static const TextStyle bodySmall = TextStyle(
     fontFamily: fontFamily,
-    fontSize: 13.0,
+    fontSize: 12.0,
     fontWeight: FontWeight.normal,
     color: AppColors.grey500,
     height: 1.5,

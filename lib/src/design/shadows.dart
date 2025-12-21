@@ -51,4 +51,23 @@ class AppShadows {
       offset: Offset(0, 4),
     ),
   ];
+
+  /// AI Glow Effect Shadow
+  static List<BoxShadow> aiGlow(Color color) => [
+    BoxShadow(
+      color: color.withValues(alpha: 0.3),
+      blurRadius: 20.0,
+      offset: Offset.zero,
+      spreadRadius: 2.0,
+    ),
+  ];
+
+  /// Small Shadow: 0 2px 4px rgba(0,0,0,0.05)
+  static const List<BoxShadow> small = [
+    BoxShadow(
+      color: Color(0x0D000000), // 5% opacity
+      blurRadius: 4.0,
+      offset: Offset(0, 2),
+    ),
+  ];
 }

@@ -8,6 +8,8 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // ==================== ROUTES ====================
+  static const String routeSplash = '/';
+  static const String routeOnboarding = '/onboarding';
   static const String routeWelcome = '/welcome';
   static const String routeLogin = '/login';
   static const String routeSignup = '/signup';
@@ -45,8 +47,10 @@ class AppConstants {
 
   // ==================== ERROR MESSAGES ====================
   static const String errorImagePickFailed = 'حدث خطأ أثناء اختيار الصورة';
-  static const String errorImageProcessingFailed = 'حدث خطأ أثناء معالجة الصورة';
-  static const String errorReportGenerationFailed = 'حدث خطأ أثناء إنشاء التقرير';
+  static const String errorImageProcessingFailed =
+      'حدث خطأ أثناء معالجة الصورة';
+  static const String errorReportGenerationFailed =
+      'حدث خطأ أثناء إنشاء التقرير';
   static const String errorReportSaveFailed = 'حدث خطأ أثناء حفظ التقرير';
   static const String errorReportLoadFailed = 'حدث خطأ أثناء تحميل التقارير';
 
@@ -55,4 +59,3 @@ class AppConstants {
   static const String successReportDeleted = 'تم حذف التقرير بنجاح';
   static const String successImageProcessed = 'تم معالجة الصورة بنجاح';
 }
-

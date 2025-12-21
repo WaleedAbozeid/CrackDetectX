@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:crackdetectx/l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../store/app_state.dart';
 import '../widgets/app_button.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../core/constants.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    var displayName = user?.displayName ?? '';
+    if (displayName.isEmpty && user?.email != null) {
+      displayName = user!.email!.split('@')[0];
+    } else if (displayName.isEmpty) {
+      displayName = AppLocalizations.of(context)!.defaultUser;
+    }
+    final email = user?.email ?? AppLocalizations.of(context)!.noEmail;
+
     return Scaffold(
-      backgroundColor: AppColors.grey50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         title: Text(
-          'Profile',
-          style: AppTypography.h3.copyWith(color: AppColors.primary900),
+          AppLocalizations.of(context)!.profileTitle,
+          style: AppTypography.h3.copyWith(
+            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary900),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -42,10 +61,15 @@ class ProfileScreen extends StatelessWidget {
                         colors: [AppColors.primary900, AppColors.primary500],
                       ),
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: AppColors.white,
-                      size: 40,
+                    child: Center(
+                      child: Text(
+                        displayName.isNotEmpty
+                            ? displayName[0].toUpperCase()
+                            : 'U',
+                        style: AppTypography.h1.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
                     ),
                   ),
                   Container(
@@ -54,10 +78,7 @@ class ProfileScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.primary500,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.white,
-                        width: 3,
-                      ),
+                      border: Border.all(color: AppColors.white, width: 3),
                     ),
                     child: const Icon(
                       Icons.edit,
@@ -71,13 +92,17 @@ class ProfileScreen extends StatelessWidget {
 
               // User Info
               Text(
-                'Ahmed Hassan',
-                style: AppTypography.h3,
+                displayName,
+                style: AppTypography.h3.copyWith(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'ahmed.hassan@email.com',
-                style: AppTypography.bodySmall,
+                email,
+                style: AppTypography.bodySmall.copyWith(
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                ),
               ),
               const SizedBox(height: AppSpacing.xxl),
 
@@ -90,20 +115,20 @@ class ProfileScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _StatBox(
-                    value: '47',
-                    label: 'Total Scans',
+                    value: '0', // TODO: Fetch real stats
+                    label: AppLocalizations.of(context)!.totalScans,
+                    textColor:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        AppColors.primary900,
+                    backgroundColor: Theme.of(context).cardColor,
                   ),
                   _StatBox(
-                    value: '8',
-                    label: 'High Risk',
-                  ),
-                  _StatBox(
-                    value: '12',
-                    label: 'This Month',
-                  ),
-                  _StatBox(
-                    value: '2h ago',
-                    label: 'Last Activity',
+                    value: '0', // TODO: Fetch real stats
+                    label: AppLocalizations.of(context)!.highRisk,
+                    textColor:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        AppColors.primary900,
+                    backgroundColor: Theme.of(context).cardColor,
                   ),
                 ],
               ),
@@ -112,47 +137,102 @@ class ProfileScreen extends StatelessWidget {
               // Account Settings
               _SettingCard(
                 icon: Icons.person,
-                label: 'Edit Profile',
+                label: AppLocalizations.of(context)!.editProfile,
                 onTap: () {},
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _SettingCard(
-                icon: Icons.lock,
-                label: 'Change Password',
-                onTap: () {},
+                iconColor:
+                    Theme.of(context).iconTheme.color ?? AppColors.primary900,
+                textColor:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.grey900,
+                backgroundColor: Theme.of(context).cardColor,
               ),
               const SizedBox(height: AppSpacing.md),
               _SettingCard(
                 icon: Icons.notifications,
-                label: 'Notifications',
+                label: AppLocalizations.of(context)!.notifications,
                 onTap: () {},
+                iconColor:
+                    Theme.of(context).iconTheme.color ?? AppColors.primary900,
+                textColor:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.grey900,
+                backgroundColor: Theme.of(context).cardColor,
               ),
               const SizedBox(height: AppSpacing.md),
-              _SettingCard(
-                icon: Icons.language,
-                label: 'Language',
-                onTap: () {},
+              Consumer<AppState>(
+                builder: (context, appState, _) {
+                  return _SettingCard(
+                    icon: Icons.language,
+                    label: appState.locale.languageCode == 'ar'
+                        ? AppLocalizations.of(context)!.languageEn
+                        : AppLocalizations.of(context)!.languageAr,
+                    onTap: () {
+                      appState.toggleLanguage();
+                    },
+                    iconColor:
+                        Theme.of(context).iconTheme.color ??
+                        AppColors.primary900,
+                    textColor:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        AppColors.grey900,
+                    backgroundColor: Theme.of(context).cardColor,
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Consumer<AppState>(
+                builder: (context, appState, _) {
+                  return _SettingCard(
+                    icon: appState.themeMode == ThemeMode.dark
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                    label: appState.themeMode == ThemeMode.dark
+                        ? AppLocalizations.of(context)!.lightMode
+                        : AppLocalizations.of(context)!.darkMode,
+                    onTap: () {
+                      appState.toggleTheme();
+                    },
+                    iconColor:
+                        Theme.of(context).iconTheme.color ??
+                        AppColors.primary900,
+                    textColor:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        AppColors.grey900,
+                    backgroundColor: Theme.of(context).cardColor,
+                  );
+                },
               ),
               const SizedBox(height: AppSpacing.xxl),
 
               // Danger Zone
               _SettingCard(
                 icon: Icons.delete,
-                label: 'Delete Account',
+                label: AppLocalizations.of(context)!.deleteAccount,
                 isDestructive: true,
                 onTap: () {},
+                iconColor: AppColors.dangerRed,
+                textColor: AppColors.dangerRed,
+                backgroundColor: Theme.of(context).cardColor,
               ),
               const SizedBox(height: AppSpacing.lg),
 
               // Logout Button
               AppButton(
-                title: 'Logout',
+                title: AppLocalizations.of(context)!.logout,
                 height: 48,
-                backgroundColor: AppColors.white,
-                textColor: AppColors.primary900,
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/', (route) => false);
+                backgroundColor: Theme.of(context).cardColor,
+                textColor:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.primary900,
+                useGradient: false,
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppConstants.routeOnboarding,
+                      (route) => false,
+                    );
+                  }
                 },
               ),
             ],
@@ -166,34 +246,37 @@ class ProfileScreen extends StatelessWidget {
 class _StatBox extends StatelessWidget {
   final String value;
   final String label;
+  final Color textColor;
+  final Color backgroundColor;
 
   const _StatBox({
     required this.value,
     required this.label,
+    required this.textColor,
+    required this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(AppRadius.r16),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: AppColors.grey200.withValues(alpha: 0.3)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             value,
-            style: AppTypography.h2.copyWith(
-              color: AppColors.primary900,
-              fontSize: 24,
-            ),
+            style: AppTypography.h2.copyWith(color: textColor, fontSize: 24),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             label,
-            style: AppTypography.caption,
+            style: AppTypography.caption.copyWith(
+              color: textColor.withValues(alpha: 0.7),
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -207,39 +290,36 @@ class _SettingCard extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final bool isDestructive;
+  final Color iconColor;
+  final Color textColor;
+  final Color backgroundColor;
 
   const _SettingCard({
     required this.icon,
     required this.label,
     required this.onTap,
     this.isDestructive = false,
+    required this.iconColor,
+    required this.textColor,
+    required this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(AppRadius.r12),
         border: Border.all(
-          color: isDestructive ? AppColors.dangerLight : AppColors.grey200,
+          color: isDestructive
+              ? AppColors.dangerLight
+              : AppColors.grey200.withValues(alpha: 0.3),
         ),
       ),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: isDestructive ? AppColors.dangerRed : AppColors.primary900,
-        ),
-        title: Text(
-          label,
-          style: AppTypography.h4.copyWith(
-            color: isDestructive ? AppColors.dangerRed : AppColors.grey900,
-          ),
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: AppColors.grey400,
-        ),
+        leading: Icon(icon, color: iconColor),
+        title: Text(label, style: AppTypography.h4.copyWith(color: textColor)),
+        trailing: Icon(Icons.chevron_right, color: AppColors.grey400),
         onTap: onTap,
       ),
     );

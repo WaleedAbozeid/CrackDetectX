@@ -10,6 +10,7 @@ class AppColors {
   static const Color primary500 = Color(0xFF3B82F6);
   static const Color primary300 = Color(0xFF93C5FD);
   static const Color primary100 = Color(0xFFDBEAFE);
+  static const Color primary50 = Color(0xFFEFF6FF);
 
   /// Light Blue (Secondary) - #3B82F6
   static const Color secondary500 = Color(0xFF3B82F6);
@@ -68,4 +69,28 @@ class AppColors {
   static const Color mediumRiskBackground = warningLight;
   static const Color lowRisk = successGreen;
   static const Color lowRiskBackground = successLight;
+  static const Color riskCritical = Color(
+    0xFF991B1B,
+  ); // Dark Red for critical risk
+
+  // ==================== AI SCANNING COLORS ====================
+  /// Bright blue for scanning effect
+  static const Color aiScanBlue = Color(0xFF60A5FA);
+
+  /// Cyan for gradient effects
+  static const Color aiScanCyan = Color(0xFF06B6D4);
+
+  // ==================== DARK MODE COLORS ====================
+  static const Color darkBackground = Color(0xFF111827);
+  static const Color darkCard = Color(0xFF1F2937);
+  static const Color darkBorder = Color(0xFF374151);
+  static const Color darkText = Color(0xFFF9FAFB);
+  static const Color darkTextSecondary = Color(0xFFE5E7EB);
+
+  // ==================== ALIASES FOR DESIGN PROMPT ====================
+  static const Color primaryDark = primary900;
+  static const Color primaryLight = primary500;
+  static const Color primaryWhite = white;
+  static const Color backgroundLight = grey50;
+  static const Color borderLight = grey200;
 }
