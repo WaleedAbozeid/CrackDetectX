@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/marketplace_full_models.dart';
+import 'package:provider/provider.dart';
 import '../widgets/app_button.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../models/marketplace_full_models.dart';
 import '../services/auth_service.dart';
+import '../store/app_state.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -24,18 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _showConfirmPassword = false;
   String _passwordError = '';
   bool _isLoading = false;
-
-  // Role Selection
-  UserRole _selectedRole = UserRole.owner;
-
-  // Engineer Fields
-  late TextEditingController _syndicateController;
-  late TextEditingController _experienceController;
-
-  // Company Fields
-  late TextEditingController _companyNameController;
-  late TextEditingController _tradeLicenseController;
-  late TextEditingController _taxIdController;
+  UserRole _selectedRole = UserRole.engineer;
 
   @override
   void initState() {
@@ -44,13 +35,6 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
-
-    // Initialize new controllers
-    _syndicateController = TextEditingController();
-    _experienceController = TextEditingController();
-    _companyNameController = TextEditingController();
-    _tradeLicenseController = TextEditingController();
-    _taxIdController = TextEditingController();
   }
 
   @override
@@ -59,11 +43,6 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _syndicateController.dispose();
-    _experienceController.dispose();
-    _companyNameController.dispose();
-    _tradeLicenseController.dispose();
-    _taxIdController.dispose();
     super.dispose();
   }
 
@@ -94,40 +73,10 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      if (_selectedRole == UserRole.owner) {
-        await AuthService.instance.signUpWithEmail(
-          email: _emailController.text,
-          password: _passwordController.text,
-          displayName: _nameController.text,
-        );
-      } else if (_selectedRole == UserRole.engineer) {
-        // Validate engineer fields
-        if (_syndicateController.text.isEmpty ||
-            _experienceController.text.isEmpty) {
-          throw 'Please fill in all professional details';
-        }
-        await AuthService.instance.signUpEngineer(
-          email: _emailController.text,
-          password: _passwordController.text,
-          displayName: _nameController.text,
-          syndicateNumber: _syndicateController.text,
-          yearsOfExperience: int.tryParse(_experienceController.text) ?? 0,
-          specializations: ['General'], // TODO: Add specialization picker
-        );
-      } else if (_selectedRole == UserRole.companyAdmin) {
-        // Validate company fields
-        if (_companyNameController.text.isEmpty ||
-            _tradeLicenseController.text.isEmpty) {
-          throw 'Please fill in all company details';
-        }
-        await AuthService.instance.signUpCompany(
-          email: _emailController.text,
-          password: _passwordController.text,
-          companyName: _companyNameController.text,
-          tradeLicense: _tradeLicenseController.text,
-          taxId: _taxIdController.text,
-        );
-      }
+      await AuthService.instance.signUpWithEmail(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
       if (!mounted) return;
 
@@ -135,9 +84,15 @@ class _SignupScreenState extends State<SignupScreen> {
         const SnackBar(content: Text('Account created successfully')),
       );
 
+      // Set the chosen role in AppState
+      await context.read<AppState>().setUserRole(_selectedRole);
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
       );
     } catch (e) {
       if (mounted) {
@@ -195,27 +150,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Heading
                 Text(
                   'Create Account',
-                  style: AppTypography.h1.copyWith(color: AppColors.primary900),
+                  style: AppTypography.h1.copyWith(
+                    color: AppColors.primary900,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.xs),
-
-                // Role Selection
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.grey100,
-                    borderRadius: BorderRadius.circular(AppRadius.r12),
-                  ),
-                  child: Row(
-                    children: [
-                      _buildRoleTab('Owner', UserRole.owner),
-                      _buildRoleTab('Engineer', UserRole.engineer),
-                      _buildRoleTab('Company', UserRole.companyAdmin),
-                    ],
-                  ),
-                ),
 
                 // Subheading
                 Text(
@@ -232,50 +172,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _nameController,
                   prefixIcon: Icons.person,
                 ),
-                const SizedBox(height: AppSpacing.lg),
-
-                if (_selectedRole == UserRole.engineer) ...[
-                  _InputField(
-                    label: 'Syndicate Number',
-                    hint: 'e.g., 123456',
-                    controller: _syndicateController,
-                    prefixIcon: Icons.badge,
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _InputField(
-                    label: 'Years of Experience',
-                    hint: 'e.g., 5',
-                    controller: _experienceController,
-                    prefixIcon: Icons.work_history,
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
-
-                if (_selectedRole == UserRole.companyAdmin) ...[
-                  _InputField(
-                    label: 'Company Name',
-                    hint: 'Official Company Name',
-                    controller: _companyNameController,
-                    prefixIcon: Icons.business,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _InputField(
-                    label: 'Trade License No.',
-                    hint: 'Commercial Register No.',
-                    controller: _tradeLicenseController,
-                    prefixIcon: Icons.verified_user,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _InputField(
-                    label: 'Tax ID',
-                    hint: 'Tax Identification Number',
-                    controller: _taxIdController,
-                    prefixIcon: Icons.receipt_long,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
                 const SizedBox(height: AppSpacing.lg),
 
                 // Email Input
@@ -295,9 +191,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _passwordController,
                   prefixIcon: Icons.lock,
                   obscureText: !_showPassword,
-                  suffixIcon: _showPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
+                  suffixIcon: _showPassword ? Icons.visibility : Icons.visibility_off,
                   onSuffixIconPressed: () {
                     setState(() => _showPassword = !_showPassword);
                   },
@@ -321,14 +215,19 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _confirmPasswordController,
                   prefixIcon: Icons.lock,
                   obscureText: !_showConfirmPassword,
-                  suffixIcon: _showConfirmPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
+                  suffixIcon: _showConfirmPassword ? Icons.visibility : Icons.visibility_off,
                   onSuffixIconPressed: () {
-                    setState(
-                      () => _showConfirmPassword = !_showConfirmPassword,
-                    );
+                    setState(() => _showConfirmPassword = !_showConfirmPassword);
                   },
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // Role Selector
+                Text('Account Type', style: AppTypography.h4),
+                const SizedBox(height: AppSpacing.sm),
+                _RoleSelector(
+                  selected: _selectedRole,
+                  onChanged: (r) => setState(() => _selectedRole = r),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
 
@@ -351,7 +250,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     GestureDetector(
                       onTap: () => Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const LoginScreen(),
+                        ),
                       ),
                       child: Text(
                         'Sign In',
@@ -374,39 +275,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   textAlign: TextAlign.center,
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRoleTab(String title, UserRole role) {
-    final isSelected = _selectedRole == role;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedRole = role),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.r8),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTypography.caption.copyWith(
-              color: isSelected ? AppColors.primary900 : AppColors.grey600,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
             ),
           ),
         ),
@@ -441,7 +309,10 @@ class _InputField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTypography.h4),
+        Text(
+          label,
+          style: AppTypography.h4,
+        ),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           controller: controller,
@@ -452,7 +323,10 @@ class _InputField extends StatelessWidget {
             hintStyle: AppTypography.bodySmall.copyWith(
               color: AppColors.placeholder,
             ),
-            prefixIcon: Icon(prefixIcon, color: AppColors.grey500),
+            prefixIcon: Icon(
+              prefixIcon,
+              color: AppColors.grey500,
+            ),
             suffixIcon: suffixIcon != null
                 ? IconButton(
                     icon: Icon(suffixIcon, color: AppColors.grey500),
@@ -483,6 +357,64 @@ class _InputField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Role selection widget — same as in login_screen
+class _RoleSelector extends StatelessWidget {
+  final UserRole selected;
+  final ValueChanged<UserRole> onChanged;
+
+  const _RoleSelector({required this.selected, required this.onChanged});
+
+  static const _roles = [
+    (role: UserRole.engineer,     icon: Icons.engineering, label: 'Field Engineer'),
+    (role: UserRole.owner,        icon: Icons.home_work,   label: 'Building Owner'),
+    (role: UserRole.companyAdmin, icon: Icons.business,    label: 'Repair Company'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _roles.map((item) {
+        final isSelected = selected == item.role;
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => onChanged(item.role),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary500 : AppColors.grey50,
+                borderRadius: BorderRadius.circular(AppRadius.r12),
+                border: Border.all(
+                  color: isSelected ? AppColors.primary500 : AppColors.grey200,
+                  width: isSelected ? 2 : 1,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(item.icon,
+                      color: isSelected ? AppColors.white : AppColors.grey500,
+                      size: 24),
+                  const SizedBox(height: 4),
+                  Text(
+                    item.label,
+                    style: AppTypography.caption.copyWith(
+                      color: isSelected ? AppColors.white : AppColors.grey700,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

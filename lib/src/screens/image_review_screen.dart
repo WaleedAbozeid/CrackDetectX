@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../store/app_state.dart';
@@ -6,8 +7,6 @@ import 'ai_processing_screen.dart';
 import '../widgets/top_bar.dart';
 import '../design/spacing.dart';
 import '../widgets/card.dart';
-import '../design/typography.dart';
-import '../design/colors.dart';
 
 class ImageReviewScreen extends StatelessWidget {
   const ImageReviewScreen({super.key});
@@ -23,14 +22,15 @@ class ImageReviewScreen extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
-            if (image != null)
-              Expanded(
-                child: AppCard(
-                  child: Center(child: Image.network(image, fit: BoxFit.contain)),
+            Expanded(
+              child: AppCard(
+                child: Center(
+                  child: (image != null && image.isNotEmpty)
+                      ? (image.startsWith('http') ? Image.network(image, fit: BoxFit.contain) : Image.file(File(image), fit: BoxFit.contain))
+                      : Image.asset('assets/images/imagetest(1)(1).jpg', fit: BoxFit.contain),
                 ),
-              )
-            else
-              AppCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('لا توجد صورة محددة', style: AppTypography.bodyText2.copyWith(color: AppColors.grey600)))),
+              ),
+            ),
             const SizedBox(height: AppSpacing.md),
             AppButton(title: 'تحليل الصورة', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AIProcessingScreen()))),
           ],

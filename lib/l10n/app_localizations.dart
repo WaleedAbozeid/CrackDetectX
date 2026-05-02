@@ -722,6 +722,96 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profileTitle;
 
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @menuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menuTitle;
+
+  /// No description provided for @homeWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get homeWelcomeBack;
+
+  /// No description provided for @homeBuildingSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Building Safety'**
+  String get homeBuildingSafety;
+
+  /// No description provided for @homeAiModelStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Model Status'**
+  String get homeAiModelStatus;
+
+  /// No description provided for @homeAiReadyToAnalyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to analyze'**
+  String get homeAiReadyToAnalyze;
+
+  /// No description provided for @homeScanWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with Camera'**
+  String get homeScanWithCamera;
+
+  /// No description provided for @homeUploadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Image'**
+  String get homeUploadImage;
+
+  /// No description provided for @homePreviousReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Reports'**
+  String get homePreviousReports;
+
+  /// No description provided for @homeQuickStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Stats'**
+  String get homeQuickStats;
+
+  /// No description provided for @homeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get homeAll;
+
+  /// No description provided for @homeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get homeMonth;
+
+  /// No description provided for @homeAboutAiModel.
+  ///
+  /// In en, this message translates to:
+  /// **'About AI Model'**
+  String get homeAboutAiModel;
+
+  /// No description provided for @homeSupportHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Support & Help'**
+  String get homeSupportHelp;
+
+  /// No description provided for @inspectionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} inspections'**
+  String inspectionsCount(int count);
+
   /// No description provided for @totalScans.
   ///
   /// In en, this message translates to:
@@ -733,6 +823,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'High Risk'**
   String get highRisk;
+
+  /// No description provided for @adminDashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Dashboard'**
+  String get adminDashboardTitle;
+
+  /// No description provided for @adminQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get adminQuickActions;
+
+  /// No description provided for @adminRecentActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Admin Actions'**
+  String get adminRecentActions;
+
+  /// No description provided for @adminNoRecentActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent admin actions'**
+  String get adminNoRecentActions;
+
+  /// No description provided for @adminKpiPendingVerifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Verifications'**
+  String get adminKpiPendingVerifications;
+
+  /// No description provided for @adminKpiOpenDisputes.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Disputes'**
+  String get adminKpiOpenDisputes;
+
+  /// No description provided for @adminKpiActiveContracts.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Contracts'**
+  String get adminKpiActiveContracts;
+
+  /// No description provided for @adminActionReviewVerifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Verification Requests'**
+  String get adminActionReviewVerifications;
+
+  /// No description provided for @adminActionManageDisputes.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Disputes'**
+  String get adminActionManageDisputes;
+
+  /// No description provided for @adminActionUserManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'User Management'**
+  String get adminActionUserManagement;
+
+  /// No description provided for @adminActionSystemConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'System Configuration'**
+  String get adminActionSystemConfig;
+
+  /// No description provided for @adminActionSupportTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Tickets'**
+  String get adminActionSupportTickets;
+
+  /// No description provided for @adminActionNotificationsCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Center'**
+  String get adminActionNotificationsCenter;
+
+  /// No description provided for @adminChartRiskDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk Level Distribution'**
+  String get adminChartRiskDistribution;
+
+  /// No description provided for @adminChartWeeklyActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Activity'**
+  String get adminChartWeeklyActivity;
+
+  /// No description provided for @adminChartPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Charts will be connected to backend analytics later'**
+  String get adminChartPlaceholder;
+
+  /// No description provided for @settingsSectionGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsSectionGeneral;
+
+  /// No description provided for @settingsSectionDataStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Storage'**
+  String get settingsSectionDataStorage;
+
+  /// No description provided for @settingsSectionAiModel.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Model'**
+  String get settingsSectionAiModel;
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsSectionSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSectionSupport;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsAutoSaveReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-save Reports'**
+  String get settingsAutoSaveReports;
+
+  /// No description provided for @settingsOfflineMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Mode'**
+  String get settingsOfflineMode;
+
+  /// No description provided for @settingsOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get settingsOnline;
+
+  /// No description provided for @settingsOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get settingsOffline;
+
+  /// No description provided for @settingsClearCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cache'**
+  String get settingsClearCache;
+
+  /// No description provided for @settingsStorageUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Used'**
+  String get settingsStorageUsed;
+
+  /// No description provided for @settingsModelVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Model Version'**
+  String get settingsModelVersion;
+
+  /// No description provided for @settingsCheckUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get settingsCheckUpdates;
+
+  /// No description provided for @settingsAutoUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-update'**
+  String get settingsAutoUpdate;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get settingsAppVersion;
+
+  /// No description provided for @settingsTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get settingsTermsOfService;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get settingsLicenses;
+
+  /// No description provided for @settingsHelpCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center'**
+  String get settingsHelpCenter;
+
+  /// No description provided for @settingsContactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Support'**
+  String get settingsContactSupport;
+
+  /// No description provided for @settingsReportBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a Bug'**
+  String get settingsReportBug;
+
+  /// No description provided for @dialogClearCacheTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cache'**
+  String get dialogClearCacheTitle;
+
+  /// No description provided for @dialogClearCacheBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear the cache?'**
+  String get dialogClearCacheBody;
+
+  /// No description provided for @snackCacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get snackCacheCleared;
+
+  /// No description provided for @dialogCheckUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get dialogCheckUpdatesTitle;
+
+  /// No description provided for @dialogCheckUpdatesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are using the latest version'**
+  String get dialogCheckUpdatesBody;
 
   /// No description provided for @editProfile.
   ///
@@ -1129,6 +1483,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get onboardingSkip;
+
+  /// No description provided for @browseCompanies.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Companies'**
+  String get browseCompanies;
+
+  /// No description provided for @filterCompanies.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Companies'**
+  String get filterCompanies;
+
+  /// No description provided for @filterProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Projects'**
+  String get filterProjects;
+
+  /// No description provided for @availableProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Projects'**
+  String get availableProjects;
+
+  /// No description provided for @starsPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}+ Stars'**
+  String starsPlus(Object count);
+
+  /// No description provided for @verifiedOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified Only'**
+  String get verifiedOnly;
+
+  /// No description provided for @topRated.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Rated'**
+  String get topRated;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews'**
+  String reviewsCount(Object count);
+
+  /// No description provided for @projectsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} projects'**
+  String projectsCount(Object count);
+
+  /// No description provided for @noProjectsMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects match your search'**
+  String get noProjectsMatch;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get clearFilters;
+
+  /// No description provided for @allLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'All Locations'**
+  String get allLocations;
+
+  /// No description provided for @pleaseLoginBid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to place a bid'**
+  String get pleaseLoginBid;
+
+  /// No description provided for @openStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openStatus;
+
+  /// No description provided for @locationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationTitle;
+
+  /// No description provided for @ratingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get ratingTitle;
+
+  /// No description provided for @min.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get min;
+
+  /// No description provided for @max.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get max;
+
+  /// No description provided for @searchProjectsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects...'**
+  String get searchProjectsHint;
+
+  /// No description provided for @projectDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Details'**
+  String get projectDetails;
+
+  /// No description provided for @requestNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Request not found'**
+  String get requestNotFound;
+
+  /// No description provided for @receivedBids.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Bids'**
+  String get receivedBids;
+
+  /// No description provided for @noBidsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No bids yet'**
+  String get noBidsYet;
+
+  /// No description provided for @confirmAcceptBidTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept Bid'**
+  String get confirmAcceptBidTitle;
+
+  /// No description provided for @confirmAcceptBidMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to accept this bid? All other bids will be rejected.'**
+  String get confirmAcceptBidMessage;
+
+  /// No description provided for @actionAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get actionAccept;
+
+  /// No description provided for @bidAcceptedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bid accepted successfully!'**
+  String get bidAcceptedSuccess;
+
+  /// No description provided for @statusAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statusAccepted;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @contractDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Details'**
+  String get contractDetails;
+
+  /// No description provided for @contractNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract not found'**
+  String get contractNotFound;
+
+  /// No description provided for @contractStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Status'**
+  String get contractStatus;
+
+  /// No description provided for @contractInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Information'**
+  String get contractInfo;
+
+  /// No description provided for @paymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Details'**
+  String get paymentDetails;
+
+  /// No description provided for @agreedPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Agreed Price'**
+  String get agreedPrice;
+
+  /// No description provided for @fundsInEscrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Funds held in Escrow'**
+  String get fundsInEscrow;
+
+  /// No description provided for @paymentReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Released'**
+  String get paymentReleased;
+
+  /// No description provided for @markComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark Project as Complete'**
+  String get markComplete;
+
+  /// No description provided for @approveCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve Completion'**
+  String get approveCompletion;
+
+  /// No description provided for @requestRevisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Revisions'**
+  String get requestRevisions;
+
+  /// No description provided for @completionNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion Notes'**
+  String get completionNotes;
+
+  /// No description provided for @ownerFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Feedback'**
+  String get ownerFeedback;
+
+  /// No description provided for @raiseDispute.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise a Dispute'**
+  String get raiseDispute;
+
+  /// No description provided for @submitReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Review'**
+  String get submitReview;
+
+  /// No description provided for @reviewSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'You have already submitted a review for this project.'**
+  String get reviewSubmitted;
+
+  /// No description provided for @markedComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as complete! Awaiting owner approval.'**
+  String get markedComplete;
+
+  /// No description provided for @projectApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Project approved! Payment released.'**
+  String get projectApproved;
+
+  /// No description provided for @revisionRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision request sent to engineer.'**
+  String get revisionRequested;
+
+  /// No description provided for @reviewSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Review submitted successfully!'**
+  String get reviewSuccess;
+
+  /// No description provided for @statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get statusDraft;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusPendingCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Approval'**
+  String get statusPendingCompletion;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusDisputed.
+  ///
+  /// In en, this message translates to:
+  /// **'Disputed'**
+  String get statusDisputed;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @disputeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise a Dispute'**
+  String get disputeTitle;
+
+  /// No description provided for @disputeWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Important Notice'**
+  String get disputeWarning;
+
+  /// No description provided for @disputeWarningMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Disputes are reviewed by our admin team. Please provide accurate and detailed information.'**
+  String get disputeWarningMessage;
+
+  /// No description provided for @disputeReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for Dispute'**
+  String get disputeReason;
+
+  /// No description provided for @disputeReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Quality issues, Delayed completion, Payment dispute...'**
+  String get disputeReasonHint;
+
+  /// No description provided for @disputeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Description'**
+  String get disputeDescription;
+
+  /// No description provided for @disputeDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide a detailed explanation of the issue...'**
+  String get disputeDescriptionHint;
+
+  /// No description provided for @disputeReasonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a reason'**
+  String get disputeReasonRequired;
+
+  /// No description provided for @disputeDescriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please provide a detailed description'**
+  String get disputeDescriptionRequired;
+
+  /// No description provided for @disputeDescriptionTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Description must be at least 20 characters'**
+  String get disputeDescriptionTooShort;
+
+  /// No description provided for @disputeSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Dispute'**
+  String get disputeSubmit;
+
+  /// No description provided for @disputeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Dispute submitted successfully. Our team will review it.'**
+  String get disputeSuccess;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get reviewRating;
+
+  /// No description provided for @reviewComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get reviewComment;
+
+  /// No description provided for @reviewCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your experience...'**
+  String get reviewCommentHint;
 }
 
 class _AppLocalizationsDelegate

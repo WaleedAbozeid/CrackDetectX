@@ -7,13 +7,12 @@ import '../core/constants.dart';
 final _uuid = Uuid();
 
 /// Processes an image using a stub AI model (for development/testing)
-/// 
-/// This is a placeholder implementation that simulates AI processing.
-/// In production, this should be replaced with actual TensorFlow Lite or YOLO model.
-/// 
+///
+/// Simulates the full scan pipeline:
+/// queued → analyzing → detecting → reporting → done
+///
 /// [path] - File path of the image to process
-/// Returns a [DetectionResult] with simulated metrics
-/// Throws [Exception] if processing fails
+/// Returns a [DetectionResult] with simulated metrics and healthScore
 Future<DetectionResult> processImageStub(String path) async {
   try {
     // Simulate processing delay (1.5-3 seconds)
@@ -26,7 +25,8 @@ Future<DetectionResult> processImageStub(String path) async {
     final confidence = AppConstants.minConfidence + (randomFactor / 100);
     final clampedConfidence = confidence.clamp(0.0, AppConstants.maxConfidence);
 
-    // Generate simulated metrics (includes severity calculation)
+    final severity = _determineSeverity(clampedConfidence);
+    final healthScore = _calculateHealthScore(severity, clampedConfidence);
     final metrics = _generateSimulatedMetrics(clampedConfidence);
 
     final mask = DetectionMask(
@@ -39,6 +39,7 @@ Future<DetectionResult> processImageStub(String path) async {
       mask: mask,
       metrics: metrics,
       timestamp: DateTime.now(),
+      healthScore: healthScore,
     );
   } catch (e) {
     throw Exception('${AppConstants.errorImageProcessingFailed}: $e');
@@ -56,10 +57,21 @@ Severity _determineSeverity(double confidence) {
   }
 }
 
+/// Calculates building health score (0-100) based on severity and confidence
+/// High severity → low health score | Low severity → high health score
+int _calculateHealthScore(Severity severity, double confidence) {
+  final seed = DateTime.now().millisecondsSinceEpoch % 20;
+  return switch (severity) {
+    Severity.high   => (20 + seed).clamp(0, 100),
+    Severity.medium => (45 + seed).clamp(0, 100),
+    Severity.low    => (72 + seed).clamp(0, 100),
+  };
+}
+
 /// Generates simulated detection metrics
 DetectionMetrics _generateSimulatedMetrics(double confidence) {
   final randomSeed = DateTime.now().millisecondsSinceEpoch;
-  
+
   final lengthMeters = (0.2 + (randomSeed % 500) / 100).clamp(0.0, 5.0);
   final maxWidthMeters = (0.01 + (randomSeed % 20) / 1000).clamp(0.0, 0.1);
 

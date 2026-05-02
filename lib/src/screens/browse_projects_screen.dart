@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -33,6 +34,8 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.grey50,
       appBar: AppBar(
@@ -43,7 +46,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Available Projects',
+          l10n.availableProjects,
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
@@ -68,7 +71,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: 'Search projects...',
+                          hintText: l10n.searchProjectsHint,
                           prefixIcon: const Icon(
                             Icons.search,
                             color: AppColors.grey400,
@@ -89,7 +92,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     InkWell(
-                      onTap: _showFilterSheet,
+                      onTap: () => _showFilterSheet(context, l10n),
                       borderRadius: BorderRadius.circular(AppRadius.r12),
                       child: Container(
                         padding: const EdgeInsets.all(12),
@@ -130,7 +133,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                             ),
                             const SizedBox(height: AppSpacing.lg),
                             Text(
-                              'No projects match your search',
+                              l10n.noProjectsMatch,
                               style: AppTypography.h4.copyWith(
                                 color: AppColors.grey600,
                               ),
@@ -146,7 +149,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                                   _location = null;
                                 });
                               },
-                              child: const Text('Clear Filters'),
+                              child: Text(l10n.clearFilters),
                             ),
                           ],
                         ),
@@ -158,7 +161,9 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                           final request = availableRequests[index];
                           return _ProjectCard(
                             request: request,
-                            onTap: () => _showPlaceBidDialog(context, request),
+                            onTap: () =>
+                                _showPlaceBidDialog(context, request, l10n),
+                            l10n: l10n,
                           );
                         },
                       ),
@@ -170,7 +175,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
     );
   }
 
-  void _showFilterSheet() {
+  void _showFilterSheet(BuildContext context, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -191,10 +196,13 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Filter Projects', style: AppTypography.h3),
+                Text(l10n.filterProjects, style: AppTypography.h3),
                 const SizedBox(height: AppSpacing.xl),
 
-                Text('Budget Range (EGP)', style: AppTypography.h4),
+                Text(
+                  '${l10n.listingBudgetTitle} (${l10n.currencyEGP})',
+                  style: AppTypography.h4,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
@@ -202,10 +210,10 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                       child: TextFormField(
                         initialValue: _minBudget?.toStringAsFixed(0),
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Min',
-                          suffixText: 'EGP',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.min,
+                          suffixText: l10n.currencyEGP,
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (v) => _minBudget = double.tryParse(v),
                       ),
@@ -215,10 +223,10 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                       child: TextFormField(
                         initialValue: _maxBudget?.toStringAsFixed(0),
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Max',
-                          suffixText: 'EGP',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.max,
+                          suffixText: l10n.currencyEGP,
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (v) => _maxBudget = double.tryParse(v),
                       ),
@@ -227,10 +235,10 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
-                Text('Location', style: AppTypography.h4),
+                Text(l10n.locationTitle, style: AppTypography.h4),
                 const SizedBox(height: AppSpacing.sm),
                 DropdownButtonFormField<String>(
-                  value: _location,
+                  initialValue: _location,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.r12),
@@ -240,11 +248,17 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                       vertical: 8,
                     ),
                   ),
-                  items: const [
-                    DropdownMenuItem(value: null, child: Text('All Locations')),
-                    DropdownMenuItem(value: 'Cairo', child: Text('Cairo')),
-                    DropdownMenuItem(value: 'Giza', child: Text('Giza')),
+                  items: [
                     DropdownMenuItem(
+                      value: null,
+                      child: Text(l10n.allLocations),
+                    ),
+                    const DropdownMenuItem(
+                      value: 'Cairo',
+                      child: Text('Cairo'),
+                    ),
+                    const DropdownMenuItem(value: 'Giza', child: Text('Giza')),
+                    const DropdownMenuItem(
                       value: 'Alexandria',
                       child: Text('Alexandria'),
                     ),
@@ -268,7 +282,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text('Clear'),
+                        child: Text(l10n.actionClear),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -282,7 +296,7 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                           backgroundColor: AppColors.primary500,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text('Apply'),
+                        child: Text(l10n.actionApply),
                       ),
                     ),
                   ],
@@ -295,12 +309,16 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
     );
   }
 
-  void _showPlaceBidDialog(BuildContext context, RepairRequest request) {
+  void _showPlaceBidDialog(
+    BuildContext context,
+    RepairRequest request,
+    AppLocalizations l10n,
+  ) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please log in to place a bid')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseLoginBid)));
       return;
     }
 
@@ -319,8 +337,13 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
 class _ProjectCard extends StatelessWidget {
   final RepairRequest request;
   final VoidCallback onTap;
+  final AppLocalizations l10n;
 
-  const _ProjectCard({required this.request, required this.onTap});
+  const _ProjectCard({
+    required this.request,
+    required this.onTap,
+    required this.l10n,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -358,7 +381,7 @@ class _ProjectCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.r8),
                     ),
                     child: Text(
-                      'Open',
+                      l10n.openStatus,
                       style: AppTypography.caption.copyWith(
                         color: AppColors.primary500,
                         fontWeight: FontWeight.w600,
@@ -396,7 +419,7 @@ class _ProjectCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
-                        '${request.budgetMin?.toInt() ?? 0} - ${request.budgetMax?.toInt() ?? '∞'} EGP',
+                        '${request.budgetMin?.toInt() ?? 0} - ${request.budgetMax?.toInt() ?? '∞'} ${l10n.currencyEGP}',
                         style: AppTypography.caption.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -415,7 +438,7 @@ class _ProjectCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.r8),
                       ),
                     ),
-                    child: const Text('Place Bid'),
+                    child: Text(l10n.placeBid),
                   ),
                 ],
               ),

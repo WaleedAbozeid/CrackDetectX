@@ -123,5 +123,3 @@ class ScanResultCard extends StatelessWidget {
     return '${date.day}/${date.month}/${date.year}';
   }
 }
-
-

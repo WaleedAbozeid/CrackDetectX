@@ -5,6 +5,17 @@ enum Severity {
   high,
 }
 
+/// Scan processing status — mirrors the backend's scan status field
+enum ScanStatus {
+  queued,    // في انتظار المعالجة
+  analyzing, // جاري التحليل
+  detecting, // جاري الكشف عن الشقوق
+  reporting, // جاري إنشاء التقرير
+  done,      // مكتمل
+  failed,    // فشل
+  cancelled, // ملغي
+}
+
 /// Metrics from AI detection analysis
 class DetectionMetrics {
   final double confidence;
@@ -13,12 +24,12 @@ class DetectionMetrics {
   final double maxWidthMeters;
 
   /// Creates a DetectionMetrics instance
-  /// 
+  ///
   /// [confidence] - Confidence score (0.0-1.0)
   /// [severity] - Severity level of the crack
   /// [lengthMeters] - Length of the crack in meters (must be >= 0)
   /// [maxWidthMeters] - Maximum width of the crack in meters (must be >= 0)
-  /// 
+  ///
   /// Throws [ArgumentError] if values are invalid
   DetectionMetrics({
     required this.confidence,
@@ -29,7 +40,6 @@ class DetectionMetrics {
     _validate();
   }
 
-  /// Validates the metrics values
   void _validate() {
     if (confidence < 0.0 || confidence > 1.0) {
       throw ArgumentError.value(
@@ -65,12 +75,13 @@ class DetectionMetrics {
 
   factory DetectionMetrics.fromJson(Map<String, dynamic> json) {
     return DetectionMetrics(
-      confidence: json['confidence'],
+      confidence: (json['confidence'] as num).toDouble(),
       severity: Severity.values.firstWhere(
         (e) => e.toString().split('.').last == json['severity'],
+        orElse: () => Severity.low,
       ),
-      lengthMeters: json['lengthMeters'],
-      maxWidthMeters: json['maxWidthMeters'],
+      lengthMeters: (json['lengthMeters'] as num).toDouble(),
+      maxWidthMeters: (json['maxWidthMeters'] as num).toDouble(),
     );
   }
 }
@@ -80,10 +91,6 @@ class DetectionMask {
   final String base64Data;
   final String? overlayPath;
 
-  /// Creates a DetectionMask instance
-  /// 
-  /// [base64Data] - Base64 encoded mask data
-  /// [overlayPath] - Optional file path to overlay image
   DetectionMask({
     required this.base64Data,
     this.overlayPath,
@@ -98,8 +105,8 @@ class DetectionMask {
 
   factory DetectionMask.fromJson(Map<String, dynamic> json) {
     return DetectionMask(
-      base64Data: json['base64Data'],
-      overlayPath: json['overlayPath'],
+      base64Data: json['base64Data'] as String? ?? '',
+      overlayPath: json['overlayPath'] as String?,
     );
   }
 }
@@ -111,19 +118,15 @@ class DetectionResult {
   final DetectionMetrics metrics;
   final DateTime timestamp;
 
-  /// Creates a DetectionResult instance
-  /// 
-  /// [id] - Unique identifier for the result (must be non-empty)
-  /// [mask] - Detection mask with overlay data
-  /// [metrics] - Detection metrics
-  /// [timestamp] - When the detection was performed
-  /// 
-  /// Throws [ArgumentError] if id is empty
+  /// مؤشر صحة المبنى (0-100) — كلما ارتفع كان المبنى في حالة أفضل
+  final int healthScore;
+
   DetectionResult({
     required this.id,
     required this.mask,
     required this.metrics,
     required this.timestamp,
+    this.healthScore = 100,
   }) {
     if (id.trim().isEmpty) {
       throw ArgumentError.value(id, 'id', 'ID must be non-empty');
@@ -136,15 +139,17 @@ class DetectionResult {
       'mask': mask.toJson(),
       'metrics': metrics.toJson(),
       'timestamp': timestamp.toIso8601String(),
+      'healthScore': healthScore,
     };
   }
 
   factory DetectionResult.fromJson(Map<String, dynamic> json) {
     return DetectionResult(
-      id: json['id'],
-      mask: DetectionMask.fromJson(json['mask']),
-      metrics: DetectionMetrics.fromJson(json['metrics']),
-      timestamp: DateTime.parse(json['timestamp']),
+      id: json['id'] as String,
+      mask: DetectionMask.fromJson(json['mask'] as Map<String, dynamic>),
+      metrics: DetectionMetrics.fromJson(json['metrics'] as Map<String, dynamic>),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      healthScore: json['healthScore'] as int? ?? 100,
     );
   }
 }
@@ -155,20 +160,18 @@ class Report {
   final String imagePath;
   final DetectionResult result;
   final DateTime createdAt;
+  final String? buildingId;   // مرتبط بمبنى معين (optional — backward compat)
+  final String? notes;         // ملاحظات المهندس
+  final ScanStatus scanStatus; // حالة الفحص
 
-  /// Creates a Report instance
-  /// 
-  /// [id] - Unique identifier for the report (must be non-empty)
-  /// [imagePath] - File path of the analyzed image (must be non-empty)
-  /// [result] - Detection result from AI processing
-  /// [createdAt] - When the report was created
-  /// 
-  /// Throws [ArgumentError] if id or imagePath is empty
   Report({
     required this.id,
     required this.imagePath,
     required this.result,
     required this.createdAt,
+    this.buildingId,
+    this.notes,
+    this.scanStatus = ScanStatus.done,
   }) {
     if (id.trim().isEmpty) {
       throw ArgumentError.value(id, 'id', 'ID must be non-empty');
@@ -188,15 +191,24 @@ class Report {
       'imagePath': imagePath,
       'result': result.toJson(),
       'createdAt': createdAt.toIso8601String(),
+      'buildingId': buildingId,
+      'notes': notes,
+      'scanStatus': scanStatus.toString().split('.').last,
     };
   }
 
   factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
-      id: json['id'],
-      imagePath: json['imagePath'],
-      result: DetectionResult.fromJson(json['result']),
-      createdAt: DateTime.parse(json['createdAt']),
+      id: json['id'] as String,
+      imagePath: json['imagePath'] as String,
+      result: DetectionResult.fromJson(json['result'] as Map<String, dynamic>),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      buildingId: json['buildingId'] as String?,
+      notes: json['notes'] as String?,
+      scanStatus: ScanStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == (json['scanStatus'] as String?),
+        orElse: () => ScanStatus.done,
+      ),
     );
   }
 }

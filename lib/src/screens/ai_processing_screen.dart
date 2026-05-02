@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../store/app_state.dart';
 import '../ai/model_stub.dart';
+import '../ai/types.dart';
 import 'result_screen.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/scanner_overlay.dart';
@@ -19,35 +20,49 @@ class AIProcessingScreen extends StatefulWidget {
 }
 
 class _AIProcessingScreenState extends State<AIProcessingScreen> {
-  String _statusMessage = 'Analyzing structure...';
+  ScanStatus _currentStatus = ScanStatus.queued;
+
+  // Maps each status to its display label
+  String get _statusLabel => switch (_currentStatus) {
+        ScanStatus.queued    => 'في انتظار المعالجة...',
+        ScanStatus.analyzing => 'جاري تحليل الصورة...',
+        ScanStatus.detecting => 'جاري كشف الشقوق...',
+        ScanStatus.reporting => 'جاري إنشاء التقرير...',
+        ScanStatus.done      => 'اكتمل التحليل ✓',
+        _                    => 'جاري المعالجة...',
+      };
 
   @override
   void initState() {
     super.initState();
     _runProcessing();
-    _startStatusUpdates();
+    _runStatusAnimation();
   }
 
-  void _startStatusUpdates() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (mounted) setState(() => _statusMessage = 'Detecting cracks...');
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (mounted) setState(() => _statusMessage = 'Assessing risk levels...');
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (mounted) setState(() => _statusMessage = 'Generating report...');
+  /// Animated status progression matching the backend's real stages
+  Future<void> _runStatusAnimation() async {
+    final stages = [
+      (ScanStatus.queued,    500),
+      (ScanStatus.analyzing, 1200),
+      (ScanStatus.detecting, 1200),
+      (ScanStatus.reporting, 800),
+    ];
+    for (final (status, delay) in stages) {
+      await Future.delayed(Duration(milliseconds: delay));
+      if (mounted) setState(() => _currentStatus = status);
+    }
   }
 
   Future<void> _runProcessing() async {
     final appState = Provider.of<AppState>(context, listen: false);
     final img = appState.selectedImagePath;
     try {
-      // Small delay to ensure animation starts and looks good
-      await Future.delayed(
-        const Duration(seconds: 4),
-      ); // Match the status updates roughly
-
+      await Future.delayed(const Duration(seconds: 4));
       final result = await processImageStub(img ?? '');
       appState.setDetectionResult(result);
+      if (!mounted) return;
+      setState(() => _currentStatus = ScanStatus.done);
+      await Future.delayed(const Duration(milliseconds: 400));
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
@@ -75,6 +90,7 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Image with scanner overlay
               if (imagePath != null)
                 Expanded(
                   flex: 3,
@@ -104,20 +120,19 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
                   ),
                 )
               else
-                const Center(child: Text("No image selected")),
+                const Center(child: Text('No image selected')),
 
               const SizedBox(height: AppSpacing.xl),
 
+              // Status pipeline indicator
               Expanded(
                 flex: 1,
                 child: Column(
                   children: [
-                    const CircularProgressIndicator(
-                      color: AppColors.primary500,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
+                    _ScanStatusStepper(currentStatus: _currentStatus),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
-                      _statusMessage,
+                      _statusLabel,
                       style: AppTypography.h3.copyWith(
                         color: AppColors.primary900,
                       ),
@@ -125,7 +140,7 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      'Please wait while our AI inspects your building.',
+                      'يرجى الانتظار بينما يفحص الذكاء الاصطناعي الصورة.',
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -138,6 +153,91 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Visual step indicator for the scan pipeline
+class _ScanStatusStepper extends StatelessWidget {
+  final ScanStatus currentStatus;
+
+  const _ScanStatusStepper({required this.currentStatus});
+
+  static const _steps = [
+    (status: ScanStatus.queued,    label: 'انتظار'),
+    (status: ScanStatus.analyzing, label: 'تحليل'),
+    (status: ScanStatus.detecting, label: 'كشف'),
+    (status: ScanStatus.reporting, label: 'تقرير'),
+    (status: ScanStatus.done,      label: 'مكتمل'),
+  ];
+
+  int get _currentIndex =>
+      _steps.indexWhere((s) => s.status == currentStatus);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(_steps.length * 2 - 1, (i) {
+        if (i.isOdd) {
+          // Connector line
+          final stepIdx = i ~/ 2;
+          final passed = stepIdx < _currentIndex;
+          return Expanded(
+            child: Container(
+              height: 2,
+              color: passed ? AppColors.primary500 : AppColors.grey200,
+            ),
+          );
+        }
+        // Step circle
+        final stepIdx = i ~/ 2;
+        final step = _steps[stepIdx];
+        final isDone = stepIdx < _currentIndex;
+        final isActive = stepIdx == _currentIndex;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isDone
+                    ? AppColors.primary500
+                    : isActive
+                        ? AppColors.primary500
+                        : AppColors.grey200,
+              ),
+              child: Center(
+                child: isDone
+                    ? const Icon(Icons.check, color: AppColors.white, size: 14)
+                    : isActive
+                        ? const SizedBox(
+                            width: 12,
+                            height: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : null,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              step.label,
+              style: AppTypography.caption.copyWith(
+                color: (isDone || isActive)
+                    ? AppColors.primary500
+                    : AppColors.grey400,
+                fontSize: 9,
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

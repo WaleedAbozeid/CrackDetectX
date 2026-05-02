@@ -65,5 +65,3 @@ class HealthScoreCircle extends StatelessWidget {
     );
   }
 }
-
-

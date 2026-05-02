@@ -2,6 +2,7 @@
 /// Based on COMPLETE_PROMPT.md specifications
 class AppRadius {
   static const double r6 = 6.0; // Small elements
+  static const double r4 = 4.0; // Extra small elements (badges, chips)
   static const double r8 = 8.0; // Small elements
   static const double r10 = 10.0; // Small elements / inputs fallback
   static const double full = 9999.0; // Full pill shape alias

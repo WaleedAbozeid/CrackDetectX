@@ -97,7 +97,6 @@ class _BidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAccepted = bid.status == BidStatus.accepted;
     final isRejected = bid.status == BidStatus.rejected;
-    final isPending = bid.status == BidStatus.pending;
 
     Color statusColor;
     String statusLabel;

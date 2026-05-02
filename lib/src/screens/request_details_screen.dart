@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import 'contract_details_screen.dart';
 
 class RequestDetailsScreen extends StatelessWidget {
   final String requestId;
@@ -14,6 +16,8 @@ class RequestDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.grey50,
       appBar: AppBar(
@@ -24,7 +28,7 @@ class RequestDetailsScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Project Details',
+          l10n.projectDetails,
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
@@ -35,7 +39,7 @@ class RequestDetailsScreen extends StatelessWidget {
               .firstOrNull;
 
           if (request == null) {
-            return const Center(child: Text('Request not found'));
+            return Center(child: Text(l10n.requestNotFound));
           }
 
           final bids = appState.getBidsForRequest(requestId);
@@ -91,7 +95,7 @@ class RequestDetailsScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text('Received Bids', style: AppTypography.h4),
+                          Text(l10n.receivedBids, style: AppTypography.h4),
                           const SizedBox(width: AppSpacing.sm),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -132,7 +136,7 @@ class RequestDetailsScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: AppSpacing.sm),
                                 Text(
-                                  'No bids yet',
+                                  l10n.noBidsYet,
                                   style: AppTypography.bodySmall.copyWith(
                                     color: AppColors.grey500,
                                   ),
@@ -149,7 +153,14 @@ class RequestDetailsScreen extends StatelessWidget {
                                 request.status == RequestStatus.posted ||
                                 request.status == RequestStatus.bidding,
                             onAccept: () =>
-                                _acceptBid(context, appState, bid.id),
+                                _acceptBid(
+                                  context,
+                                  appState,
+                                  requestId,
+                                  bid.id,
+                                  l10n,
+                                ),
+                            l10n: l10n,
                           ),
                         ),
                     ],
@@ -163,31 +174,44 @@ class RequestDetailsScreen extends StatelessWidget {
     );
   }
 
-  void _acceptBid(BuildContext context, AppState appState, String bidId) {
+  void _acceptBid(
+    BuildContext context,
+    AppState appState,
+    String requestId,
+    String bidId,
+    AppLocalizations l10n,
+  ) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Accept Bid'),
-        content: const Text(
-          'Are you sure you want to accept this bid? All other bids will be rejected.',
-        ),
+        title: Text(l10n.confirmAcceptBidTitle),
+        content: Text(l10n.confirmAcceptBidMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               appState.acceptBid(bidId);
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Bid accepted successfully!')),
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(l10n.bidAcceptedSuccess)));
+
+              // Navigate to contract details after acceptance.
+              final contractId = 'contract_${requestId}_$bidId';
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ContractDetailsScreen(contractId: contractId),
+                ),
               );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary500,
             ),
-            child: const Text('Accept'),
+            child: Text(l10n.actionAccept),
           ),
         ],
       ),
@@ -199,11 +223,13 @@ class _BidCard extends StatelessWidget {
   final Bid bid;
   final bool canAccept;
   final VoidCallback onAccept;
+  final AppLocalizations l10n;
 
   const _BidCard({
     required this.bid,
     required this.canAccept,
     required this.onAccept,
+    required this.l10n,
   });
 
   @override
@@ -245,7 +271,7 @@ class _BidCard extends StatelessWidget {
                   children: [
                     Text(bid.engineerName, style: AppTypography.h4),
                     Text(
-                      '${bid.durationDays} days',
+                      '${bid.durationDays} ${l10n.unitDays}',
                       style: AppTypography.caption.copyWith(
                         color: AppColors.grey600,
                       ),
@@ -254,7 +280,7 @@ class _BidCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'EGP ${bid.price.toStringAsFixed(0)}',
+                '${l10n.currencyEGP} ${bid.price.toStringAsFixed(0)}',
                 style: AppTypography.h3.copyWith(color: AppColors.primary500),
               ),
             ],
@@ -277,7 +303,7 @@ class _BidCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.r8),
                   ),
                 ),
-                child: const Text('Accept Bid'),
+                child: Text(l10n.confirmAcceptBidTitle), // "Accept Bid"
               ),
             ),
           ],
@@ -302,7 +328,7 @@ class _BidCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'Accepted',
+                    l10n.statusAccepted,
                     style: AppTypography.caption.copyWith(
                       color: Colors.green.shade700,
                       fontWeight: FontWeight.w600,

@@ -331,10 +331,190 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileTitle => 'الملف الشخصي';
 
   @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get menuTitle => 'القائمة';
+
+  @override
+  String get homeWelcomeBack => 'مرحباً بعودتك';
+
+  @override
+  String get homeBuildingSafety => 'سلامة المباني';
+
+  @override
+  String get homeAiModelStatus => 'حالة نموذج الذكاء الاصطناعي';
+
+  @override
+  String get homeAiReadyToAnalyze => 'جاهز للتحليل';
+
+  @override
+  String get homeScanWithCamera => 'فحص بالكاميرا';
+
+  @override
+  String get homeUploadImage => 'رفع صورة';
+
+  @override
+  String get homePreviousReports => 'التقارير السابقة';
+
+  @override
+  String get homeQuickStats => 'إحصائيات سريعة';
+
+  @override
+  String get homeAll => 'الكل';
+
+  @override
+  String get homeMonth => 'الشهر';
+
+  @override
+  String get homeAboutAiModel => 'حول نموذج الذكاء الاصطناعي';
+
+  @override
+  String get homeSupportHelp => 'الدعم والمساعدة';
+
+  @override
+  String inspectionsCount(int count) {
+    return '$count فحص';
+  }
+
+  @override
   String get totalScans => 'إجمالي الفحوصات';
 
   @override
   String get highRisk => 'مخاطر عالية';
+
+  @override
+  String get adminDashboardTitle => 'لوحة التحكم';
+
+  @override
+  String get adminQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get adminRecentActions => 'أحدث إجراءات الإدارة';
+
+  @override
+  String get adminNoRecentActions => 'لا توجد إجراءات حديثة';
+
+  @override
+  String get adminKpiPendingVerifications => 'طلبات التحقق المعلقة';
+
+  @override
+  String get adminKpiOpenDisputes => 'نزاعات مفتوحة';
+
+  @override
+  String get adminKpiActiveContracts => 'عقود نشطة';
+
+  @override
+  String get adminActionReviewVerifications => 'مراجعة طلبات التحقق';
+
+  @override
+  String get adminActionManageDisputes => 'إدارة النزاعات';
+
+  @override
+  String get adminActionUserManagement => 'إدارة المستخدمين';
+
+  @override
+  String get adminActionSystemConfig => 'إعدادات النظام';
+
+  @override
+  String get adminActionSupportTickets => 'تذاكر الدعم';
+
+  @override
+  String get adminActionNotificationsCenter => 'مركز الإشعارات';
+
+  @override
+  String get adminChartRiskDistribution => 'توزيع مستويات الخطر';
+
+  @override
+  String get adminChartWeeklyActivity => 'النشاط الأسبوعي';
+
+  @override
+  String get adminChartPlaceholder =>
+      'سيتم ربط الرسوم التحليلية ببيانات الباك لاحقًا';
+
+  @override
+  String get settingsSectionGeneral => 'عام';
+
+  @override
+  String get settingsSectionDataStorage => 'البيانات والتخزين';
+
+  @override
+  String get settingsSectionAiModel => 'نموذج الذكاء الاصطناعي';
+
+  @override
+  String get settingsSectionAbout => 'حول';
+
+  @override
+  String get settingsSectionSupport => 'الدعم';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsNotifications => 'الإشعارات';
+
+  @override
+  String get settingsAutoSaveReports => 'حفظ التقارير تلقائيًا';
+
+  @override
+  String get settingsOfflineMode => 'وضع عدم الاتصال';
+
+  @override
+  String get settingsOnline => 'متصل';
+
+  @override
+  String get settingsOffline => 'غير متصل';
+
+  @override
+  String get settingsClearCache => 'مسح الكاش';
+
+  @override
+  String get settingsStorageUsed => 'المساحة المستخدمة';
+
+  @override
+  String get settingsModelVersion => 'إصدار النموذج';
+
+  @override
+  String get settingsCheckUpdates => 'التحقق من التحديثات';
+
+  @override
+  String get settingsAutoUpdate => 'تحديث تلقائي';
+
+  @override
+  String get settingsAppVersion => 'إصدار التطبيق';
+
+  @override
+  String get settingsTermsOfService => 'شروط الاستخدام';
+
+  @override
+  String get settingsPrivacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get settingsLicenses => 'التراخيص';
+
+  @override
+  String get settingsHelpCenter => 'مركز المساعدة';
+
+  @override
+  String get settingsContactSupport => 'تواصل مع الدعم';
+
+  @override
+  String get settingsReportBug => 'الإبلاغ عن خطأ';
+
+  @override
+  String get dialogClearCacheTitle => 'مسح الكاش';
+
+  @override
+  String get dialogClearCacheBody => 'هل أنت متأكد أنك تريد مسح الكاش؟';
+
+  @override
+  String get snackCacheCleared => 'تم مسح الكاش';
+
+  @override
+  String get dialogCheckUpdatesTitle => 'التحقق من التحديثات';
+
+  @override
+  String get dialogCheckUpdatesBody => 'أنت تستخدم أحدث إصدار';
 
   @override
   String get editProfile => 'تعديل الملف الشخصي';
@@ -540,4 +720,230 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingSkip => 'تخطي';
+
+  @override
+  String get browseCompanies => 'تصفح الشركات';
+
+  @override
+  String get filterCompanies => 'تصفية الشركات';
+
+  @override
+  String get filterProjects => 'تصفية المشاريع';
+
+  @override
+  String get availableProjects => 'المشاريع المتاحة';
+
+  @override
+  String starsPlus(Object count) {
+    return '$count+ نجوم';
+  }
+
+  @override
+  String get verifiedOnly => 'تم التحقق فقط';
+
+  @override
+  String get topRated => 'الأعلى تقييماً';
+
+  @override
+  String reviewsCount(Object count) {
+    return '$count مراجعة';
+  }
+
+  @override
+  String projectsCount(Object count) {
+    return '$count مشروع';
+  }
+
+  @override
+  String get noProjectsMatch => 'لا توجد مشاريع تطابق بحثك';
+
+  @override
+  String get clearFilters => 'مسح التصفية';
+
+  @override
+  String get allLocations => 'كل المواقع';
+
+  @override
+  String get pleaseLoginBid => 'يرجى تسجيل الدخول لتقديم عرض';
+
+  @override
+  String get openStatus => 'مفتوح';
+
+  @override
+  String get locationTitle => 'الموقع';
+
+  @override
+  String get ratingTitle => 'التقييم';
+
+  @override
+  String get min => 'أدنى';
+
+  @override
+  String get max => 'أقصى';
+
+  @override
+  String get searchProjectsHint => 'بحث عن مشاريع...';
+
+  @override
+  String get projectDetails => 'تفاصيل المشروع';
+
+  @override
+  String get requestNotFound => 'المشروع غير موجود';
+
+  @override
+  String get receivedBids => 'العروض المستلمة';
+
+  @override
+  String get noBidsYet => 'لا توجد عروض بعد';
+
+  @override
+  String get confirmAcceptBidTitle => 'قبول العرض';
+
+  @override
+  String get confirmAcceptBidMessage =>
+      'هل أنت متأكد من قبول هذا العرض؟ سيتم رفض جميع العروض الأخرى.';
+
+  @override
+  String get actionAccept => 'قبول';
+
+  @override
+  String get bidAcceptedSuccess => 'تم قبول العرض بنجاح!';
+
+  @override
+  String get statusAccepted => 'مقبول';
+
+  @override
+  String get statusRejected => 'مرفوض';
+
+  @override
+  String get contractDetails => 'تفاصيل العقد';
+
+  @override
+  String get contractNotFound => 'العقد غير موجود';
+
+  @override
+  String get contractStatus => 'حالة العقد';
+
+  @override
+  String get contractInfo => 'معلومات العقد';
+
+  @override
+  String get paymentDetails => 'تفاصيل الدفع';
+
+  @override
+  String get agreedPrice => 'السعر المتفق عليه';
+
+  @override
+  String get fundsInEscrow => 'الأموال محجوزة في Escrow';
+
+  @override
+  String get paymentReleased => 'تم تحرير الدفع';
+
+  @override
+  String get markComplete => 'تحديد المشروع كمكتمل';
+
+  @override
+  String get approveCompletion => 'الموافقة على الإنجاز';
+
+  @override
+  String get requestRevisions => 'طلب تعديلات';
+
+  @override
+  String get completionNotes => 'ملاحظات الإنجاز';
+
+  @override
+  String get ownerFeedback => 'ملاحظات المالك';
+
+  @override
+  String get raiseDispute => 'رفع نزاع';
+
+  @override
+  String get submitReview => 'إرسال تقييم';
+
+  @override
+  String get reviewSubmitted => 'لقد قمت بإرسال تقييم لهذا المشروع بالفعل.';
+
+  @override
+  String get markedComplete => 'تم تحديده كمكتمل! في انتظار موافقة المالك.';
+
+  @override
+  String get projectApproved => 'تمت الموافقة على المشروع! تم تحرير الدفع.';
+
+  @override
+  String get revisionRequested => 'تم إرسال طلب التعديل إلى المهندس.';
+
+  @override
+  String get reviewSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get statusDraft => 'مسودة';
+
+  @override
+  String get statusActive => 'نشط';
+
+  @override
+  String get statusInProgress => 'قيد التنفيذ';
+
+  @override
+  String get statusPendingCompletion => 'في انتظار الموافقة';
+
+  @override
+  String get statusCompleted => 'مكتمل';
+
+  @override
+  String get statusDisputed => 'متنازع عليه';
+
+  @override
+  String get statusCancelled => 'ملغى';
+
+  @override
+  String get disputeTitle => 'رفع نزاع';
+
+  @override
+  String get disputeWarning => 'إشعار مهم';
+
+  @override
+  String get disputeWarningMessage =>
+      'يتم مراجعة النزاعات من قبل فريق الإدارة. يرجى تقديم معلومات دقيقة ومفصلة.';
+
+  @override
+  String get disputeReason => 'سبب النزاع';
+
+  @override
+  String get disputeReasonHint =>
+      'مثال: مشاكل في الجودة، تأخير في الاكتمال، نزاع دفع...';
+
+  @override
+  String get disputeDescription => 'وصف تفصيلي';
+
+  @override
+  String get disputeDescriptionHint => 'قدم شرحاً تفصيلياً للمشكلة...';
+
+  @override
+  String get disputeReasonRequired => 'يرجى إدخال السبب';
+
+  @override
+  String get disputeDescriptionRequired => 'يرجى تقديم وصف تفصيلي';
+
+  @override
+  String get disputeDescriptionTooShort =>
+      'يجب أن يكون الوصف 20 حرفاً على الأقل';
+
+  @override
+  String get disputeSubmit => 'إرسال النزاع';
+
+  @override
+  String get disputeSuccess => 'تم إرسال النزاع بنجاح. سيقوم فريقنا بمراجعته.';
+
+  @override
+  String get reviewTitle => 'تقييم';
+
+  @override
+  String get reviewRating => 'التقييم';
+
+  @override
+  String get reviewComment => 'التعليق';
+
+  @override
+  String get reviewCommentHint => 'شارك تجربتك...';
 }

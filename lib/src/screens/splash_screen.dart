@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -16,21 +17,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Timer? _navTimer;
+
+  @override
+  void dispose() {
+    _navTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
     // Navigate to next screen after 2-3 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        final currentUser = FirebaseAuth.instance.currentUser;
-        if (currentUser != null) {
-          Navigator.of(context).pushReplacementNamed(AppConstants.routeHome);
-        } else {
-          Navigator.of(
-            context,
-          ).pushReplacementNamed(AppConstants.routeOnboarding);
-        }
-      }
+    _navTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      // Per design prompt: Splash -> Onboarding -> Login
+      Navigator.of(context).pushReplacementNamed(
+        AppConstants.routeOnboarding,
+      );
     });
   }
 
@@ -50,16 +54,17 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // App icon/logo
-              const Icon(Icons.construction, size: 120, color: AppColors.white),
+              const Icon(
+                Icons.construction,
+                size: 120,
+                color: AppColors.white,
+              ),
               const SizedBox(height: AppSpacing.lg),
-
+              
               // App name with gradient text effect
               ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
-                  colors: [
-                    AppColors.white,
-                    Color(0xB3FFFFFF),
-                  ], // white to white70
+                  colors: [AppColors.white, Color(0xB3FFFFFF)], // white to white70
                 ).createShader(bounds),
                 child: Text(
                   AppConstants.appName,
@@ -70,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-
+              
               // Tagline
               Text(
                 AppConstants.appTagline,
@@ -79,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.space64),
-
+              
               // Loading indicator
               const CircularProgressIndicator(
                 color: AppColors.white,
@@ -92,3 +97,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+

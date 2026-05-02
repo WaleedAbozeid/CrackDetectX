@@ -91,5 +91,3 @@ class RiskBadge extends StatelessWidget {
     );
   }
 }
-
-

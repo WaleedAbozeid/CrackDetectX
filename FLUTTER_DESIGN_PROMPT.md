@@ -1,116 +1,81 @@
-# CrackDetectX - Complete Flutter Design Specifications
+# CrackDetectX — توثيق التصميم الشامل (الحالة الفعلية الكاملة)
 
-## 📱 App Overview
-**CrackDetectX** is a professional AI-powered building inspection mobile application that enables users to upload building images for AI analysis to detect cracks, structural risks, and potential damages. The app connects building owners with certified engineering companies through an integrated marketplace.
+> **آخر تحديث:** أبريل 2026  
+> **الحالة:** مكتمل وجاهز للتطوير  
+> **إجمالي الشاشات:** 24 شاشة رئيسية + 9 شاشات لوحة إدارة  
+> **اللغات:** العربية والإنجليزية (RTL/LTR كامل)  
+> **الأدوار:** مهندس ميداني، مالك مبنى، شركة إصلاح، مسؤول (Admin)
 
 ---
 
-## 🎨 Design System
+## 📱 نظرة عامة على التطبيق
 
-### Color Palette
+**CrackDetectX** تطبيق موبايل احترافي مدعوم بالذكاء الاصطناعي لفحص سلامة المباني. يتيح للمستخدمين رفع صور المباني لتحليلها واكتشاف التشققات والمخاطر الهيكلية، ويضم سوقاً هندسياً متكاملاً يربط أصحاب المباني بالشركات الهندسية المعتمدة، فضلاً عن لوحة تحكم إدارية شاملة تضم 9 شاشات.
 
-#### Primary Colors
+---
+
+## 🎨 نظام التصميم
+
+### لوحة الألوان
+
 ```dart
-// Light Mode
-const Color primaryDark = Color(0xFF1E3A8A);      // Dark Blue - Main brand color
-const Color primaryLight = Color(0xFF3B82F6);     // Light Blue - Accents
-const Color primaryWhite = Color(0xFFFFFFFF);     // White - Background
-const Color textPrimary = Color(0xFF1F2937);      // Dark Gray - Primary text
-const Color textSecondary = Color(0xFF6B7280);    // Medium Gray - Secondary text
-const Color backgroundLight = Color(0xFFF9FAFB);  // Light Gray - Card backgrounds
-const Color borderLight = Color(0xFFE5E7EB);      // Light border
+// الوضع النهاري (Light Mode)
+const Color primaryDark    = Color(0xFF1E3A8A);  // أزرق داكن — اللون الرئيسي للعلامة التجارية
+const Color primaryLight   = Color(0xFF3B82F6);  // أزرق فاتح — لوني الإبراز
+const Color primaryWhite   = Color(0xFFFFFFFF);  // أبيض — خلفية
+const Color textPrimary    = Color(0xFF1F2937);  // رمادي داكن — نص رئيسي
+const Color textSecondary  = Color(0xFF6B7280);  // رمادي متوسط — نص ثانوي
+const Color backgroundLight= Color(0xFFF9FAFB);  // رمادي فاتح — خلفية البطاقات
+const Color borderLight    = Color(0xFFE5E7EB);  // حدود فاتحة
 
-// Dark Mode
-const Color darkBackground = Color(0xFF111827);    // Dark background
-const Color darkCard = Color(0xFF1F2937);          // Dark card background
-const Color darkBorder = Color(0xFF374151);        // Dark border
-const Color darkText = Color(0xFFF9FAFB);          // Light text
+// الوضع الليلي (Dark Mode)
+const Color darkBackground = Color(0xFF111827);  // خلفية داكنة
+const Color darkCard       = Color(0xFF1F2937);  // خلفية البطاقات الداكنة
+const Color darkBorder     = Color(0xFF374151);  // حدود داكنة
+const Color darkText       = Color(0xFFF9FAFB);  // نص فاتح
+
+// لوحة الإدارة (Admin Sidebar)
+const Color adminSidebarBg = Color(0xFF0F1E4A);  // خلفية الشريط الجانبي
+
+// ألوان مستويات الخطورة
+const Color riskLow        = Color(0xFF10B981);  // أخضر
+const Color riskModerate   = Color(0xFFF59E0B);  // برتقالي
+const Color riskHigh       = Color(0xFFEF4444);  // أحمر
+const Color riskCritical   = Color(0xFF7C3AED);  // بنفسجي
+
+// ألوان الحالة
+const Color success        = Color(0xFF10B981);
+const Color warning        = Color(0xFFF59E0B);
+const Color error          = Color(0xFFEF4444);
+const Color info           = Color(0xFF3B82F6);
+
+// تأثيرات المسح بالذكاء الاصطناعي
+const Color aiScanBlue     = Color(0xFF60A5FA);
+const Color aiScanCyan     = Color(0xFF06B6D4);
 ```
 
-#### Semantic Colors
+### الخطوط
+
 ```dart
-// Risk Levels
-const Color riskLow = Color(0xFF10B981);          // Green
-const Color riskModerate = Color(0xFFF59E0B);     // Orange
-const Color riskHigh = Color(0xFFEF4444);         // Red
-const Color riskCritical = Color(0xFF991B1B);     // Dark Red
+// الإنجليزية: Inter أو Poppins
+// العربية: Cairo أو Tajawal
 
-// Status Colors
-const Color success = Color(0xFF10B981);          // Success green
-const Color warning = Color(0xFFF59E0B);          // Warning orange
-const Color error = Color(0xFFEF4444);            // Error red
-const Color info = Color(0xFF3B82F6);             // Info blue
-
-// AI Scanning Animation
-const Color aiScanBlue = Color(0xFF60A5FA);       // Bright blue for scanning effect
-const Color aiScanCyan = Color(0xFF06B6D4);       // Cyan for gradient
+TextStyle h1 = TextStyle(fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: -0.5);
+TextStyle h2 = TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: -0.3);
+TextStyle h3 = TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
+TextStyle h4 = TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+TextStyle bodyLarge  = TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
+TextStyle bodyMedium = TextStyle(fontSize: 14, fontWeight: FontWeight.normal);
+TextStyle bodySmall  = TextStyle(fontSize: 12, fontWeight: FontWeight.normal);
+TextStyle caption    = TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: textSecondary);
+TextStyle button     = TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.5);
 ```
 
-### Typography
+### نظام المسافات
 
 ```dart
-// Font Family: Inter (recommended) or Poppins
-// Arabic: Cairo or Tajawal
-
-// Headings
-TextStyle h1 = TextStyle(
-  fontSize: 32,
-  fontWeight: FontWeight.bold,
-  letterSpacing: -0.5,
-);
-
-TextStyle h2 = TextStyle(
-  fontSize: 24,
-  fontWeight: FontWeight.bold,
-  letterSpacing: -0.3,
-);
-
-TextStyle h3 = TextStyle(
-  fontSize: 20,
-  fontWeight: FontWeight.w600,
-);
-
-TextStyle h4 = TextStyle(
-  fontSize: 18,
-  fontWeight: FontWeight.w600,
-);
-
-// Body Text
-TextStyle bodyLarge = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.normal,
-);
-
-TextStyle bodyMedium = TextStyle(
-  fontSize: 14,
-  fontWeight: FontWeight.normal,
-);
-
-TextStyle bodySmall = TextStyle(
-  fontSize: 12,
-  fontWeight: FontWeight.normal,
-);
-
-// Special
-TextStyle caption = TextStyle(
-  fontSize: 12,
-  fontWeight: FontWeight.normal,
-  color: textSecondary,
-);
-
-TextStyle button = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.w600,
-  letterSpacing: 0.5,
-);
-```
-
-### Spacing System
-
-```dart
-// Consistent spacing scale
-const double space4 = 4.0;
-const double space8 = 8.0;
+const double space4  = 4.0;
+const double space8  = 8.0;
 const double space12 = 12.0;
 const double space16 = 16.0;
 const double space20 = 20.0;
@@ -121,64 +86,38 @@ const double space48 = 48.0;
 const double space64 = 64.0;
 ```
 
-### Border Radius
+### نصف قطر الحواف
 
 ```dart
-// Rounded corners
-const double radiusSmall = 8.0;
+const double radiusSmall  = 8.0;
 const double radiusMedium = 12.0;
-const double radiusLarge = 16.0;
+const double radiusLarge  = 16.0;
 const double radiusXLarge = 24.0;
-const double radiusFull = 9999.0;  // For circular elements
+const double radiusFull   = 9999.0;
 ```
 
-### Shadows
+### الظلال
 
 ```dart
-// Soft shadows for modern UI
-BoxShadow shadowSmall = BoxShadow(
-  color: Colors.black.withOpacity(0.05),
-  blurRadius: 4,
-  offset: Offset(0, 2),
-);
-
-BoxShadow shadowMedium = BoxShadow(
-  color: Colors.black.withOpacity(0.08),
-  blurRadius: 8,
-  offset: Offset(0, 4),
-);
-
-BoxShadow shadowLarge = BoxShadow(
-  color: Colors.black.withOpacity(0.1),
-  blurRadius: 16,
-  offset: Offset(0, 8),
-);
-
-// AI glow effect
-BoxShadow aiGlow = BoxShadow(
-  color: aiScanBlue.withOpacity(0.3),
-  blurRadius: 20,
-  offset: Offset(0, 0),
-);
+BoxShadow shadowSmall  = BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4,  offset: Offset(0, 2));
+BoxShadow shadowMedium = BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 8,  offset: Offset(0, 4));
+BoxShadow shadowLarge  = BoxShadow(color: Colors.black.withOpacity(0.1),  blurRadius: 16, offset: Offset(0, 8));
+BoxShadow aiGlow       = BoxShadow(color: aiScanBlue.withOpacity(0.3),    blurRadius: 20, offset: Offset(0, 0));
 ```
 
 ---
 
-## 📐 Component Library
+## 🗂️ مكتبة المكوّنات
 
-### 1. Buttons
+### 1. الأزرار
 
-#### Primary Button
+#### الزر الرئيسي (Gradient)
 ```dart
 Container(
   width: double.infinity,
   height: 56,
   decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [primaryDark, primaryLight],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+    gradient: LinearGradient(colors: [primaryDark, primaryLight]),
     borderRadius: BorderRadius.circular(radiusMedium),
     boxShadow: [shadowMedium],
   ),
@@ -187,124 +126,45 @@ Container(
     child: InkWell(
       borderRadius: BorderRadius.circular(radiusMedium),
       onTap: onPressed,
-      child: Center(
-        child: Text('Button Text', style: button.copyWith(color: Colors.white)),
-      ),
+      child: Center(child: Text('نص الزر', style: button.copyWith(color: Colors.white))),
     ),
   ),
 )
 ```
 
-#### Secondary Button
+#### الزر الثانوي (Outlined)
 ```dart
 Container(
-  width: double.infinity,
-  height: 56,
+  width: double.infinity, height: 56,
   decoration: BoxDecoration(
     border: Border.all(color: primaryLight, width: 2),
     borderRadius: BorderRadius.circular(radiusMedium),
   ),
-  child: Material(
-    color: Colors.transparent,
-    child: InkWell(
-      borderRadius: BorderRadius.circular(radiusMedium),
-      onTap: onPressed,
-      child: Center(
-        child: Text('Button Text', style: button.copyWith(color: primaryLight)),
-      ),
-    ),
-  ),
+  child: Center(child: Text('نص الزر', style: button.copyWith(color: primaryLight))),
 )
 ```
 
-#### Icon Button
+#### زر الإدارة (Admin Dark)
 ```dart
+// الزر المستخدم في شاشة تسجيل الدخول للوصول للوحة الإدارة
 Container(
-  width: 48,
-  height: 48,
+  width: double.infinity, height: 48,
   decoration: BoxDecoration(
-    color: backgroundLight,
-    borderRadius: BorderRadius.circular(radiusSmall),
-  ),
-  child: IconButton(
-    icon: Icon(Icons.icon_name, color: primaryDark),
-    onPressed: onPressed,
-  ),
-)
-```
-
-### 2. Cards
-
-#### Standard Card
-```dart
-Container(
-  padding: EdgeInsets.all(space16),
-  decoration: BoxDecoration(
-    color: Colors.white,
+    color: Color(0xFF0F1E4A),  // adminSidebarBg
     borderRadius: BorderRadius.circular(radiusLarge),
-    boxShadow: [shadowMedium],
   ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      // Card content
+      Icon(Icons.shield, color: Colors.white, size: 18),
+      SizedBox(width: space8),
+      Text('دخول لوحة الإدارة (تجريبي)', style: bodySmall.copyWith(color: Colors.white)),
     ],
   ),
 )
 ```
 
-#### Scan Result Card
-```dart
-Container(
-  padding: EdgeInsets.all(space20),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(radiusLarge),
-    boxShadow: [shadowLarge],
-    border: Border.all(color: borderLight, width: 1),
-  ),
-  child: Column(
-    children: [
-      // Building image
-      ClipRRect(
-        borderRadius: BorderRadius.circular(radiusMedium),
-        child: Image.network(imageUrl, height: 200, fit: BoxFit.cover),
-      ),
-      SizedBox(height: space16),
-      // Health score with circular progress
-      // Risk level badge
-      // Details button
-    ],
-  ),
-)
-```
-
-### 3. Input Fields
-
-```dart
-Container(
-  decoration: BoxDecoration(
-    color: backgroundLight,
-    borderRadius: BorderRadius.circular(radiusMedium),
-    border: Border.all(color: borderLight, width: 1),
-  ),
-  child: TextField(
-    decoration: InputDecoration(
-      hintText: 'Placeholder text',
-      hintStyle: bodyMedium.copyWith(color: textSecondary),
-      prefixIcon: Icon(Icons.icon_name, color: textSecondary),
-      border: InputBorder.none,
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: space16,
-        vertical: space16,
-      ),
-    ),
-  ),
-)
-```
-
-### 4. Risk Level Badge
-
+### 2. شارة مستوى الخطورة
 ```dart
 Container(
   padding: EdgeInsets.symmetric(horizontal: space12, vertical: space8),
@@ -316,36 +176,23 @@ Container(
   child: Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Container(
-        width: 8,
-        height: 8,
-        decoration: BoxDecoration(
-          color: getRiskColor(riskLevel),
-          shape: BoxShape.circle,
-        ),
-      ),
+      Container(width: 8, height: 8, decoration: BoxDecoration(color: getRiskColor(riskLevel), shape: BoxShape.circle)),
       SizedBox(width: space8),
-      Text(
-        riskText,
-        style: bodySmall.copyWith(
-          color: getRiskColor(riskLevel),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      Text(riskText, style: bodySmall.copyWith(color: getRiskColor(riskLevel), fontWeight: FontWeight.w600)),
     ],
   ),
 )
 ```
 
-### 5. Health Score Circle
+> مستويات الخطورة: **منخفض** (أخضر) | **متوسط** (برتقالي) | **مرتفع** (أحمر) | **حرج** (بنفسجي)
 
+### 3. دائرة نقاط الصحة
 ```dart
 Stack(
   alignment: Alignment.center,
   children: [
     SizedBox(
-      width: 120,
-      height: 120,
+      width: 120, height: 120,
       child: CircularProgressIndicator(
         value: healthScore / 100,
         strokeWidth: 12,
@@ -353,64 +200,15 @@ Stack(
         valueColor: AlwaysStoppedAnimation<Color>(getScoreColor(healthScore)),
       ),
     ),
-    Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          '${healthScore.toInt()}',
-          style: h1.copyWith(color: primaryDark),
-        ),
-        Text(
-          'Health Score',
-          style: caption,
-        ),
-      ],
-    ),
+    Column(mainAxisSize: MainAxisSize.min, children: [
+      Text('${healthScore.toInt()}', style: h1.copyWith(color: primaryDark)),
+      Text('نقاط الصحة', style: caption),
+    ]),
   ],
 )
 ```
 
-### 6. Tab Bar (Custom)
-
-```dart
-Container(
-  padding: EdgeInsets.all(space4),
-  decoration: BoxDecoration(
-    color: backgroundLight,
-    borderRadius: BorderRadius.circular(radiusMedium),
-  ),
-  child: Row(
-    children: tabs.map((tab) {
-      final isSelected = currentTab == tab;
-      return Expanded(
-        child: GestureDetector(
-          onTap: () => onTabChanged(tab),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: space12),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(radiusSmall),
-              boxShadow: isSelected ? [shadowSmall] : [],
-            ),
-            child: Center(
-              child: Text(
-                tab,
-                style: bodyMedium.copyWith(
-                  color: isSelected ? primaryDark : textSecondary,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList(),
-  ),
-)
-```
-
-### 7. Bottom Navigation Bar
-
+### 4. شريط التنقل السفلي
 ```dart
 BottomNavigationBar(
   currentIndex: currentIndex,
@@ -419,3341 +217,1344 @@ BottomNavigationBar(
   backgroundColor: Colors.white,
   selectedItemColor: primaryLight,
   unselectedItemColor: textSecondary,
-  selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
   items: [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home_outlined),
-      activeIcon: Icon(Icons.home),
-      label: 'Home',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.scanner_outlined),
-      activeIcon: Icon(Icons.scanner),
-      label: 'Scan',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.description_outlined),
-      activeIcon: Icon(Icons.description),
-      label: 'Reports',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.store_outlined),
-      activeIcon: Icon(Icons.store),
-      label: 'Marketplace',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.person_outline),
-      activeIcon: Icon(Icons.person),
-      label: 'Profile',
-    ),
+    BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'الرئيسية'),
+    BottomNavigationBarItem(icon: Icon(Icons.scanner_outlined), activeIcon: Icon(Icons.scanner), label: 'فحص'),
+    BottomNavigationBarItem(icon: Icon(Icons.description_outlined), activeIcon: Icon(Icons.description), label: 'التقارير'),
+    BottomNavigationBarItem(icon: Icon(Icons.store_outlined), activeIcon: Icon(Icons.store), label: 'السوق'),
+    BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'حسابي'),
   ],
 )
 ```
 
 ---
 
-## 📱 Screen Specifications
+## 📱 شاشات التطبيق الرئيسية (24 شاشة)
 
-### 1. Splash Screen
-**Duration:** 2-3 seconds  
-**Components:**
-- App logo (centered)
-- App name "CrackDetectX" with gradient text
-- Loading indicator at bottom
-- Background: Gradient from primaryDark to primaryLight
+---
+
+### الشاشة 1: شاشة البداية (Splash Screen)
+**المسار:** `screens/SplashScreen`  
+**المدة:** 2-3 ثوان
+
+**المكوّنات:**
+- خلفية متدرجة من `primaryDark` إلى `primaryLight`
+- شعار التطبيق (أيقونة مبنى) في المركز بحجم 120
+- اسم التطبيق "CrackDetectX" بنص أبيض متدرج
+- نص ثانوي: "AI-Powered Building Inspector"
+- مؤشر تحميل دائري أبيض في الأسفل
 
 ```dart
 Container(
   decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [primaryDark, primaryLight],
-    ),
+    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [primaryDark, primaryLight]),
   ),
-  child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      // App icon/logo
-      Icon(Icons.construction, size: 120, color: Colors.white),
-      SizedBox(height: space24),
-      ShaderMask(
-        shaderCallback: (bounds) => LinearGradient(
-          colors: [Colors.white, Colors.white70],
-        ).createShader(bounds),
-        child: Text('CrackDetectX', style: h1.copyWith(fontSize: 36)),
-      ),
-      SizedBox(height: space8),
-      Text(
-        'AI-Powered Building Inspector',
-        style: bodyMedium.copyWith(color: Colors.white70),
-      ),
-      SizedBox(height: space64),
-      CircularProgressIndicator(color: Colors.white),
-    ],
-  ),
+  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+    Icon(Icons.construction, size: 120, color: Colors.white),
+    SizedBox(height: space24),
+    Text('CrackDetectX', style: h1.copyWith(color: Colors.white, fontSize: 36)),
+    SizedBox(height: space8),
+    Text('AI-Powered Building Inspector', style: bodyMedium.copyWith(color: Colors.white70)),
+    SizedBox(height: space64),
+    CircularProgressIndicator(color: Colors.white),
+  ]),
 )
 ```
 
-### 2. Onboarding Screen (3 Pages)
-**Features:**
-- Swipeable pages with PageView
-- Dot indicators
-- Skip button (top right)
-- Next/Get Started button
+**التنقل:** بعد انتهاء المؤقت ← شاشة Onboarding
 
-**Page 1: Welcome**
-- Illustration: Building with AI scan overlay
-- Title: "Welcome to CrackDetectX"
-- Subtitle: "AI-powered building inspection at your fingertips"
+---
 
-**Page 2: AI Analysis**
-- Illustration: AI analyzing cracks
-- Title: "Advanced AI Detection"
-- Subtitle: "Detect cracks and structural risks instantly"
+### الشاشة 2: شاشة التعريف (Onboarding — 3 صفحات)
+**المسار:** `screens/OnboardingScreen`
 
-**Page 3: Marketplace**
-- Illustration: Engineers/Companies
-- Title: "Connect with Experts"
-- Subtitle: "Get quotes from certified engineering companies"
+**الميزات:**
+- `PageView` قابل للسحب مع 3 صفحات
+- مؤشرات نقاط أسفل الشاشة
+- زر "تخطي" في الزاوية العلوية
+- زر "التالي" / "ابدأ الآن"
+- دعم RTL كامل
 
-### 3. Login Screen
-**Components:**
-- Logo at top
-- Email input field
-- Password input field (with show/hide toggle)
-- "Forgot Password?" link
-- Login button
-- "Don't have an account? Sign up" link
-- Social login options (Google, Apple) - optional
+**الصفحة 1 — الترحيب:**
+- رسم توضيحي: مبنى مع تأثير مسح الذكاء الاصطناعي
+- العنوان: "مرحباً بك في CrackDetectX"
+- النص: "فحص المباني بالذكاء الاصطناعي بين يديك"
 
-**Layout:**
+**الصفحة 2 — الذكاء الاصطناعي:**
+- رسم توضيحي: ذكاء اصطناعي يحلل التشققات
+- العنوان: "كشف متقدم بالذكاء الاصطناعي"
+- النص: "اكتشف التشققات والمخاطر الهيكلية فوراً"
+
+**الصفحة 3 — السوق:**
+- رسم توضيحي: مهندسون وشركات
+- العنوان: "تواصل مع الخبراء"
+- النص: "احصل على عروض أسعار من شركات هندسية معتمدة"
+
+**التنقل:** إتمام → شاشة تسجيل الدخول
+
+---
+
+### الشاشة 3: شاشة تسجيل الدخول (Login Screen)
+**المسار:** `screens/LoginScreen`
+
+**المكوّنات:**
+- أيقونة المبنى في المركز (دائرة بلون `primaryDark`)
+- حقل البريد الإلكتروني مع أيقونة بريد
+- حقل كلمة المرور مع زر إظهار/إخفاء (Eye / EyeOff)
+- رابط "نسيت كلمة المرور؟"
+- زر "تسجيل الدخول" بتدرج لوني
+- رابط "إنشاء حساب جديد"
+- **زر الإدارة (تجريبي):** زر منفصل بلون `0xFF0F1E4A` مع أيقونة Shield للوصول إلى لوحة التحكم الإدارية — يظهر في الأسفل تحت خط فاصل مع نص "للمراجعة والعروض التقديمية فقط"
+- دعم RTL/LTR حسب اللغة المحددة
+- i18n كامل (العربية/الإنجليزية)
+
+**التنقل:**
+- تسجيل الدخول الطبيعي → شاشة Home
+- زر الإدارة (تجريبي) → AdminPanel (لوحة تحكم منفصلة بالكامل)
+- إنشاء حساب → شاشة Register
+
+---
+
+### الشاشة 4: شاشة إنشاء الحساب (Register Screen)
+**المسار:** `screens/RegisterScreen`
+
+**حقول النموذج:**
+- الاسم الكامل
+- البريد الإلكتروني
+- رقم الهاتف
+- كلمة المرور (مع مؤشر قوة كلمة المرور)
+- تأكيد كلمة المرور
+- مربع الموافقة على الشروط والأحكام
+- زر "إنشاء الحساب"
+- رابط "لديك حساب بالفعل؟ تسجيل الدخول"
+
+**التنقل:** نجاح التسجيل → شاشة Home
+
+---
+
+### الشاشة 5: لوحة التحكم الرئيسية (Home Screen)
+**المسار:** `screens/HomeScreen`
+
+**قسم أ — الرأس (Header):**
+- صورة المستخدم (دائرية)
+- نص ترحيبي: "مرحباً، [الاسم]"
+- أيقونة الإشعارات (مع شارة عدد)
+- دعم RTL
+
+**قسم ب — بطاقات الإحصائيات السريعة (صف أفقي):**
 ```dart
-SafeArea(
-  child: Padding(
-    padding: EdgeInsets.all(space24),
-    child: Column(
-      children: [
-        SizedBox(height: space48),
-        // Logo
-        Icon(Icons.construction, size: 80, color: primaryDark),
-        SizedBox(height: space16),
-        Text('CrackDetectX', style: h2),
-        Text('Sign in to continue', style: bodyMedium.copyWith(color: textSecondary)),
-        SizedBox(height: space48),
-        // Email input
-        // Password input
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            child: Text('Forgot Password?'),
-            onPressed: () {},
-          ),
-        ),
-        SizedBox(height: space24),
-        // Login button
-        SizedBox(height: space24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Don't have an account? ", style: bodyMedium),
-            TextButton(
-              child: Text('Sign Up', style: bodyMedium.copyWith(color: primaryLight, fontWeight: FontWeight.w600)),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ],
-    ),
-  ),
-)
+Row(children: [
+  StatCard(value: '24', label: 'إجمالي الفحوص'),
+  StatCard(value: '8',  label: 'مبانٍ تحت المراقبة'),
+  StatCard(value: '12', label: 'التقارير المنشأة'),
+])
+// بتدرج لوني من primaryDark إلى primaryLight
 ```
 
-### 4. Register Screen
-**Components:**
-- Full Name input
-- Email input
-- Phone input
-- Password input (with strength indicator)
-- Confirm Password input
-- Terms & Conditions checkbox
-- Register button
-- "Already have an account? Login" link
+**قسم ج — الإجراءات السريعة (شبكة 2×2):**
+- **فحص جديد** (زر رئيسي بتدرج) → شاشة Upload
+- **عرض التقارير** → شاشة History
+- **مشاريعي** → شاشة My Projects
+- **ابحث عن مهندسين** → شاشة Marketplace
 
-### 5. Home Dashboard
-**Sections:**
+**قسم د — الفحوص الأخيرة (قائمة عمودية):**
+بطاقة لكل فحص تشمل:
+- صورة مصغرة للمبنى
+- اسم المبنى / الموقع
+- نقاط الصحة
+- شارة مستوى الخطورة
+- التاريخ
+- سهم للعرض التفصيلي
 
-**A. Header**
-- User avatar (left/right based on RTL)
-- Greeting: "Welcome Back, [Name]"
-- Notification icon
-- Settings icon
+---
 
-**B. Quick Stats Cards (Horizontal Row)**
-- Total Scans
-- Buildings Monitored
-- Reports Generated
+### الشاشة 6: شاشة رفع الصور (Upload Screen)
+**المسار:** `screens/UploadScreen`
 
-```dart
-Row(
-  children: [
-    Expanded(
-      child: Container(
-        padding: EdgeInsets.all(space16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [primaryDark, primaryLight]),
-          borderRadius: BorderRadius.circular(radiusLarge),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('24', style: h2.copyWith(color: Colors.white)),
-            SizedBox(height: space4),
-            Text('Total Scans', style: bodySmall.copyWith(color: Colors.white70)),
-          ],
-        ),
-      ),
-    ),
-    SizedBox(width: space12),
-    // Repeat for other stats
-  ],
-)
-```
-
-**C. Quick Actions (Grid 2x2)**
-- New Scan (primary button with gradient)
-- View Reports
-- My Projects
-- Find Engineers
-
-**D. Recent Scans (Vertical List)**
-- Card with:
-  - Building thumbnail
-  - Building name/location
-  - Health score badge
-  - Risk level badge
-  - Date
-  - Arrow to view details
-
-### 6. Upload Screen
-**Components:**
-
-**A. Drag & Drop Zone**
+**قسم أ — منطقة السحب والإفلات:**
 ```dart
 DottedBorder(
-  borderType: BorderType.RRect,
-  radius: Radius.circular(radiusLarge),
-  dashPattern: [8, 4],
-  color: primaryLight,
-  strokeWidth: 2,
+  color: primaryLight, strokeWidth: 2, dashPattern: [8, 4],
   child: Container(
     height: 300,
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: primaryLight.withOpacity(0.05),
-      borderRadius: BorderRadius.circular(radiusLarge),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.cloud_upload_outlined, size: 80, color: primaryLight),
-        SizedBox(height: space16),
-        Text('Drag & drop your image here', style: h4),
-        SizedBox(height: space8),
-        Text('or', style: bodyMedium.copyWith(color: textSecondary)),
-        SizedBox(height: space16),
-        ElevatedButton(
-          child: Text('Choose File'),
-          onPressed: () {},
-        ),
-        SizedBox(height: space24),
-        Text('Supported formats: JPG, PNG, HEIC', style: caption),
-        Text('Max size: 10MB', style: caption),
-      ],
-    ),
+    color: primaryLight.withOpacity(0.05),
+    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Icon(Icons.cloud_upload_outlined, size: 80, color: primaryLight),
+      Text('اسحب وأفلت صورتك هنا'),
+      Text('أو'),
+      ElevatedButton(onPressed: pickImage, child: Text('اختر ملف')),
+      Text('الصيغ المدعومة: JPG، PNG، HEIC'),
+      Text('الحجم الأقصى: 10 ميغابايت'),
+    ]),
   ),
 )
 ```
 
-**B. Uploaded Images Preview**
-- Grid of thumbnails
-- Remove icon on each
-- Add more button
+**قسم ب — معاينة الصور المرفوعة:**
+- شبكة من الصور المصغرة
+- أيقونة حذف على كل صورة
+- زر "إضافة المزيد"
 
-**C. Building Details Form**
-- Location input
-- Building type dropdown
-- Additional notes textarea
+**قسم ج — نموذج بيانات المبنى:**
+- حقل الموقع
+- قائمة منسدلة لنوع المبنى
+- حقل ملاحظات إضافية
 
-**D. Start Analysis Button** (fixed at bottom)
-
-### 7. AI Scanning Screen
-**Components:**
-
-**A. Animated Scanning Effect**
-```dart
-Stack(
-  alignment: Alignment.center,
-  children: [
-    // Building image with scan overlay
-    Image.network(imageUrl),
-    // Animated scan line
-    AnimatedBuilder(
-      animation: scanAnimation,
-      builder: (context, child) {
-        return Positioned(
-          top: scanAnimation.value * imageHeight,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 4,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  aiScanBlue,
-                  aiScanCyan,
-                  aiScanBlue,
-                  Colors.transparent,
-                ],
-              ),
-              boxShadow: [aiGlow],
-            ),
-          ),
-        );
-      },
-    ),
-    // Detected crack overlays (appear as scanning progresses)
-    ...detectedCracks.map((crack) {
-      return Positioned(
-        left: crack.x,
-        top: crack.y,
-        child: Container(
-          width: crack.width,
-          height: crack.height,
-          decoration: BoxDecoration(
-            border: Border.all(color: riskHigh, width: 2),
-            borderRadius: BorderRadius.circular(radiusSmall),
-          ),
-        ),
-      );
-    }),
-  ],
-)
-```
-
-**B. Progress Indicator**
-```dart
-Column(
-  children: [
-    LinearProgressIndicator(
-      value: progress,
-      backgroundColor: backgroundLight,
-      color: primaryLight,
-      minHeight: 8,
-    ),
-    SizedBox(height: space16),
-    Text('${(progress * 100).toInt()}%', style: h3),
-  ],
-)
-```
-
-**C. Status Messages (Animated)**
-- "Analyzing image..."
-- "Detecting cracks..."
-- "Calculating risk level..."
-- "Generating report..."
-
-### 8. Results Screen
-**Sections:**
-
-**A. Header**
-- Back button
-- "Analysis Results" title
-- Share icon
-- Save icon
-
-**B. Overall Health Card**
-```dart
-Container(
-  padding: EdgeInsets.all(space24),
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [primaryDark, primaryLight],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    borderRadius: BorderRadius.circular(radiusXLarge),
-    boxShadow: [shadowLarge],
-  ),
-  child: Column(
-    children: [
-      Text('Overall Health', style: h3.copyWith(color: Colors.white)),
-      SizedBox(height: space24),
-      // Health Score Circle (white version)
-      SizedBox(height: space24),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            children: [
-              Text('12', style: h2.copyWith(color: Colors.white)),
-              Text('Cracks Found', style: caption.copyWith(color: Colors.white70)),
-            ],
-          ),
-          Container(width: 1, height: 40, color: Colors.white30),
-          Column(
-            children: [
-              Text('15%', style: h2.copyWith(color: Colors.white)),
-              Text('Crack %', style: caption.copyWith(color: Colors.white70)),
-            ],
-          ),
-        ],
-      ),
-    ],
-  ),
-)
-```
-
-**C. Risk Level Badge** (large, centered)
-
-**D. Detailed Findings**
-- Tabs: All, Major Cracks, Minor Cracks, Surface Damage
-- List of findings with:
-  - Thumbnail of crack area
-  - Description
-  - Severity indicator
-  - Location coordinates
-
-**E. Recommendations Section**
-- Card with icon and text for each recommendation
-- Color-coded by priority
-
-**F. Action Buttons**
-- "View Full Report" (primary)
-- "Publish to Marketplace" (secondary with icon)
-- "Save Report" (secondary)
-
-### 9. Detailed Report Screen
-**Sections:**
-
-**A. Building Information Card**
-- Location with map icon
-- Building type
-- Scan date
-- Inspector name
-
-**B. AI Analysis Summary**
-- Health score
-- Total cracks
-- Crack percentage
-- Structural integrity assessment
-
-**C. Crack Distribution Chart**
-```dart
-// Pie chart or bar chart showing:
-// - Horizontal cracks
-// - Vertical cracks
-// - Diagonal cracks
-// Use fl_chart package
-```
-
-**D. Severity Distribution Chart**
-```dart
-// Bar chart showing:
-// - Critical
-// - High
-// - Moderate
-// - Low
-```
-
-**E. Crack Details Table**
-```dart
-DataTable(
-  columns: [
-    DataColumn(label: Text('ID')),
-    DataColumn(label: Text('Type')),
-    DataColumn(label: Text('Severity')),
-    DataColumn(label: Text('Location')),
-  ],
-  rows: cracks.map((crack) {
-    return DataRow(cells: [
-      DataCell(Text(crack.id)),
-      DataCell(Text(crack.type)),
-      DataCell(RiskBadge(level: crack.severity)),
-      DataCell(Text(crack.location)),
-    ]);
-  }).toList(),
-)
-```
-
-**F. Image Gallery**
-- Original image
-- Annotated image with crack overlays
-- Close-up images of major cracks
-
-**G. Expert Recommendations**
-- Detailed list with priority levels
-
-**H. Action Buttons (Bottom)**
-- Download PDF
-- Share Report
-- Print
-
-### 10. History Screen
-**Components:**
-
-**A. Filters**
-- Tabs: All Scans, This Month, Last 3 Months, This Year
-- Sort dropdown: Date, Health Score, Risk Level
-
-**B. Summary Statistics**
-```dart
-Row(
-  children: [
-    Expanded(
-      child: StatCard(
-        title: 'Total Scans',
-        value: '24',
-        icon: Icons.scanner,
-      ),
-    ),
-    Expanded(
-      child: StatCard(
-        title: 'Avg Health',
-        value: '78%',
-        icon: Icons.health_and_safety,
-      ),
-    ),
-  ],
-)
-```
-
-**C. Scan History List**
-- Each item shows:
-  - Building thumbnail
-  - Building name
-  - Scan date
-  - Health score progress bar
-  - Risk level badge
-  - Tap to view details
-
-### 11. Profile Screen
-**Sections:**
-
-**A. Profile Header**
-```dart
-Container(
-  padding: EdgeInsets.all(space24),
-  decoration: BoxDecoration(
-    gradient: LinearGradient(colors: [primaryDark, primaryLight]),
-  ),
-  child: Column(
-    children: [
-      CircleAvatar(
-        radius: 50,
-        backgroundColor: Colors.white,
-        child: Icon(Icons.person, size: 50, color: primaryDark),
-      ),
-      SizedBox(height: space16),
-      Text('Walid Abouzeid', style: h3.copyWith(color: Colors.white)),
-      Text('walid@example.com', style: bodyMedium.copyWith(color: Colors.white70)),
-      SizedBox(height: space16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.verified, color: success, size: 20),
-          SizedBox(width: space4),
-          Text('Verified User', style: bodySmall.copyWith(color: Colors.white)),
-        ],
-      ),
-    ],
-  ),
-)
-```
-
-**B. Statistics Cards**
-- Total Scans
-- Buildings Monitored
-- Reports Generated
-- Member Since
-
-**C. Menu Items**
-```dart
-ListTile(
-  leading: Container(
-    padding: EdgeInsets.all(space8),
-    decoration: BoxDecoration(
-      color: primaryLight.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(radiusSmall),
-    ),
-    child: Icon(Icons.edit, color: primaryLight),
-  ),
-  title: Text('Edit Profile'),
-  trailing: Icon(Icons.chevron_right),
-  onTap: () {},
-)
-```
-
-Menu items:
-- Edit Profile
-- Change Password
-- Notifications Settings
-- Language & Region
-- Privacy & Security
-- Help & Support
-- About CrackDetectX
-- Logout (in red)
-
-### 12. Settings Screen
-**Sections:**
-
-**A. Account Settings**
-- Edit Profile
-- Change Password
-- Delete Account
-
-**B. App Preferences**
-- Language selector
-  ```dart
-  ListTile(
-    title: Text('Language'),
-    trailing: DropdownButton<String>(
-      value: currentLanguage,
-      items: [
-        DropdownMenuItem(value: 'ar', child: Text('العربية')),
-        DropdownMenuItem(value: 'en', child: Text('English')),
-      ],
-      onChanged: (value) {},
-    ),
-  )
-  ```
-- Theme toggle
-  ```dart
-  SwitchListTile(
-    title: Text('Dark Mode'),
-    subtitle: Text('Switch between light and dark theme'),
-    value: isDarkMode,
-    onChanged: (value) {},
-    activeColor: primaryLight,
-  )
-  ```
-
-**C. Scan Settings**
-- Auto-save scans
-- High quality mode
-- Notification preferences
-
-**D. Privacy & Security**
-- Data storage location
-- Clear cache
-- Privacy policy link
-- Terms & conditions link
-
-**E. About**
-- App version
-- Contact support
-- Rate app
-- Follow on social media
+**قسم د — زر بدء التحليل** (ثابت في الأسفل)
 
 ---
 
-## 🏪 Marketplace Screens
+### الشاشة 7: شاشة المسح بالذكاء الاصطناعي (Scanning Screen)
+**المسار:** `screens/ScanningScreen`
 
-### 13. Marketplace Home
-**Sections:**
-
-**A. Header**
-- "Engineering Marketplace" title
-- Search bar
-- Filter icon
-
-**B. User Role Toggle**
+**قسم أ — تأثير المسح المتحرك:**
 ```dart
-Container(
-  padding: EdgeInsets.all(space4),
-  decoration: BoxDecoration(
-    color: backgroundLight,
-    borderRadius: BorderRadius.circular(radiusMedium),
-  ),
-  child: Row(
-    children: [
-      Expanded(
-        child: RoleTab(
-          title: 'Building Owner',
-          icon: Icons.home,
-          isSelected: role == 'owner',
-          onTap: () => setRole('owner'),
-        ),
-      ),
-      Expanded(
-        child: RoleTab(
-          title: 'Engineering Company',
-          icon: Icons.engineering,
-          isSelected: role == 'company',
-          onTap: () => setRole('company'),
-        ),
-      ),
-    ],
-  ),
-)
-```
-
-**C. For Building Owners:**
-- "Create New Listing" button
-- My Active Listings (count badge)
-- Received Offers (count badge)
-- Browse Companies
-
-**D. For Companies:**
-- Company Dashboard stats
-- Browse Requests
-- My Offers
-- Active Projects
-
-### 14. Create Project Listing Screen (Building Owner)
-**Form Fields:**
-
-```dart
-Form(
-  child: ListView(
-    padding: EdgeInsets.all(space20),
-    children: [
-      // Project Title
-      TextFormField(
-        decoration: InputDecoration(
-          labelText: 'Project Title',
-          hintText: 'e.g., Structural repair for residential building',
-          prefixIcon: Icon(Icons.title),
-        ),
-      ),
-      SizedBox(height: space16),
-      
-      // Description
-      TextFormField(
-        maxLines: 4,
-        decoration: InputDecoration(
-          labelText: 'Description',
-          hintText: 'Describe the issue and project requirements...',
-          alignedLabelStyle: true,
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Building Details Section
-      Text('Building Details', style: h4),
-      SizedBox(height: space16),
-      
-      Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Building Age',
-                suffixText: 'years',
-              ),
-            ),
-          ),
-          SizedBox(width: space12),
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Floors',
-              ),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: space16),
-      
-      Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Area',
-                suffixText: 'sqm',
-              ),
-            ),
-          ),
-          SizedBox(width: space12),
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Budget',
-                prefixText: 'EGP ',
-              ),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Timeline
-      Text('Timeline', style: h4),
-      SizedBox(height: space12),
-      Wrap(
-        spacing: space8,
-        children: [
-          ChoiceChip(
-            label: Text('Urgent (7 days)'),
-            selected: timeline == 'urgent',
-            onSelected: (selected) => setTimeline('urgent'),
-          ),
-          ChoiceChip(
-            label: Text('1 Month'),
-            selected: timeline == '1month',
-            onSelected: (selected) => setTimeline('1month'),
-          ),
-          ChoiceChip(
-            label: Text('3 Months'),
-            selected: timeline == '3months',
-            onSelected: (selected) => setTimeline('3months'),
-          ),
-          ChoiceChip(
-            label: Text('Flexible'),
-            selected: timeline == 'flexible',
-            onSelected: (selected) => setTimeline('flexible'),
-          ),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Attach Scan Report
-      Card(
-        child: ListTile(
-          leading: Icon(Icons.attach_file, color: primaryLight),
-          title: Text('Attach Scan Report'),
-          subtitle: Text(selectedReport ?? 'Select a report from your history'),
-          trailing: Icon(Icons.chevron_right),
-          onTap: () => showReportSelector(),
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Services Needed
-      Text('Services Needed', style: h4),
-      SizedBox(height: space12),
-      CheckboxListTile(
-        title: Text('Structural Assessment'),
-        value: services.contains('assessment'),
-        onChanged: (value) => toggleService('assessment'),
-      ),
-      CheckboxListTile(
-        title: Text('Repair Works'),
-        value: services.contains('repair'),
-        onChanged: (value) => toggleService('repair'),
-      ),
-      CheckboxListTile(
-        title: Text('Consultation'),
-        value: services.contains('consultation'),
-        onChanged: (value) => toggleService('consultation'),
-      ),
-      CheckboxListTile(
-        title: Text('Monitoring'),
-        value: services.contains('monitoring'),
-        onChanged: (value) => toggleService('monitoring'),
-      ),
-      SizedBox(height: space32),
-      
-      // Publish Button
-      ElevatedButton(
-        onPressed: publishListing,
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: space16),
-        ),
-        child: Text('Publish Listing'),
-      ),
-    ],
-  ),
-)
-```
-
-### 15. Browse Companies Screen
-**Components:**
-
-**A. Search & Filters**
-```dart
-Column(
-  children: [
-    // Search bar
-    TextField(
-      decoration: InputDecoration(
-        hintText: 'Search companies...',
-        prefixIcon: Icon(Icons.search),
-        suffixIcon: IconButton(
-          icon: Icon(Icons.tune),
-          onPressed: () => showFilterSheet(),
-        ),
-      ),
-    ),
-    SizedBox(height: space16),
-    
-    // Active filters chips
-    if (activeFilters.isNotEmpty)
-      SizedBox(
-        height: 40,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: activeFilters.length + 1,
-          separatorBuilder: (context, index) => SizedBox(width: space8),
-          itemBuilder: (context, index) {
-            if (index == activeFilters.length) {
-              return ActionChip(
-                label: Text('Clear All'),
-                onPressed: clearFilters,
-              );
-            }
-            return FilterChip(
-              label: Text(activeFilters[index]),
-              onDeleted: () => removeFilter(activeFilters[index]),
-            );
-          },
-        ),
-      ),
-  ],
-)
-```
-
-**B. Filter Bottom Sheet**
-```dart
-// Shows when filter icon tapped
-Container(
-  padding: EdgeInsets.all(space20),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('Filter By', style: h3),
-      SizedBox(height: space24),
-      
-      // Rating filter
-      Text('Rating', style: h4),
-      Wrap(
-        spacing: space8,
-        children: [
-          FilterChip(label: Text('All'), selected: rating == null),
-          FilterChip(label: Text('4+ stars'), selected: rating == 4),
-          FilterChip(label: Text('4.5+ stars'), selected: rating == 4.5),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Experience filter
-      Text('Experience', style: h4),
-      Wrap(
-        spacing: space8,
-        children: [
-          FilterChip(label: Text('All'), selected: experience == null),
-          FilterChip(label: Text('5+ years'), selected: experience == 5),
-          FilterChip(label: Text('10+ years'), selected: experience == 10),
-          FilterChip(label: Text('15+ years'), selected: experience == 15),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Location filter
-      Text('Location', style: h4),
-      DropdownButton<String>(
-        value: selectedLocation,
-        isExpanded: true,
-        items: [
-          DropdownMenuItem(value: null, child: Text('All Locations')),
-          DropdownMenuItem(value: 'cairo', child: Text('Cairo')),
-          DropdownMenuItem(value: 'giza', child: Text('Giza')),
-          DropdownMenuItem(value: 'alex', child: Text('Alexandria')),
-        ],
-        onChanged: (value) => setLocation(value),
-      ),
-      SizedBox(height: space32),
-      
-      Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: clearFilters,
-              child: Text('Clear'),
-            ),
-          ),
-          SizedBox(width: space12),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: applyFilters,
-              child: Text('Apply'),
-            ),
-          ),
-        ],
-      ),
-    ],
-  ),
-)
-```
-
-**C. Company Cards List**
-```dart
-ListView.separated(
-  itemCount: companies.length,
-  separatorBuilder: (context, index) => SizedBox(height: space12),
-  itemBuilder: (context, index) {
-    final company = companies[index];
-    return Card(
-      child: InkWell(
-        onTap: () => navigateToCompanyProfile(company),
-        child: Padding(
-          padding: EdgeInsets.all(space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  // Company logo
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(company.logo),
-                  ),
-                  SizedBox(width: space12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(company.name, style: h4),
-                            if (company.verified)
-                              Padding(
-                                padding: EdgeInsets.only(left: space4),
-                                child: Icon(Icons.verified, color: success, size: 20),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: space4),
-                        Row(
-                          children: [
-                            Icon(Icons.star, color: warning, size: 16),
-                            SizedBox(width: space4),
-                            Text('${company.rating} (${company.reviews} reviews)', style: bodySmall),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (company.topRated)
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: space8, vertical: space4),
-                      decoration: BoxDecoration(
-                        color: warning.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(radiusFull),
-                      ),
-                      child: Text('Top Rated', style: caption.copyWith(color: warning)),
-                    ),
-                ],
-              ),
-              SizedBox(height: space12),
-              Text(
-                company.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: bodyMedium.copyWith(color: textSecondary),
-              ),
-              SizedBox(height: space12),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text(company.location, style: bodySmall),
-                  SizedBox(width: space16),
-                  Icon(Icons.work, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text('${company.completedProjects} projects', style: bodySmall),
-                ],
-              ),
-              SizedBox(height: space12),
-              Wrap(
-                spacing: space8,
-                children: company.specializations.take(3).map((spec) {
-                  return Chip(
-                    label: Text(spec, style: caption),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  },
-)
-```
-
-### 16. Company Profile Screen
-**Sections:**
-
-**A. Header**
-```dart
-Container(
-  padding: EdgeInsets.all(space24),
-  decoration: BoxDecoration(
-    gradient: LinearGradient(colors: [primaryDark, primaryLight]),
-  ),
-  child: Column(
-    children: [
-      CircleAvatar(
-        radius: 50,
-        backgroundImage: NetworkImage(company.logo),
-      ),
-      SizedBox(height: space16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(company.name, style: h3.copyWith(color: Colors.white)),
-          if (company.verified)
-            Padding(
-              padding: EdgeInsets.only(left: space8),
-              child: Icon(Icons.verified, color: success, size: 24),
-            ),
-        ],
-      ),
-      SizedBox(height: space8),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.star, color: warning, size: 20),
-          SizedBox(width: space4),
-          Text(
-            '${company.rating} (${company.reviews} reviews)',
-            style: bodyMedium.copyWith(color: Colors.white),
-          ),
-        ],
-      ),
-    ],
-  ),
-)
-```
-
-**B. Quick Stats**
-```dart
-Container(
-  padding: EdgeInsets.all(space16),
-  child: Row(
-    children: [
-      Expanded(
-        child: StatCard(
-          icon: Icons.check_circle,
-          value: '${company.completedProjects}',
-          label: 'Projects',
-        ),
-      ),
-      Expanded(
-        child: StatCard(
-          icon: Icons.access_time,
-          value: '${company.avgResponseTime}h',
-          label: 'Response Time',
-        ),
-      ),
-      Expanded(
-        child: StatCard(
-          icon: Icons.thumb_up,
-          value: '${company.successRate}%',
-          label: 'Success Rate',
-        ),
-      ),
-    ],
-  ),
-)
-```
-
-**C. About Section**
-- Company description
-- Years in business
-- Team size
-- Service areas
-
-**D. Specializations**
-```dart
-Wrap(
-  spacing: space8,
-  runSpacing: space8,
-  children: company.specializations.map((spec) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: space12, vertical: space8),
-      decoration: BoxDecoration(
-        color: primaryLight.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(radiusFull),
-        border: Border.all(color: primaryLight),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check, color: primaryLight, size: 16),
-          SizedBox(width: space4),
-          Text(spec, style: bodySmall.copyWith(color: primaryDark)),
-        ],
-      ),
-    );
-  }).toList(),
-)
-```
-
-**E. Certifications**
-- Grid of certification badges
-
-**F. Recent Projects**
-```dart
-SizedBox(
-  height: 200,
-  child: ListView.separated(
-    scrollDirection: Axis.horizontal,
-    itemCount: recentProjects.length,
-    separatorBuilder: (context, index) => SizedBox(width: space12),
-    itemBuilder: (context, index) {
-      final project = recentProjects[index];
-      return Container(
-        width: 250,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radiusLarge),
-          boxShadow: [shadowMedium],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(radiusLarge),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(project.image, fit: BoxFit.cover),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: space16,
-                left: space16,
-                right: space16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      project.title,
-                      style: h4.copyWith(color: Colors.white),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: space4),
-                    Text(
-                      project.location,
-                      style: bodySmall.copyWith(color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+Stack(alignment: Alignment.center, children: [
+  Image.network(imageUrl),
+  // خط مسح متحرك
+  AnimatedBuilder(
+    animation: scanAnimation,
+    builder: (context, child) {
+      return Positioned(
+        top: scanAnimation.value * imageHeight,
+        left: 0, right: 0,
+        child: Container(
+          height: 4,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Colors.transparent, aiScanBlue, aiScanCyan, aiScanBlue, Colors.transparent,
+            ]),
+            boxShadow: [aiGlow],
           ),
         ),
       );
     },
   ),
-)
-```
-
-**G. Reviews & Ratings**
-```dart
-Column(
-  children: [
-    // Rating summary
-    Row(
-      children: [
-        Column(
-          children: [
-            Text('${company.rating}', style: h1.copyWith(color: primaryDark)),
-            Row(
-              children: List.generate(5, (index) {
-                return Icon(
-                  index < company.rating.floor() ? Icons.star : Icons.star_border,
-                  color: warning,
-                  size: 20,
-                );
-              }),
-            ),
-            SizedBox(height: space4),
-            Text('${company.reviews} reviews', style: caption),
-          ],
-        ),
-        SizedBox(width: space32),
-        Expanded(
-          child: Column(
-            children: [
-              RatingBar(stars: 5, percentage: 0.85),
-              RatingBar(stars: 4, percentage: 0.10),
-              RatingBar(stars: 3, percentage: 0.03),
-              RatingBar(stars: 2, percentage: 0.01),
-              RatingBar(stars: 1, percentage: 0.01),
-            ],
-          ),
-        ),
-      ],
-    ),
-    SizedBox(height: space24),
-    
-    // Individual reviews
-    ListView.separated(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: reviews.length,
-      separatorBuilder: (context, index) => Divider(height: space32),
-      itemBuilder: (context, index) {
-        final review = reviews[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(review.userAvatar),
-                ),
-                SizedBox(width: space12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(review.userName, style: h4),
-                      Row(
-                        children: [
-                          ...List.generate(5, (index) {
-                            return Icon(
-                              index < review.rating ? Icons.star : Icons.star_border,
-                              color: warning,
-                              size: 16,
-                            );
-                          }),
-                          SizedBox(width: space8),
-                          Text(review.date, style: caption),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: space12),
-            Text(review.comment, style: bodyMedium),
-            if (review.images.isNotEmpty) ...[
-              SizedBox(height: space12),
-              SizedBox(
-                height: 80,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: review.images.length,
-                  separatorBuilder: (context, index) => SizedBox(width: space8),
-                  itemBuilder: (context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(radiusSmall),
-                      child: Image.network(
-                        review.images[index],
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ],
-        );
-      },
-    ),
-  ],
-)
-```
-
-**H. Action Buttons (Bottom)**
-```dart
-Padding(
-  padding: EdgeInsets.all(space20),
-  child: Row(
-    children: [
-      Expanded(
-        flex: 2,
-        child: ElevatedButton.icon(
-          icon: Icon(Icons.request_quote),
-          label: Text('Request Quote'),
-          onPressed: () => navigateToRequestQuote(company),
-        ),
-      ),
-      SizedBox(width: space12),
-      Expanded(
-        child: OutlinedButton.icon(
-          icon: Icon(Icons.message),
-          label: Text('Contact'),
-          onPressed: () => navigateToChat(company),
-        ),
-      ),
-    ],
-  ),
-)
-```
-
-### 17. Request Quote Screen
-**Form:**
-```dart
-Form(
-  child: ListView(
-    padding: EdgeInsets.all(space20),
-    children: [
-      // Company info card (read-only display)
-      Card(
-        child: ListTile(
-          leading: CircleAvatar(backgroundImage: NetworkImage(company.logo)),
-          title: Text(company.name),
-          subtitle: Text('${company.rating} ⭐ • ${company.completedProjects} projects'),
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Select existing project or create new
-      Text('Select Project', style: h4),
-      SizedBox(height: space12),
-      DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          hintText: 'Choose a project or create new',
-        ),
-        items: [
-          DropdownMenuItem(value: 'new', child: Text('+ Create New Project')),
-          ...myProjects.map((project) {
-            return DropdownMenuItem(
-              value: project.id,
-              child: Text(project.title),
-            );
-          }),
-        ],
-        onChanged: (value) {},
-      ),
-      SizedBox(height: space24),
-      
-      // Project details (if existing project selected)
-      if (selectedProject != null) ...[
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(space16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Project Details', style: h4),
-                SizedBox(height: space12),
-                InfoRow(label: 'Location', value: selectedProject.location),
-                InfoRow(label: 'Building Type', value: selectedProject.buildingType),
-                InfoRow(label: 'Risk Level', value: selectedProject.riskLevel),
-                SizedBox(height: space12),
-                TextButton(
-                  child: Text('View Full Report'),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: space24),
-      ],
-      
-      // Additional details
-      Text('Additional Details', style: h4),
-      SizedBox(height: space12),
-      TextFormField(
-        maxLines: 4,
-        decoration: InputDecoration(
-          hintText: 'Any additional information for the company...',
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Preferred contact method
-      Text('Preferred Contact Method', style: h4),
-      SizedBox(height: space12),
-      Wrap(
-        spacing: space8,
-        children: [
-          ChoiceChip(
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.email, size: 16),
-                SizedBox(width: space4),
-                Text('Email'),
-              ],
-            ),
-            selected: contactMethod == 'email',
-            onSelected: (selected) => setContactMethod('email'),
-          ),
-          ChoiceChip(
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.phone, size: 16),
-                SizedBox(width: space4),
-                Text('Phone'),
-              ],
-            ),
-            selected: contactMethod == 'phone',
-            onSelected: (selected) => setContactMethod('phone'),
-          ),
-          ChoiceChip(
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.message, size: 16),
-                SizedBox(width: space4),
-                Text('WhatsApp'),
-              ],
-            ),
-            selected: contactMethod == 'whatsapp',
-            onSelected: (selected) => setContactMethod('whatsapp'),
-          ),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Urgency level
-      Text('Urgency Level', style: h4),
-      SizedBox(height: space12),
-      Row(
-        children: [
-          Expanded(
-            child: RadioListTile(
-              title: Text('Normal'),
-              value: 'normal',
-              groupValue: urgency,
-              onChanged: (value) => setUrgency(value),
-            ),
-          ),
-          Expanded(
-            child: RadioListTile(
-              title: Text('Urgent'),
-              value: 'urgent',
-              groupValue: urgency,
-              onChanged: (value) => setUrgency(value),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: space32),
-      
-      // Send button
-      ElevatedButton(
-        onPressed: sendQuoteRequest,
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: space16),
-        ),
-        child: Text('Send Request'),
-      ),
-    ],
-  ),
-)
-```
-
-### 18. My Listings Screen (Building Owner)
-**Components:**
-
-**A. Header with Create Button**
-```dart
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text('My Listings', style: h3),
-    ElevatedButton.icon(
-      icon: Icon(Icons.add),
-      label: Text('New Listing'),
-      onPressed: () => navigateToCreateListing(),
-    ),
-  ],
-)
-```
-
-**B. Tabs**
-- Active (with badge showing count)
-- Completed
-- Archived
-
-**C. Listing Cards**
-```dart
-ListView.separated(
-  itemCount: listings.length,
-  separatorBuilder: (context, index) => SizedBox(height: space12),
-  itemBuilder: (context, index) {
-    final listing = listings[index];
-    return Card(
-      child: InkWell(
-        onTap: () => navigateToListingDetails(listing),
-        child: Padding(
-          padding: EdgeInsets.all(space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(listing.title, style: h4),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: space8, vertical: space4),
-                    decoration: BoxDecoration(
-                      color: success.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(radiusFull),
-                    ),
-                    child: Text(
-                      'Active',
-                      style: caption.copyWith(color: success),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: space8),
-              Text(
-                listing.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: bodyMedium.copyWith(color: textSecondary),
-              ),
-              SizedBox(height: space12),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text(listing.location, style: bodySmall),
-                  SizedBox(width: space16),
-                  Icon(Icons.calendar_today, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text('Posted ${listing.postedDate}', style: bodySmall),
-                ],
-              ),
-              SizedBox(height: space12),
-              Divider(),
-              SizedBox(height: space12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.visibility, size: 20, color: info),
-                      SizedBox(width: space4),
-                      Text('${listing.views} views', style: bodySmall),
-                    ],
-                  ),
-                  Container(width: 1, height: 20, color: borderLight),
-                  Row(
-                    children: [
-                      Icon(Icons.local_offer, size: 20, color: warning),
-                      SizedBox(width: space4),
-                      Text('${listing.offers} offers', style: bodySmall),
-                    ],
-                  ),
-                  Container(width: 1, height: 20, color: borderLight),
-                  Row(
-                    children: [
-                      Icon(Icons.attach_money, size: 20, color: success),
-                      SizedBox(width: space4),
-                      Text('${listing.budget} EGP', style: bodySmall),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+  // إطارات التشققات المكتشفة
+  ...detectedCracks.map((crack) {
+    return Positioned(
+      left: crack.x, top: crack.y,
+      child: Container(
+        width: crack.width, height: crack.height,
+        decoration: BoxDecoration(border: Border.all(color: riskHigh, width: 2), borderRadius: BorderRadius.circular(radiusSmall)),
       ),
     );
-  },
-)
+  }),
+])
 ```
 
-**D. Empty State (if no listings)**
+**قسم ب — شريط التقدم:**
 ```dart
-Center(
-  child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(Icons.folder_open, size: 80, color: textSecondary),
-      SizedBox(height: space16),
-      Text('No listings yet', style: h4),
-      SizedBox(height: space8),
-      Text(
-        'Create your first listing to get started',
-        style: bodyMedium.copyWith(color: textSecondary),
-      ),
-      SizedBox(height: space24),
-      ElevatedButton.icon(
-        icon: Icon(Icons.add),
-        label: Text('Create Listing'),
-        onPressed: () => navigateToCreateListing(),
-      ),
-    ],
-  ),
-)
+Column(children: [
+  LinearProgressIndicator(value: progress, color: primaryLight, minHeight: 8),
+  SizedBox(height: space16),
+  Text('${(progress * 100).toInt()}%', style: h3),
+])
 ```
 
-### 19. Received Offers Screen (Building Owner)
-**Components:**
+**قسم ج — رسائل الحالة المتحركة:**
+- "جاري تحليل الصورة..."
+- "اكتشاف التشققات..."
+- "حساب مستوى الخطورة..."
+- "إنشاء التقرير..."
 
-**A. Filter Tabs**
-- All Offers
-- New (unread)
-- Under Review
-- Accepted
-- Declined
+---
 
-**B. Offer Cards**
-```dart
-ListView.separated(
-  itemCount: offers.length,
-  separatorBuilder: (context, index) => SizedBox(height: space12),
-  itemBuilder: (context, index) {
-    final offer = offers[index];
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(space16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Company info
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(offer.company.logo),
-                ),
-                SizedBox(width: space12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(offer.company.name, style: h4),
-                          if (offer.company.verified)
-                            Padding(
-                              padding: EdgeInsets.only(left: space4),
-                              child: Icon(Icons.verified, color: success, size: 16),
-                            ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: warning, size: 14),
-                          SizedBox(width: space4),
-                          Text(
-                            '${offer.company.rating} (${offer.company.reviews} reviews)',
-                            style: caption,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                if (offer.isNew)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: space8, vertical: space4),
-                    decoration: BoxDecoration(
-                      color: error.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(radiusFull),
-                    ),
-                    child: Text('New', style: caption.copyWith(color: error)),
-                  ),
-              ],
-            ),
-            SizedBox(height: space16),
-            
-            // Project reference
-            Text(
-              'For: ${offer.projectTitle}',
-              style: bodyMedium.copyWith(color: textSecondary),
-            ),
-            SizedBox(height: space12),
-            
-            // Offer details
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Proposal', style: caption),
-                      SizedBox(height: space4),
-                      Text('${offer.price} EGP', style: h4.copyWith(color: success)),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Timeline', style: caption),
-                      SizedBox(height: space4),
-                      Text('${offer.timeline} weeks', style: h4),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: space12),
-            
-            // Services included
-            Text('Includes:', style: caption),
-            SizedBox(height: space4),
-            Wrap(
-              spacing: space4,
-              runSpacing: space4,
-              children: offer.services.map((service) {
-                return Chip(
-                  label: Text(service, style: caption),
-                  padding: EdgeInsets.zero,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                );
-              }).toList(),
-            ),
-            SizedBox(height: space16),
-            
-            // Message preview
-            if (offer.message.isNotEmpty) ...[
-              Container(
-                padding: EdgeInsets.all(space12),
-                decoration: BoxDecoration(
-                  color: backgroundLight,
-                  borderRadius: BorderRadius.circular(radiusSmall),
-                ),
-                child: Text(
-                  offer.message,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: bodySmall,
-                ),
-              ),
-              SizedBox(height: space12),
-            ],
-            
-            // Action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => showOfferDetails(offer),
-                    child: Text('View Details'),
-                  ),
-                ),
-                SizedBox(width: space8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => acceptOffer(offer),
-                    child: Text('Accept'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  },
-)
-```
+### الشاشة 8: شاشة النتائج (Results Screen)
+**المسار:** `screens/ResultsScreen`
 
-### 20. Project Details Screen (Building Owner)
-**Sections:**
-
-**A. Status Header**
+**قسم أ — بطاقة الصحة الكلية:**
 ```dart
 Container(
-  padding: EdgeInsets.all(space20),
+  padding: EdgeInsets.all(space24),
   decoration: BoxDecoration(
     gradient: LinearGradient(colors: [primaryDark, primaryLight]),
+    borderRadius: BorderRadius.circular(radiusXLarge),
+    boxShadow: [shadowLarge],
   ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Project Details',
-            style: h3.copyWith(color: Colors.white),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: space12, vertical: space6),
-            decoration: BoxDecoration(
-              color: success.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(radiusFull),
-              border: Border.all(color: success),
-            ),
-            child: Text(
-              'Active',
-              style: bodySmall.copyWith(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: space16),
-      Text(
-        project.title,
-        style: h2.copyWith(color: Colors.white),
-      ),
-    ],
-  ),
+  child: Column(children: [
+    Text('الصحة العامة', style: h3.copyWith(color: Colors.white)),
+    SizedBox(height: space24),
+    // دائرة نقاط الصحة البيضاء
+    Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+      Column(children: [
+        Text('12', style: h2.copyWith(color: Colors.white)),
+        Text('تشقق مكتشف', style: caption.copyWith(color: Colors.white70)),
+      ]),
+      Container(width: 1, height: 40, color: Colors.white30),
+      Column(children: [
+        Text('15%', style: h2.copyWith(color: Colors.white)),
+        Text('نسبة التشقق', style: caption.copyWith(color: Colors.white70)),
+      ]),
+    ]),
+  ]),
 )
 ```
 
-**B. Quick Stats**
+**قسم ب — شارة مستوى الخطورة** (كبيرة في المنتصف)
+
+**قسم ج — النتائج التفصيلية (تبويبات):**
+- الكل | تشققات رئيسية | تشققات ثانوية | تلف سطحي
+- لكل نتيجة: صورة مصغرة، وصف، مؤشر شدة، إحداثيات الموقع
+
+**قسم د — قسم التوصيات:**
+- بطاقة لكل توصية مع أيقونة ولون حسب الأولوية
+
+**قسم هـ — أزرار الإجراءات:**
+- "عرض التقرير الكامل" (رئيسي)
+- "نشر في السوق الهندسي" (ثانوي + أيقونة)
+- "حفظ التقرير" (ثانوي)
+
+---
+
+### الشاشة 9: شاشة التقرير التفصيلي (Report Screen)
+**المسار:** `screens/ReportScreen`
+
+**قسم أ — بطاقة معلومات المبنى:**
+- الموقع مع أيقونة خريطة
+- نوع المبنى
+- تاريخ الفحص
+- اسم المفتش
+
+**قسم ب — ملخص تحليل الذكاء الاصطناعي:**
+- نقاط الصحة
+- إجمالي التشققات
+- نسبة التشقق
+- تقييم السلامة الهيكلية
+
+**قسم ج — رسم بياني لتوزيع التشققات:**
+```dart
+// رسم دائري (PieChart) يُظهر:
+// - تشققات أفقية
+// - تشققات رأسية
+// - تشققات قطرية
+```
+
+**قسم د — رسم بياني لتوزيع الشدة:**
+```dart
+// BarChart يُظهر:
+// - حرج | مرتفع | متوسط | منخفض
+```
+
+**قسم هـ — جدول تفاصيل التشققات:**
+```dart
+DataTable(
+  columns: [
+    DataColumn(label: Text('المعرف')),
+    DataColumn(label: Text('النوع')),
+    DataColumn(label: Text('الشدة')),
+    DataColumn(label: Text('الموقع')),
+  ],
+  rows: cracks.map((crack) => DataRow(cells: [
+    DataCell(Text(crack.id)),
+    DataCell(Text(crack.type)),
+    DataCell(RiskBadge(level: crack.severity)),
+    DataCell(Text(crack.location)),
+  ])).toList(),
+)
+```
+
+**قسم و — معرض الصور:**
+- الصورة الأصلية
+- الصورة مع تعليقات التشققات
+- صور مقربة للتشققات الرئيسية
+
+**قسم ز — توصيات الخبراء التفصيلية** مع مستويات الأولوية
+
+**قسم ح — أزرار الأسفل:**
+- تحميل PDF
+- مشاركة التقرير
+- طباعة
+
+---
+
+### الشاشة 10: شاشة السجل (History Screen)
+**المسار:** `screens/HistoryScreen`
+
+**قسم أ — الفلاتر والتبويبات:**
+- تبويبات: كل الفحوص | هذا الشهر | آخر 3 أشهر | هذا العام
+- قائمة منسدلة للترتيب: التاريخ | نقاط الصحة | مستوى الخطورة
+
+**قسم ب — بطاقات الإحصائيات:**
+```dart
+Row(children: [
+  StatCard(title: 'إجمالي الفحوص', value: '24', icon: Icons.scanner),
+  StatCard(title: 'متوسط الصحة', value: '78%', icon: Icons.health_and_safety),
+])
+```
+
+**قسم ج — قائمة سجل الفحوص:**
+لكل عنصر:
+- صورة مصغرة للمبنى
+- اسم المبنى
+- تاريخ الفحص
+- شريط تقدم لنقاط الصحة
+- شارة مستوى الخطورة
+- الضغط للعرض التفصيلي
+
+---
+
+### الشاشة 11: شاشة الملف الشخصي (Profile Screen)
+**المسار:** `screens/ProfileScreen`
+
+**قسم أ — الرأس:**
 ```dart
 Container(
-  padding: EdgeInsets.all(space16),
-  child: Row(
-    children: [
-      Expanded(
-        child: StatCard(
-          icon: Icons.calendar_today,
-          value: project.postedDate,
-          label: 'Posted',
-          iconColor: info,
-        ),
-      ),
-      Expanded(
-        child: StatCard(
-          icon: Icons.local_offer,
-          value: '${project.offers}',
-          label: 'Offers',
-          iconColor: warning,
-        ),
-      ),
-      Expanded(
-        child: StatCard(
-          icon: Icons.visibility,
-          value: '${project.views}',
-          label: 'Views',
-          iconColor: success,
-        ),
-      ),
+  padding: EdgeInsets.all(space24),
+  decoration: BoxDecoration(gradient: LinearGradient(colors: [primaryDark, primaryLight])),
+  child: Column(children: [
+    CircleAvatar(radius: 50, backgroundColor: Colors.white, child: Icon(Icons.person, size: 50, color: primaryDark)),
+    SizedBox(height: space16),
+    Text('وليد أبوزيد', style: h3.copyWith(color: Colors.white)),
+    Text('walid@example.com', style: bodyMedium.copyWith(color: Colors.white70)),
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Icon(Icons.verified, color: success, size: 20),
+      SizedBox(width: space4),
+      Text('مستخدم موثق', style: bodySmall.copyWith(color: Colors.white)),
+    ]),
+  ]),
+)
+```
+
+**قسم ب — بطاقات الإحصائيات:**
+- إجمالي الفحوص | المباني تحت المراقبة | التقارير المنشأة | عضو منذ
+
+**قسم ج — قائمة الإعدادات:**
+- تعديل الملف الشخصي
+- تغيير كلمة المرور
+- إعدادات الإشعارات
+- اللغة والمنطقة
+- الخصوصية والأمان
+- المساعدة والدعم
+- عن CrackDetectX
+- تسجيل الخروج (باللون الأحمر)
+
+---
+
+### الشاشة 12: شاشة الإعدادات (Settings Screen)
+**المسار:** `screens/SettingsScreen`
+
+**قسم أ — إعدادات الحساب:**
+- تعديل الملف الشخصي
+- تغيير كلمة المرور
+- حذف الحساب
+
+**قسم ب — تفضيلات التطبيق:**
+```dart
+// اختيار اللغة
+ListTile(
+  title: Text('اللغة'),
+  trailing: DropdownButton<String>(
+    value: currentLanguage,
+    items: [
+      DropdownMenuItem(value: 'ar', child: Text('العربية')),
+      DropdownMenuItem(value: 'en', child: Text('English')),
     ],
+    onChanged: (value) => changeLanguage(value),
   ),
+)
+
+// تبديل الوضع الليلي
+SwitchListTile(
+  title: Text('الوضع الليلي'),
+  subtitle: Text('التبديل بين السمة الفاتحة والداكنة'),
+  value: isDarkMode,
+  onChanged: toggleDarkMode,
+  activeColor: primaryLight,
 )
 ```
 
-**C. Project Information**
+**قسم ج — إعدادات الفحص:**
+- الحفظ التلقائي
+- وضع الجودة العالية
+- تفضيلات الإشعارات
+
+**قسم د — الخصوصية والأمان:**
+- موقع تخزين البيانات
+- مسح ذاكرة التخزين المؤقت
+- سياسة الخصوصية
+- الشروط والأحكام
+
+**قسم هـ — عن التطبيق:**
+- إصدار التطبيق
+- التواصل مع الدعم
+- تقييم التطبيق
+- تابعنا على وسائل التواصل الاجتماعي
+
+---
+
+### الشاشة 13: شاشة الإشعارات (Notifications Screen)
+**المسار:** `screens/NotificationsScreen`
+
+**المكوّنات:**
+- قائمة الإشعارات مُصنّفة حسب التاريخ
+- أيقونات متميزة لكل نوع (تشقق، سوق، نظام)
+- علامة "مقروء / غير مقروء"
+- إجراءات السحب للحذف أو التحديد كمقروء
+- زر "تحديد الكل كمقروء"
+
+---
+
+## 🏪 شاشات السوق الهندسي (7 شاشات)
+
+---
+
+### الشاشة 14: الصفحة الرئيسية للسوق (Marketplace Home)
+**المسار:** `screens/marketplace/MarketplaceHome`
+
+**قسم أ — الرأس:**
+- عنوان "السوق الهندسي"
+- شريط بحث
+- أيقونة فلتر
+
+**قسم ب — تبديل دور المستخدم:**
 ```dart
-Card(
-  child: Padding(
-    padding: EdgeInsets.all(space16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Project Information', style: h4),
-        SizedBox(height: space16),
-        InfoRow(
-          icon: Icons.location_on,
-          label: 'Location',
-          value: project.location,
-        ),
-        InfoRow(
-          icon: Icons.business,
-          label: 'Building Type',
-          value: project.buildingType,
-        ),
-        InfoRow(
-          icon: Icons.layers,
-          label: 'Floors',
-          value: '${project.floors}',
-        ),
-        InfoRow(
-          icon: Icons.square_foot,
-          label: 'Area',
-          value: '${project.area} sqm',
-        ),
-        InfoRow(
-          icon: Icons.access_time,
-          label: 'Timeline',
-          value: project.timeline,
-        ),
-        InfoRow(
-          icon: Icons.attach_money,
-          label: 'Budget',
-          value: '${project.budget} EGP',
-        ),
-      ],
-    ),
-  ),
+Container(
+  padding: EdgeInsets.all(space4),
+  decoration: BoxDecoration(color: backgroundLight, borderRadius: BorderRadius.circular(radiusMedium)),
+  child: Row(children: [
+    Expanded(child: RoleTab(title: 'مالك مبنى',  icon: Icons.home,     isSelected: role == 'owner')),
+    Expanded(child: RoleTab(title: 'شركة هندسية', icon: Icons.business, isSelected: role == 'company')),
+  ]),
 )
 ```
 
-**D. Description**
-```dart
-Card(
-  child: Padding(
-    padding: EdgeInsets.all(space16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Description', style: h4),
-        SizedBox(height: space12),
-        Text(project.description, style: bodyMedium),
-      ],
-    ),
-  ),
-)
-```
+**لمالك المبنى:**
+- زر "إنشاء طلب جديد"
+- طلباتي النشطة (مع شارة عدد)
+- العروض الواردة (مع شارة عدد)
+- تصفح الشركات
 
-**E. Required Services**
-```dart
-Card(
-  child: Padding(
-    padding: EdgeInsets.all(space16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Required Services', style: h4),
-        SizedBox(height: space12),
-        Wrap(
-          spacing: space8,
-          runSpacing: space8,
-          children: project.services.map((service) {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: space12, vertical: space8),
-              decoration: BoxDecoration(
-                color: primaryLight.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(radiusFull),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.check_circle, color: primaryLight, size: 16),
-                  SizedBox(width: space4),
-                  Text(service, style: bodySmall),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    ),
-  ),
-)
-```
+**للشركة الهندسية:**
+- إحصائيات لوحة تحكم الشركة
+- تصفح الطلبات المتاحة
+- عروضي المقدمة
+- المشاريع النشطة
 
-**F. Attached Report**
+---
+
+### الشاشة 15: إنشاء طلب ترميم (Post Project / Create Request)
+**المسار:** `screens/marketplace/PostProject`
+
+**حقول النموذج:**
 ```dart
-Card(
-  child: ListTile(
-    leading: Container(
-      padding: EdgeInsets.all(space12),
-      decoration: BoxDecoration(
-        color: error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(radiusSmall),
-      ),
-      child: Icon(Icons.description, color: error),
-    ),
-    title: Text('AI Scan Report'),
-    subtitle: Text('Health Score: ${project.report.healthScore}% • Risk: ${project.report.riskLevel}'),
+Form(child: ListView(padding: EdgeInsets.all(space20), children: [
+  TextFormField(decoration: InputDecoration(labelText: 'عنوان الطلب')),
+  TextFormField(maxLines: 4, decoration: InputDecoration(labelText: 'الوصف')),
+  
+  Text('بيانات المبنى', style: h4),
+  Row(children: [
+    TextFormField(decoration: InputDecoration(labelText: 'عمر المبنى', suffixText: 'سنة')),
+    TextFormField(decoration: InputDecoration(labelText: 'عدد الأدوار')),
+  ]),
+  Row(children: [
+    TextFormField(decoration: InputDecoration(labelText: 'المساحة', suffixText: 'م²')),
+    TextFormField(decoration: InputDecoration(labelText: 'الميزانية', prefixText: 'ج.م ')),
+  ]),
+  
+  Text('الجدول الزمني', style: h4),
+  Wrap(spacing: space8, children: [
+    ChoiceChip(label: Text('عاجل (7 أيام)'), selected: timeline == 'urgent'),
+    ChoiceChip(label: Text('شهر واحد'),       selected: timeline == '1month'),
+    ChoiceChip(label: Text('3 أشهر'),          selected: timeline == '3months'),
+    ChoiceChip(label: Text('مرن'),             selected: timeline == 'flexible'),
+  ]),
+  
+  // إرفاق تقرير الفحص من السجل
+  Card(child: ListTile(
+    leading: Icon(Icons.attach_file, color: primaryLight),
+    title: Text('إرفاق تقرير الفحص'),
     trailing: Icon(Icons.chevron_right),
-    onTap: () => viewReport(project.report),
-  ),
-)
-```
-
-**G. Received Offers List**
-```dart
-Card(
-  child: Padding(
-    padding: EdgeInsets.all(space16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Received Offers (${project.offers})', style: h4),
-            TextButton(
-              child: Text('View All'),
-              onPressed: () => navigateToOffers(project),
-            ),
-          ],
-        ),
-        SizedBox(height: space12),
-        // Show top 3 offers
-        ListView.separated(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: min(3, offers.length),
-          separatorBuilder: (context, index) => Divider(height: space24),
-          itemBuilder: (context, index) {
-            // Simplified offer card
-          },
-        ),
-      ],
-    ),
-  ),
-)
-```
-
-**H. Action Buttons**
-```dart
-Padding(
-  padding: EdgeInsets.all(space20),
-  child: Column(
-    children: [
-      ElevatedButton.icon(
-        icon: Icon(Icons.edit),
-        label: Text('Edit Listing'),
-        onPressed: () => editListing(project),
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(double.infinity, 50),
-        ),
-      ),
-      SizedBox(height: space12),
-      OutlinedButton.icon(
-        icon: Icon(Icons.delete, color: error),
-        label: Text('Delete Listing', style: TextStyle(color: error)),
-        onPressed: () => showDeleteConfirmation(project),
-        style: OutlinedButton.styleFrom(
-          minimumSize: Size(double.infinity, 50),
-          side: BorderSide(color: error),
-        ),
-      ),
-    ],
-  ),
-)
-```
-
-### 21. Company Dashboard Screen (For Engineering Companies)
-**Sections:**
-
-**A. Company Stats Overview**
-```dart
-GridView.count(
-  crossAxisCount: 2,
-  shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-  padding: EdgeInsets.all(space16),
-  mainAxisSpacing: space12,
-  crossAxisSpacing: space12,
-  children: [
-    DashboardStatCard(
-      title: 'Active Bids',
-      value: '12',
-      icon: Icons.local_offer,
-      color: warning,
-      trend: '+3 this week',
-    ),
-    DashboardStatCard(
-      title: 'Won Projects',
-      value: '45',
-      icon: Icons.check_circle,
-      color: success,
-      trend: '+5 this month',
-    ),
-    DashboardStatCard(
-      title: 'In Progress',
-      value: '8',
-      icon: Icons.engineering,
-      color: info,
-    ),
-    DashboardStatCard(
-      title: 'Revenue',
-      value: '2.5M',
-      subtitle: 'EGP',
-      icon: Icons.monetization_on,
-      color: primaryDark,
-      trend: '+15% this month',
-    ),
-  ],
-)
-```
-
-**B. Quick Actions**
-- Browse New Requests
-- My Active Bids
-- Projects in Progress
-- Company Profile
-
-**C. Recent Opportunities**
-- List of new project listings
-- Filter by location, budget, timeline
-
-**D. Performance Chart**
-```dart
-// Use fl_chart for line chart showing monthly performance
-LineChart(
-  LineChartData(
-    // Show revenue, won bids, completed projects over time
-  ),
-)
-```
-
-### 22. Browse Repair Requests Screen (For Companies)
-**Components:**
-
-**A. Filters & Search**
-- Similar to Browse Companies but for projects
-- Filter by: Budget range, Location, Timeline, Risk Level
-
-**B. Request Cards**
-```dart
-ListView.separated(
-  itemCount: requests.length,
-  separatorBuilder: (context, index) => SizedBox(height: space12),
-  itemBuilder: (context, index) {
-    final request = requests[index];
-    return Card(
-      child: InkWell(
-        onTap: () => viewRequestDetails(request),
-        child: Padding(
-          padding: EdgeInsets.all(space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(request.title, style: h4),
-                  ),
-                  RiskBadge(level: request.riskLevel),
-                ],
-              ),
-              SizedBox(height: space8),
-              Text(
-                request.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: bodyMedium.copyWith(color: textSecondary),
-              ),
-              SizedBox(height: space12),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text(request.location, style: bodySmall),
-                  SizedBox(width: space16),
-                  Icon(Icons.calendar_today, size: 16, color: textSecondary),
-                  SizedBox(width: space4),
-                  Text('Posted ${request.postedDate}', style: bodySmall),
-                ],
-              ),
-              SizedBox(height: space12),
-              Wrap(
-                spacing: space8,
-                children: request.services.map((service) {
-                  return Chip(
-                    label: Text(service, style: caption),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  );
-                }).toList(),
-              ),
-              SizedBox(height: space12),
-              Divider(),
-              SizedBox(height: space12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.attach_money, size: 20, color: success),
-                      SizedBox(width: space4),
-                      Text(
-                        'Budget: ${request.budget} EGP',
-                        style: bodyMedium.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 20, color: warning),
-                      SizedBox(width: space4),
-                      Text(request.timeline, style: bodySmall),
-                    ],
-                  ),
-                ],
-              ),
-              if (request.hasExistingBid) ...[
-                SizedBox(height: space12),
-                Container(
-                  padding: EdgeInsets.all(space8),
-                  decoration: BoxDecoration(
-                    color: info.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(radiusSmall),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info, color: info, size: 16),
-                      SizedBox(width: space8),
-                      Text(
-                        'You already submitted a bid',
-                        style: bodySmall.copyWith(color: info),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  },
-)
-```
-
-### 23. Submit Offer Screen (For Companies)
-**Form:**
-```dart
-Form(
-  child: ListView(
-    padding: EdgeInsets.all(space20),
-    children: [
-      // Project info card (read-only)
-      Card(
-        child: Padding(
-          padding: EdgeInsets.all(space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Project', style: h4),
-              SizedBox(height: space8),
-              Text(project.title, style: h3),
-              SizedBox(height: space8),
-              Text(project.description, style: bodyMedium.copyWith(color: textSecondary)),
-            ],
-          ),
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Pricing
-      Text('Your Proposal', style: h4),
-      SizedBox(height: space12),
-      TextFormField(
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: 'Bid Amount',
-          prefixText: 'EGP ',
-          hintText: 'Enter your bid amount',
-        ),
-      ),
-      SizedBox(height: space16),
-      
-      // Timeline
-      Text('Estimated Timeline', style: h4),
-      SizedBox(height: space12),
-      Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Duration',
-              ),
-            ),
-          ),
-          SizedBox(width: space12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: 'weeks',
-              decoration: InputDecoration(
-                labelText: 'Unit',
-              ),
-              items: [
-                DropdownMenuItem(value: 'days', child: Text('Days')),
-                DropdownMenuItem(value: 'weeks', child: Text('Weeks')),
-                DropdownMenuItem(value: 'months', child: Text('Months')),
-              ],
-              onChanged: (value) {},
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: space24),
-      
-      // Services included
-      Text('Services Included', style: h4),
-      SizedBox(height: space12),
-      CheckboxListTile(
-        title: Text('Structural Assessment'),
-        value: services.contains('assessment'),
-        onChanged: (value) => toggleService('assessment'),
-      ),
-      CheckboxListTile(
-        title: Text('Detailed Engineering Report'),
-        value: services.contains('report'),
-        onChanged: (value) => toggleService('report'),
-      ),
-      CheckboxListTile(
-        title: Text('Repair Work'),
-        value: services.contains('repair'),
-        onChanged: (value) => toggleService('repair'),
-      ),
-      CheckboxListTile(
-        title: Text('Warranty (1 year)'),
-        value: services.contains('warranty'),
-        onChanged: (value) => toggleService('warranty'),
-      ),
-      CheckboxListTile(
-        title: Text('Post-repair Monitoring'),
-        value: services.contains('monitoring'),
-        onChanged: (value) => toggleService('monitoring'),
-      ),
-      SizedBox(height: space24),
-      
-      // Proposal message
-      Text('Proposal Details', style: h4),
-      SizedBox(height: space12),
-      TextFormField(
-        maxLines: 6,
-        decoration: InputDecoration(
-          hintText: 'Describe your approach, experience with similar projects, and why you\'re the best choice...',
-          alignedLabelStyle: true,
-        ),
-      ),
-      SizedBox(height: space24),
-      
-      // Attachments
-      Text('Attachments (Optional)', style: h4),
-      SizedBox(height: space12),
-      DottedBorder(
-        borderType: BorderType.RRect,
-        radius: Radius.circular(radiusMedium),
-        dashPattern: [6, 3],
-        color: borderLight,
-        child: Container(
-          height: 120,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.upload_file, size: 40, color: textSecondary),
-              SizedBox(height: space8),
-              Text('Upload relevant documents', style: bodyMedium),
-              Text('(Certifications, previous work, etc.)', style: caption),
-            ],
-          ),
-        ),
-      ),
-      SizedBox(height: space32),
-      
-      // Terms checkbox
-      CheckboxListTile(
-        title: Text('I agree to the terms and conditions'),
-        value: acceptedTerms,
-        onChanged: (value) => setAcceptedTerms(value),
-        controlAffinity: ListTileControlAffinity.leading,
-      ),
-      SizedBox(height: space24),
-      
-      // Submit button
-      ElevatedButton(
-        onPressed: acceptedTerms ? submitOffer : null,
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: space16),
-        ),
-        child: Text('Submit Offer'),
-      ),
-    ],
-  ),
-)
-```
-
-### 24. Notifications Screen
-**Components:**
-
-**A. Tabs**
-- All
-- Unread
-- Scan Updates
-- Marketplace
-- System
-
-**B. Notification List**
-```dart
-ListView.separated(
-  itemCount: notifications.length,
-  separatorBuilder: (context, index) => Divider(height: 1),
-  itemBuilder: (context, index) {
-    final notification = notifications[index];
-    return Dismissible(
-      key: Key(notification.id),
-      background: Container(
-        color: error,
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: space20),
-        child: Icon(Icons.delete, color: Colors.white),
-      ),
-      direction: DismissDirection.endToStart,
-      onDismissed: (direction) => deleteNotification(notification),
-      child: Container(
-        color: notification.isRead ? Colors.white : primaryLight.withOpacity(0.05),
-        child: ListTile(
-          leading: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: getNotificationColor(notification.type).withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              getNotificationIcon(notification.type),
-              color: getNotificationColor(notification.type),
-            ),
-          ),
-          title: Text(
-            notification.title,
-            style: bodyMedium.copyWith(
-              fontWeight: notification.isRead ? FontWeight.normal : FontWeight.w600,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: space4),
-              Text(notification.message, maxLines: 2, overflow: TextOverflow.ellipsis),
-              SizedBox(height: space4),
-              Text(
-                notification.timeAgo,
-                style: caption.copyWith(color: textSecondary),
-              ),
-            ],
-          ),
-          isThreeLine: true,
-          onTap: () => handleNotificationTap(notification),
-        ),
-      ),
-    );
-  },
-)
+    onTap: showReportSelector,
+  )),
+  
+  Text('الخدمات المطلوبة', style: h4),
+  CheckboxListTile(title: Text('تقييم هيكلي'), value: services.contains('assessment')),
+  CheckboxListTile(title: Text('أعمال ترميم'),  value: services.contains('repair')),
+  CheckboxListTile(title: Text('استشارة'),      value: services.contains('consultation')),
+  CheckboxListTile(title: Text('مراقبة دورية'), value: services.contains('monitoring')),
+  
+  ElevatedButton(onPressed: publishListing, child: Text('نشر الطلب')),
+]))
 ```
 
 ---
 
-## 🎭 Animations & Interactions
+### الشاشة 16: تفاصيل الطلب (Project Details)
+**المسار:** `screens/marketplace/ProjectDetails`
 
-### AI Scan Animation
+**المكوّنات:**
+- معلومات المشروع (العنوان، الموقع، الميزانية، الجدول الزمني)
+- تقرير الفحص المرفق (ملخص مع رابط للتقرير الكامل)
+- قائمة العروض الواردة (لمالك المبنى)
+- حالة المشروع
+- أزرار: قبول عرض | إغلاق الطلب | تعديل الطلب
+
+---
+
+### الشاشة 17: مشاريعي (My Projects)
+**المسار:** `screens/marketplace/MyProjects`
+
+**تبويبات:**
+- نشط | منتهي | مسودة
+
+لكل مشروع:
+- عنوان المشروع
+- التاريخ والميزانية
+- عدد العروض الواردة
+- شريط تقدم حالة المشروع
+- الضغط لعرض التفاصيل
+
+---
+
+### الشاشة 18: تصفح الشركات / تفاصيل الشركة (Company Details)
+**المسار:** `screens/marketplace/CompanyDetails`
+
+**قسم أ — الرأس:**
 ```dart
-class AIScanAnimation extends StatefulWidget {
-  @override
-  _AIScanAnimationState createState() => _AIScanAnimationState();
-}
-
-class _AIScanAnimationState extends State<AIScanAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scanLineAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    )..repeat();
-    
-    _scanLineAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _scanLineAnimation,
-      builder: (context, child) {
-        return CustomPaint(
-          painter: ScanLinePainter(_scanLineAnimation.value),
-          child: child,
-        );
-      },
-    );
-  }
-}
+Container(
+  padding: EdgeInsets.all(space24),
+  decoration: BoxDecoration(gradient: LinearGradient(colors: [primaryDark, primaryLight])),
+  child: Column(children: [
+    CircleAvatar(radius: 50, backgroundImage: NetworkImage(company.logo)),
+    SizedBox(height: space16),
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(company.name, style: h3.copyWith(color: Colors.white)),
+      if (company.verified) Icon(Icons.verified, color: success, size: 24),
+    ]),
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Icon(Icons.star, color: warning, size: 20),
+      Text('${company.rating} (${company.reviews} تقييم)', style: bodyMedium.copyWith(color: Colors.white)),
+    ]),
+  ]),
+)
 ```
 
-### Loading Shimmer Effect
+**قسم ب — الإحصائيات السريعة:**
 ```dart
-// Use shimmer package
-Shimmer.fromColors(
-  baseColor: Colors.grey[300]!,
-  highlightColor: Colors.grey[100]!,
-  child: Container(
-    width: double.infinity,
-    height: 200,
+Row(children: [
+  StatCard(icon: Icons.check_circle, value: '${company.completedProjects}', label: 'مشروع مكتمل'),
+  StatCard(icon: Icons.access_time,  value: '${company.avgResponseTime}س',  label: 'وقت الاستجابة'),
+  StatCard(icon: Icons.thumb_up,     value: '${company.successRate}%',       label: 'معدل النجاح'),
+])
+```
+
+**قسم ج — معلومات الشركة:**
+- الوصف | سنوات الخبرة | حجم الفريق | مناطق الخدمة
+
+**قسم د — التخصصات:**
+```dart
+Wrap(spacing: space8, runSpacing: space8, children: company.specializations.map((spec) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: space12, vertical: space8),
     decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(radiusLarge),
+      color: primaryLight.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(radiusFull),
+      border: Border.all(color: primaryLight),
     ),
-  ),
+    child: Row(mainAxisSize: MainAxisSize.min, children: [
+      Icon(Icons.check, color: primaryLight, size: 16),
+      Text(spec, style: bodySmall.copyWith(color: primaryDark)),
+    ]),
+  );
+}).toList())
+```
+
+**قسم هـ — الشهادات والتراخيص** (شبكة شارات)
+
+**قسم و — المشاريع الأخيرة** (قائمة أفقية بصور غلاف)
+
+**قسم ز — التقييمات والمراجعات** (ملخص + تقييمات فردية)
+
+**قسم ح — أزرار الأسفل:**
+```dart
+Row(children: [
+  Expanded(flex: 2, child: ElevatedButton.icon(icon: Icon(Icons.request_quote), label: Text('طلب عرض سعر'))),
+  Expanded(child: OutlinedButton.icon(icon: Icon(Icons.message), label: Text('تواصل'))),
+])
+```
+
+---
+
+### الشاشة 19: طلب عرض سعر (Quote Request)
+**المسار:** `screens/marketplace/QuoteRequest`
+
+**المكوّنات:**
+- معلومات الشركة (مختصرة) في الأعلى
+- نموذج تفاصيل المشروع
+- وصف المشكلة
+- نطاق الميزانية المتوقعة
+- الجدول الزمني المطلوب
+- رفع صور إضافية
+- زر "إرسال طلب العرض"
+
+---
+
+### الشاشة 20: التواصل مع الشركة (Contact Company)
+**المسار:** `screens/marketplace/ContactCompany`
+
+**المكوّنات:**
+- واجهة محادثة مباشرة (Chat UI)
+- معلومات الشركة في الرأس
+- مربع إدخال الرسالة مع أيقونة إرفاق
+- زر إرسال
+- عرض الرسائل السابقة
+
+---
+
+## 🛡️ لوحة تحكم المسؤول (Admin Panel — 9 شاشات)
+
+> **الحالة:** مكتملة وتعمل فعلياً  
+> **الوصول:** من شاشة تسجيل الدخول عبر زر "دخول لوحة الإدارة (تجريبي)"  
+> **الاتجاه:** RTL بالكامل  
+> **لون الشريط الجانبي:** `0xFF0F1E4A`
+
+### هيكل الشريط الجانبي (AdminPanel)
+**المسار:** `components/admin/AdminPanel`
+
+```dart
+// الشريط الجانبي المنزلق
+Drawer(
+  backgroundColor: Color(0xFF0F1E4A),
+  child: Column(children: [
+    // الشعار
+    DrawerHeader(child: Row(children: [
+      Icon(Icons.scan_qr, color: Colors.white),
+      Column(children: [
+        Text('CrackDetectX', style: bodyMedium.copyWith(color: Colors.white)),
+        Text('لوحة الإدارة',  style: caption.copyWith(color: Colors.blue[300])),
+      ]),
+      // زر طي/توسيع الشريط
+    ])),
+    
+    // عناصر التنقل (9 عناصر)
+    // العنصر النشط يحصل على تدرج أزرق ومؤشر جانبي
+    // العناصر غير النشطة: نص أبيض شفاف
+    // الشارات: دائرة ملونة (برتقالية للشركات، حمراء للتذاكر)
+    
+    // معلومات المسؤول + زر تسجيل الخروج في الأسفل
+    UserTile(
+      avatar: ShieldIcon,
+      name: 'المسؤول الرئيسي',
+      email: 'admin@crackdetectx.com',
+    ),
+  ]),
 )
 ```
 
-### Page Transitions
+**عناصر التنقل الـ 9:**
+
+| المفتاح | الاسم | الأيقونة | الشارة |
+|---------|-------|---------|-------|
+| `dashboard`     | لوحة التحكم           | LayoutDashboard | — |
+| `companies`     | التحقق من الشركات      | Building2       | عدد الشركات المعلقة (برتقالي) |
+| `requests`      | إدارة الطلبات          | ClipboardList   | — |
+| `bids`          | عروض الأسعار          | Gavel           | — |
+| `contracts`     | العقود                | FileSignature   | — |
+| `tickets`       | تذاكر الدعم           | MessageSquare   | عدد التذاكر المفتوحة (أحمر) |
+| `users`         | المستخدمون            | Users           | — |
+| `notifications` | مركز الإشعارات        | Bell            | — |
+| `system`        | مراقبة النظام          | Activity        | — |
+
+---
+
+### شاشة الإدارة 1: لوحة التحكم (Admin Dashboard)
+**المسار:** `components/admin/AdminDashboard`
+
+**قسم أ — بطاقات KPI (شبكة 4 × 2):**
+```
+المستخدمون الكليون  | الشركات المعلقة | الطلبات النشطة | التذاكر المفتوحة
+إجمالي الفحوص      | نمو المستخدمين | العقود المعتمدة | الإيرادات
+```
+كل بطاقة تشمل:
+- أيقونة بلون خلفية متدرج
+- القيمة الرئيسية (رقم كبير)
+- الاسم
+- التغيير مقارنة بالشهر الماضي (نسبة مئوية مع سهم)
+
+**قسم ب — الرسوم البيانية (4 مخططات بـ Recharts):**
+
+1. **LineChart** — نمو المستخدمين الشهري (أكتوبر → أبريل)
+2. **AreaChart** — الفحوص الشهرية
+3. **PieChart** — توزيع مستويات الخطورة (منخفض/متوسط/مرتفع/حرج)
+4. **BarChart** — الطلبات الشهرية (مستلمة vs مكتملة)
+
+> **ملاحظة مهمة:** جميع مفاتيح recharts نصية فريدة مبنية على بيانات العناصر وليس أرقاماً، لتجنب خطأ duplicate keys.
+
+**قسم ج — النشاط الأخير:**
+قائمة بآخر 6 أحداث في النظام مع:
+- أيقونة النشاط مع خلفية ملونة
+- وصف النشاط
+- الوقت (منذ X دقيقة/ساعة)
+
+**قسم د — التنبيهات العاجلة:**
+بطاقات صغيرة لـ:
+- الشركات في انتظار الموافقة
+- التذاكر المفتوحة
+- الطلبات المُبلَّغ عنها
+
+---
+
+### شاشة الإدارة 2: التحقق من الشركات (Company Verification)
+**المسار:** `components/admin/CompanyVerification`
+
+**الميزات:**
+- قائمة الشركات مُصنّفة (معلقة / مقبولة / مرفوضة)
+- فلتر بالحالة وشريط بحث
+- بطاقة تفاصيل لكل شركة تشمل:
+  - اسم الشركة، المالك، البريد، الهاتف، المدينة
+  - الفئة ورقم الترخيص
+  - قائمة المستندات المرفوعة مع حالة التحقق لكل مستند (✓/✗)
+  - وصف الشركة
+- أزرار: **قبول** (أخضر) | **رفض** (أحمر) مع حقل سبب الرفض
+- عرض سبب الرفض للشركات المرفوضة
+
+**نماذج البيانات (adminData.ts):**
+```typescript
+interface AdminCompany {
+  id: number;
+  name: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  category: string;
+  city: string;
+  status: 'pending' | 'approved' | 'rejected';
+  documents: { name: string; type: string; verified: boolean }[];
+  rating: number;
+  totalProjects: number;
+  joinDate: string;
+  licenseNumber: string;
+  description: string;
+  rejectionReason?: string;
+}
+```
+
+**شركات في البيانات التجريبية (6 شركات):**
+- شركة الإنشاءات المتحدة (معلق)
+- مجموعة البناء الحديث (معلق)
+- شركة النيل للمقاولات (مقبول ✓)
+- مؤسسة الجودة للإنشاءات (مقبول ✓)
+- شركة الأمان الهندسي (مرفوض ✗)
+- تطوير البنية التحتية (معلق)
+
+---
+
+### شاشة الإدارة 3: إدارة الطلبات (Requests Management)
+**المسار:** `components/admin/RequestsManagement`
+
+**الميزات:**
+- جدول الطلبات مع أعمدة: المعرف | العنوان | صاحب الطلب | المدينة | الميزانية | الحالة | مستوى الخطورة | عدد العروض | التاريخ
+- فلتر بالحالة (مفتوح/قيد التنفيذ/مكتمل/تحت التحقيق/مغلق)
+- بحث بالاسم أو الموقع
+- عرض علامة التحقيق للطلبات المُبلَّغ عنها مع السبب
+- إجراءات: عرض التفاصيل | وضع علامة تحقيق | إغلاق الطلب
+
+```typescript
+interface AdminRequest {
+  id: number;
+  title: string;
+  ownerName: string;
+  ownerId: number;
+  location: string;
+  city: string;
+  budget: number;
+  status: 'open' | 'in_progress' | 'completed' | 'flagged' | 'closed';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  bidsCount: number;
+  createdAt: string;
+  scanId?: number;
+  flagReason?: string;
+}
+```
+
+---
+
+### شاشة الإدارة 4: مراقبة عروض الأسعار (Bids Monitoring)
+**المسار:** `components/admin/BidsMonitoring`
+
+**الميزات:**
+- جدول العروض المقدمة مع: الطلب المرتبط | اسم الشركة | مبلغ العرض | مدة التنفيذ | الحالة | تاريخ التقديم
+- فلتر بحالة العرض (معلق/مقبول/مرفوض/منسحب)
+- إحصائيات سريعة: إجمالي العروض | عروض اليوم | متوسط قيمة العرض | نسبة القبول
+
+```typescript
+interface AdminBid {
+  id: number;
+  requestId: number;
+  requestTitle: string;
+  companyName: string;
+  companyId: number;
+  amount: number;
+  deliveryDays: number;
+  status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+  submittedAt: string;
+  notes: string;
+}
+```
+
+---
+
+### شاشة الإدارة 5: مراقبة العقود (Contracts Monitoring)
+**المسار:** `components/admin/ContractsMonitoring`
+
+**الميزات:**
+- قائمة العقود النشطة والمكتملة والملغاة والمتنازع عليها
+- لكل عقد:
+  - شريط تقدم (Progress Bar) لنسبة الإنجاز
+  - قيمة العقد | تواريخ البداية والنهاية | المدينة
+  - اسم الشركة المنفذة | اسم صاحب المشروع
+- فلتر بالحالة
+
+```typescript
+interface AdminContract {
+  id: number;
+  requestId: number;
+  requestTitle: string;
+  companyName: string;
+  ownerName: string;
+  value: number;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'completed' | 'cancelled' | 'disputed';
+  progress: number;  // 0-100
+  city: string;
+}
+```
+
+---
+
+### شاشة الإدارة 6: تذاكر الدعم (Support Tickets)
+**المسار:** `components/admin/SupportTickets`
+
+**الميزات:**
+- قائمة التذاكر مع: المعرف | المستخدم | الموضوع | الفئة | الحالة | الأولوية | التاريخ
+- فلتر بالحالة (مفتوح/قيد المعالجة/محلول/مغلق) والأولوية (عاجل/عالي/متوسط/منخفض)
+- **واجهة محادثة داخل التذكرة:**
+  - عرض رسائل المستخدم والمسؤول مع التمييز بين طرفي المحادثة
+  - حقل رد المسؤول مع زر إرسال
+  - تغيير حالة التذكرة مباشرة
+- شارات الأولوية بألوان (عاجل: أحمر | عالي: برتقالي | متوسط: أصفر | منخفض: رمادي)
+
+```typescript
+interface AdminTicket {
+  id: number;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  userRole: 'engineer' | 'owner' | 'company' | 'admin';
+  subject: string;
+  category: string;
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  messages: TicketMessage[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface TicketMessage {
+  id: number;
+  sender: 'user' | 'admin';
+  senderName: string;
+  content: string;
+  timestamp: string;
+}
+```
+
+---
+
+### شاشة الإدارة 7: إدارة المستخدمين (Users Management)
+**المسار:** `components/admin/UsersManagement`
+
+**الميزات:**
+- جدول المستخدمين: الاسم | البريد | الهاتف | الدور | الحالة | المدينة | تاريخ التسجيل | عدد الفحوص | آخر نشاط
+- فلتر بالدور (مهندس/مالك/شركة/مسؤول) والحالة (نشط/محظور/انتظار التحقق)
+- بحث بالاسم أو البريد الإلكتروني
+- إجراءات: تفعيل | حظر | حذف | تعديل الدور
+- إحصائيات: إجمالي المستخدمين | المستخدمون الجدد هذا الشهر | المستخدمون النشطون | المحظورون
+
+```typescript
+interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'engineer' | 'owner' | 'company' | 'admin';
+  status: 'active' | 'blocked' | 'pending_verification';
+  joinDate: string;
+  scansCount: number;
+  city: string;
+  avatar?: string;
+  lastActive: string;
+}
+```
+
+**مستخدمون في البيانات التجريبية (12 مستخدم):**
+متنوعون بين أصحاب مباني ومهندسين وشركات من مدن مختلفة (القاهرة، الجيزة، الإسكندرية، المنصورة، أسيوط، بورسعيد، طنطا)
+
+---
+
+### شاشة الإدارة 8: مركز الإشعارات (Notifications Center)
+**المسار:** `components/admin/NotificationsCenter`
+
+**الميزات:**
+- قائمة الإشعارات المُرسَلة مسبقاً مع: العنوان | النص | الجمهور المستهدف | التاريخ | إحصائيات القراءة
+- **إنشاء إشعار جديد:**
+  - حقل عنوان الإشعار
+  - حقل نص الإشعار (متعدد الأسطر)
+  - اختيار الجمهور المستهدف: الكل | مهندسون | أصحاب مباني | شركات
+  - نوع الإشعار: معلومة | تحذير | نجاح | تنبيه
+  - زر "إرسال الإشعار"
+- معدل القراءة لكل إشعار (readCount / totalSent × 100%)
+
+```typescript
+interface AdminNotification {
+  id: number;
+  title: string;
+  body: string;
+  target: 'all' | 'engineers' | 'owners' | 'companies';
+  sentAt: string;
+  sentBy: string;
+  readCount: number;
+  totalSent: number;
+  type: 'info' | 'warning' | 'success' | 'alert';
+}
+```
+
+---
+
+### شاشة الإدارة 9: مراقبة النظام (System Monitoring)
+**المسار:** `components/admin/SystemMonitoring`
+
+**الميزات:**
+- مؤشرات أداء النظام في الوقت الفعلي:
+  - استخدام وحدة المعالجة (CPU): شريط تقدم + رقم %
+  - استخدام الذاكرة (RAM): شريط تقدم + رقم %
+  - مساحة التخزين: شريط تقدم + رقم %
+  - حالة قاعدة البيانات: متصل ✓
+  - حالة خدمة الذكاء الاصطناعي: تعمل ✓
+  - وقت التشغيل (Uptime)
+- جدول الفحوص الأخيرة بالنظام:
+  - المعرف | المستخدم | نوع المبنى | مستوى الخطورة | التشققات المكتشفة | الدقة % | المدينة | التاريخ
+
+```typescript
+interface ScanRecord {
+  id: number;
+  userId: number;
+  userName: string;
+  buildingType: string;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  cracksDetected: number;
+  confidence: number;  // نسبة دقة الذكاء الاصطناعي
+  city: string;
+  createdAt: string;
+}
+```
+
+> **ملاحظة مهمة:** جميع مفاتيح recharts في هذه الشاشة وفي AdminDashboard نصية فريدة (مبنية على بيانات العناصر مثل اسم الشهر أو النوع) وليس أرقاماً صحيحة، وذلك لتجنب خطأ `duplicate keys` الذي تم إصلاحه.
+
+---
+
+## 📊 البيانات والإحصائيات التجريبية
+
+### إحصائيات لوحة التحكم الرئيسية
+```typescript
+const dashboardStats = {
+  totalUsers: 5247,
+  newUsersThisMonth: 312,
+  pendingCompanies: 3,
+  totalCompanies: 150,
+  activeRequests: 24,
+  totalRequests: 867,
+  openTickets: 7,
+  totalTickets: 234,
+  totalScans: 11432,
+  scansThisMonth: 843,
+  approvedContracts: 342,
+  totalRevenue: 4250000,  // بالجنيه المصري
+};
+```
+
+### البيانات الشهرية للرسوم البيانية
+```typescript
+// الفحوص الشهرية (أكتوبر → أبريل)
+const monthlyScans = [
+  { month: 'أكتوبر', scans: 520 },
+  { month: 'نوفمبر', scans: 680 },
+  { month: 'ديسمبر', scans: 750 },
+  { month: 'يناير',  scans: 640 },
+  { month: 'فبراير', scans: 820 },
+  { month: 'مارس',   scans: 960 },
+  { month: 'أبريل',  scans: 843 },
+];
+
+// توزيع مستويات الخطورة
+const riskDistribution = [
+  { name: 'منخفض', value: 35, color: '#10B981' },
+  { name: 'متوسط', value: 28, color: '#F59E0B' },
+  { name: 'مرتفع', value: 24, color: '#EF4444' },
+  { name: 'حرج',   value: 13, color: '#7C3AED' },
+];
+
+// نمو المستخدمين الشهري
+const userGrowth = [
+  { month: 'أكتوبر', users: 3200 },
+  { month: 'نوفمبر', users: 3650 },
+  { month: 'ديسمبر', users: 3980 },
+  { month: 'يناير',  users: 4210 },
+  { month: 'فبراير', users: 4680 },
+  { month: 'مارس',   users: 4935 },
+  { month: 'أبريل',  users: 5247 },
+];
+```
+
+---
+
+## 🌐 دعم اللغتين وRTL/LTR
+
+### نظام الترجمة (i18n)
+التطبيق يدعم العربية والإنجليزية بالكامل عبر `AppContext`:
+
 ```dart
-// Use custom page route
-PageRouteBuilder(
-  pageBuilder: (context, animation, secondaryAnimation) => NextPage(),
-  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-    const begin = Offset(1.0, 0.0);
-    const end = Offset.zero;
-    const curve = Curves.easeInOut;
-    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    var offsetAnimation = animation.drive(tween);
-    return SlideTransition(position: offsetAnimation, child: child);
+// مثال على مفاتيح الترجمة المُنفَّذة
+const translations = {
+  'ar': {
+    'login': 'تسجيل الدخول',
+    'joinUsToStart': 'انضم إلينا وابدأ رحلة الفحص',
+    'email': 'البريد الإلكتروني',
+    'enterEmail': 'أدخل بريدك الإلكتروني',
+    'password': 'كلمة المرور',
+    'enterPassword': 'أدخل كلمة المرور',
+    'forgotPassword': 'نسيت كلمة المرور؟',
+    'dontHaveAccount': 'ليس لديك حساب؟',
+    'createNewAccount': 'إنشاء حساب جديد',
+    // ... المزيد
   },
-)
-```
-
-### Pull to Refresh
-```dart
-RefreshIndicator(
-  onRefresh: () async {
-    // Refresh logic
+  'en': {
+    'login': 'Sign In',
+    'joinUsToStart': 'Join us and start your inspection journey',
+    // ... المزيد
   },
-  color: primaryLight,
-  child: ListView(...),
-)
+};
+
+// الاتجاه
+bool isRTL = currentLanguage == 'ar';
+TextDirection direction = isRTL ? TextDirection.rtl : TextDirection.ltr;
 ```
 
-### Floating Action Button with Menu
+### تطبيق RTL في Flutter
 ```dart
-SpeedDial(
-  icon: Icons.add,
-  activeIcon: Icons.close,
-  backgroundColor: primaryLight,
-  children: [
-    SpeedDialChild(
-      child: Icon(Icons.scanner),
-      label: 'New Scan',
-      onTap: () {},
-    ),
-    SpeedDialChild(
-      child: Icon(Icons.post_add),
-      label: 'Create Listing',
-      onTap: () {},
-    ),
+// في MaterialApp
+MaterialApp(
+  locale: Locale(currentLanguage),
+  supportedLocales: [Locale('ar'), Locale('en')],
+  localizationsDelegates: [
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
   ],
 )
-```
 
----
-
-## 🌍 Localization & RTL Support
-
-### Language Files Structure
-```
-lib/
-  l10n/
-    app_ar.arb  // Arabic translations
-    app_en.arb  // English translations
-```
-
-### pubspec.yaml Configuration
-```yaml
-dependencies:
-  flutter_localizations:
-    sdk: flutter
-  intl: ^0.18.0
-
-flutter:
-  generate: true
-```
-
-### l10n.yaml
-```yaml
-arb-dir: lib/l10n
-template-arb-file: app_en.arb
-output-localization-file: app_localizations.dart
-```
-
-### RTL Layout Handling
-```dart
-// Automatically handles RTL
+// في كل شاشة
 Directionality(
-  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-  child: MaterialApp(...),
+  textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+  child: Scaffold(...),
 )
-
-// Use instead of left/right
-EdgeInsets.symmetric(horizontal: space16)  // Good
-EdgeInsets.only(left: space16)  // Bad - breaks in RTL
-
-// Use Start/End alignment
-MainAxisAlignment.start  // Good
-MainAxisAlignment.left   // Bad
 ```
 
 ---
 
-## 📊 Data Models
+## 🔐 نظام الأدوار (4 أدوار)
 
-### Scan Result Model
-```dart
-class ScanResult {
-  final String id;
-  final String buildingId;
-  final DateTime scanDate;
-  final String imageUrl;
-  final double healthScore;
-  final RiskLevel riskLevel;
-  final int totalCracks;
-  final double crackPercentage;
-  final List<Crack> cracks;
-  final String location;
-  final String buildingType;
-  final List<String> recommendations;
-  
-  ScanResult({
-    required this.id,
-    required this.buildingId,
-    required this.scanDate,
-    required this.imageUrl,
-    required this.healthScore,
-    required this.riskLevel,
-    required this.totalCracks,
-    required this.crackPercentage,
-    required this.cracks,
-    required this.location,
-    required this.buildingType,
-    required this.recommendations,
-  });
-  
-  factory ScanResult.fromJson(Map<String, dynamic> json) {
-    // JSON parsing
-  }
-  
-  Map<String, dynamic> toJson() {
-    // JSON serialization
-  }
-}
+| الدور | المسؤوليات | الشاشات المتاحة |
+|-------|-----------|----------------|
+| **مهندس ميداني** | إجراء الفحوص، إنشاء التقارير التفصيلية | جميع شاشات الفحص والتقارير |
+| **مالك مبنى** | رفع صور مبانيه، استقبال التقارير، نشر طلبات التعاقد | الرئيسية، الرفع، النتائج، السوق (دور مالك) |
+| **شركة إصلاح** | تقديم عروض الأسعار، إدارة المشاريع | السوق (دور شركة)، لوحة تحكم الشركة |
+| **مسؤول (Admin)** | إدارة كاملة للمنصة | لوحة الإدارة (9 شاشات) — عبر بوابة منفصلة |
 
-enum RiskLevel { low, moderate, high, critical }
+---
 
-class Crack {
-  final String id;
-  final CrackType type;
-  final Severity severity;
-  final double x;
-  final double y;
-  final double width;
-  final double height;
-  
-  Crack({
-    required this.id,
-    required this.type,
-    required this.severity,
-    required this.x,
-    required this.y,
-    required this.width,
-    required this.height,
-  });
-}
+## 🗺️ مخطط التنقل بين الشاشات
 
-enum CrackType { horizontal, vertical, diagonal }
-enum Severity { low, moderate, high, critical }
 ```
+SplashScreen (2-3 ثوان)
+    ↓
+OnboardingScreen (3 صفحات قابلة للسحب)
+    ↓
+LoginScreen
+    ├── [زر تسجيل الدخول]     → HomeScreen
+    ├── [إنشاء حساب]         → RegisterScreen → HomeScreen
+    └── [دخول الإدارة (تجريبي)] → AdminPanel (مستقل)
+                                    ├── AdminDashboard
+                                    ├── CompanyVerification
+                                    ├── RequestsManagement
+                                    ├── BidsMonitoring
+                                    ├── ContractsMonitoring
+                                    ├── SupportTickets
+                                    ├── UsersManagement
+                                    ├── NotificationsCenter
+                                    └── SystemMonitoring
 
-### Project Listing Model
-```dart
-class ProjectListing {
-  final String id;
-  final String userId;
-  final String title;
-  final String description;
-  final String location;
-  final String buildingType;
-  final int buildingAge;
-  final int floors;
-  final double area;
-  final double budget;
-  final String timeline;
-  final List<String> services;
-  final String? reportId;
-  final DateTime postedDate;
-  final ListingStatus status;
-  final int views;
-  final int offers;
-  
-  ProjectListing({
-    required this.id,
-    required this.userId,
-    required this.title,
-    required this.description,
-    required this.location,
-    required this.buildingType,
-    required this.buildingAge,
-    required this.floors,
-    required this.area,
-    required this.budget,
-    required this.timeline,
-    required this.services,
-    this.reportId,
-    required this.postedDate,
-    required this.status,
-    this.views = 0,
-    this.offers = 0,
-  });
-}
-
-enum ListingStatus { active, completed, archived }
-```
-
-### Company Model
-```dart
-class Company {
-  final String id;
-  final String name;
-  final String logo;
-  final String description;
-  final String location;
-  final double rating;
-  final int reviews;
-  final int completedProjects;
-  final int avgResponseTime; // in hours
-  final double successRate;
-  final bool verified;
-  final bool topRated;
-  final List<String> specializations;
-  final List<String> certifications;
-  final int yearsInBusiness;
-  final int teamSize;
-  final List<String> serviceAreas;
-  
-  Company({
-    required this.id,
-    required this.name,
-    required this.logo,
-    required this.description,
-    required this.location,
-    required this.rating,
-    required this.reviews,
-    required this.completedProjects,
-    required this.avgResponseTime,
-    required this.successRate,
-    required this.verified,
-    required this.topRated,
-    required this.specializations,
-    required this.certifications,
-    required this.yearsInBusiness,
-    required this.teamSize,
-    required this.serviceAreas,
-  });
-}
-```
-
-### Offer Model
-```dart
-class Offer {
-  final String id;
-  final String companyId;
-  final String projectId;
-  final double price;
-  final int timeline; // in weeks
-  final String timelineUnit;
-  final List<String> services;
-  final String message;
-  final DateTime submittedDate;
-  final OfferStatus status;
-  final bool isNew;
-  
-  Offer({
-    required this.id,
-    required this.companyId,
-    required this.projectId,
-    required this.price,
-    required this.timeline,
-    this.timelineUnit = 'weeks',
-    required this.services,
-    required this.message,
-    required this.submittedDate,
-    this.status = OfferStatus.pending,
-    this.isNew = true,
-  });
-}
-
-enum OfferStatus { pending, accepted, declined, withdrawn }
+HomeScreen (مع شريط التنقل السفلي)
+    ├── Tab: Home      → HomeScreen
+    ├── Tab: Upload    → UploadScreen
+    │                     ↓ (اختيار صورة)
+    │                   ScanningScreen (تحليل AI)
+    │                     ↓ (اكتمال التحليل)
+    │                   ResultsScreen
+    │                     ├── [عرض التقرير الكامل] → ReportScreen
+    │                     └── [نشر في السوق]       → PostProject
+    ├── Tab: History   → HistoryScreen → ResultsScreen
+    ├── Tab: Marketplace → MarketplaceHome
+    │                      ├── CompanyDetails → QuoteRequest
+    │                      │                 → ContactCompany
+    │                      ├── PostProject
+    │                      └── MyProjects → ProjectDetails
+    └── Tab: Profile   → ProfileScreen
+                          ├── SettingsScreen
+                          ├── NotificationsScreen
+                          ├── HelpScreen
+                          └── AboutScreen
 ```
 
 ---
 
-## 🔌 State Management
+## ⚠️ ملاحظات تقنية مهمة
 
-### Recommended: Provider or Riverpod
+### 1. إصلاح مفاتيح Recharts المكررة
+في `AdminDashboard` و`SystemMonitoring`، تم استبدال جميع المفاتيح الرقمية بمفاتيح نصية فريدة:
+```tsx
+// ❌ خاطئ
+<Line key={0} dataKey="scans" />
 
-```dart
-// Example with Provider
+// ✅ صحيح
+<Line key="monthly-scans-line" dataKey="scans" />
+// أو مبني على البيانات:
+data.map(item => <Cell key={`risk-${item.name}`} fill={item.color} />)
+```
 
-class AppState extends ChangeNotifier {
-  Locale _locale = Locale('ar');
-  ThemeMode _themeMode = ThemeMode.light;
-  User? _user;
-  List<ScanResult> _scans = [];
-  
-  Locale get locale => _locale;
-  ThemeMode get themeMode => _themeMode;
-  User? get user => _user;
-  List<ScanResult> get scans => _scans;
-  
-  void setLocale(Locale locale) {
-    _locale = locale;
-    notifyListeners();
-  }
-  
-  void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light
-        ? ThemeMode.dark
-        : ThemeMode.light;
-    notifyListeners();
-  }
-  
-  Future<void> performScan(File image) async {
-    // Scan logic
-    notifyListeners();
-  }
-}
+### 2. بنية ملفات Admin Panel
+```
+/components/admin/
+├── AdminPanel.tsx          ← الإطار الرئيسي + الشريط الجانبي
+├── adminData.ts            ← جميع البيانات التجريبية والأنواع TypeScript
+├── AdminDashboard.tsx      ← KPIs + 4 رسوم بيانية + النشاط الأخير
+├── CompanyVerification.tsx ← إدارة تسجيل الشركات
+├── RequestsManagement.tsx  ← إدارة الطلبات
+├── BidsMonitoring.tsx      ← مراقبة العروض
+├── ContractsMonitoring.tsx ← مراقبة العقود
+├── SupportTickets.tsx      ← واجهة الدعم الفني
+├── UsersManagement.tsx     ← إدارة المستخدمين
+├── NotificationsCenter.tsx ← إرسال واستعراض الإشعارات
+└── SystemMonitoring.tsx    ← مراقبة أداء النظام
+```
 
-// In main.dart
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppState(),
-      child: MyApp(),
-    ),
-  );
-}
+### 3. AppContext
+`/contexts/AppContext.tsx` يوفر:
+- `t(key)` — دالة الترجمة
+- `isRTL` — اتجاه الواجهة
+- `isDarkMode` — الوضع الليلي
+- `currentLanguage` — اللغة الحالية ('ar' | 'en')
+- `toggleLanguage()` — تبديل اللغة
+- `toggleDarkMode()` — تبديل الوضع الليلي
+
+### 4. مسار الوصول للإدارة في App.tsx
+```tsx
+// App.tsx يتتبع حالتين منفصلتين
+const [isAuthenticated, setIsAuthenticated] = useState(false);
+const [isAdmin, setIsAdmin] = useState(false);
+
+// عند الضغط على "دخول لوحة الإدارة"
+const handleAdminLogin = () => {
+  setIsAdmin(true);
+  setIsAuthenticated(true);
+};
+
+// عرض شرطي: لوحة الإدارة تعرض بدلاً من التطبيق كاملاً
+if (isAdmin) return <AdminPanel onLogout={handleLogout} />;
 ```
 
 ---
 
-## 📦 Recommended Packages
+## 📦 حزم Flutter المقترحة
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
+  flutter: sdk: flutter
   
-  # UI Components
-  flutter_svg: ^2.0.9
-  cached_network_image: ^3.3.0
-  shimmer: ^3.0.0
-  dotted_border: ^2.1.0
-  flutter_speed_dial: ^7.0.0
+  # الحالة والتنقل
+  provider: ^6.1.0        # إدارة الحالة
+  go_router: ^13.0.0     # التنقل المتقدم
   
-  # Charts & Visualization
-  fl_chart: ^0.66.0
-  syncfusion_flutter_charts: ^24.1.41
+  # الواجهة
+  google_fonts: ^6.2.1    # Inter + Cairo
+  fl_chart: ^0.68.0       # الرسوم البيانية (بديل Recharts)
+  dotted_border: ^2.1.0   # حدود منقطة لمنطقة الرفع
+  shimmer: ^3.0.0         # تأثير تحميل Skeleton
+  lottie: ^3.1.0          # الرسوم المتحركة
   
-  # Image Handling
-  image_picker: ^1.0.5
-  image_cropper: ^5.0.1
-  photo_view: ^0.14.0
+  # الوظائف
+  image_picker: ^1.0.7    # اختيار الصور
+  camera: ^0.10.5         # الكاميرا المباشرة
+  permission_handler: ^11.3.0
+  http: ^1.2.0            # الطلبات الشبكية
+  dio: ^5.4.0             # HTTP متقدم
+  cached_network_image: ^3.3.1
   
-  # File Handling
-  file_picker: ^6.1.1
-  path_provider: ^2.1.1
-  open_file: ^3.3.2
+  # التخزين
+  shared_preferences: ^2.2.3  # إعدادات محلية
+  hive_flutter: ^1.1.0        # قاعدة بيانات محلية
   
-  # PDF Generation
-  pdf: ^3.10.7
-  printing: ^5.11.1
+  # PDF والمشاركة
+  pdf: ^3.10.8
+  printing: ^5.12.0
+  share_plus: ^9.0.0
   
-  # Networking
-  http: ^1.1.2
-  dio: ^5.4.0
-  
-  # State Management
-  provider: ^6.1.1
-  # OR
-  riverpod: ^2.4.9
-  
-  # Storage
-  shared_preferences: ^2.2.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  
-  # Localization
-  flutter_localizations:
-    sdk: flutter
-  intl: ^0.18.1
-  
-  # Utilities
-  uuid: ^4.2.2
-  timeago: ^3.6.0
-  url_launcher: ^6.2.2
-  share_plus: ^7.2.1
-  
-  # Animation
-  lottie: ^2.7.0
-  animate_do: ^3.1.2
-  
-  # Forms
-  flutter_form_builder: ^9.1.1
-  form_builder_validators: ^9.1.0
-  
-  # Icons
-  font_awesome_flutter: ^10.6.0
+  # الترجمة
+  flutter_localizations: sdk: flutter
+  intl: ^0.19.0
 ```
 
 ---
 
-## 🎯 API Integration Points
+## 🔄 خلاصة الشاشات المكتملة
 
-### Mock AI Scan API
-```dart
-class AIService {
-  Future<ScanResult> analyzeBuildingImage(File image) async {
-    // Simulate API call
-    await Future.delayed(Duration(seconds: 3));
-    
-    // Return mock data for now
-    return ScanResult(
-      id: uuid.v4(),
-      buildingId: 'building_123',
-      scanDate: DateTime.now(),
-      imageUrl: image.path,
-      healthScore: 75.0,
-      riskLevel: RiskLevel.moderate,
-      totalCracks: 12,
-      crackPercentage: 15.5,
-      cracks: [
-        // Mock crack data
-      ],
-      location: 'Cairo, Egypt',
-      buildingType: 'Residential',
-      recommendations: [
-        'Regular monitoring recommended',
-        'Minor structural repairs needed',
-      ],
-    );
-  }
-}
-```
-
-### API Endpoints (for future backend integration)
-```
-POST   /api/scan/upload          - Upload image for scanning
-GET    /api/scan/{id}            - Get scan result
-GET    /api/scans                - Get user's scan history
-DELETE /api/scan/{id}            - Delete scan
-
-POST   /api/listings             - Create project listing
-GET    /api/listings             - Get all listings
-GET    /api/listings/{id}        - Get listing details
-PUT    /api/listings/{id}        - Update listing
-DELETE /api/listings/{id}        - Delete listing
-
-GET    /api/companies            - Get engineering companies
-GET    /api/companies/{id}       - Get company profile
-POST   /api/companies/{id}/quote - Request quote
-
-POST   /api/offers               - Submit offer
-GET    /api/offers/received      - Get received offers
-GET    /api/offers/sent          - Get sent offers
-PUT    /api/offers/{id}/accept   - Accept offer
-PUT    /api/offers/{id}/decline  - Decline offer
-
-GET    /api/notifications        - Get notifications
-PUT    /api/notifications/{id}   - Mark as read
-```
+| # | الشاشة | الملف | الحالة |
+|---|--------|-------|--------|
+| 1  | Splash Screen            | `screens/SplashScreen`                    | ✅ مكتمل |
+| 2  | Onboarding               | `screens/OnboardingScreen`                | ✅ مكتمل |
+| 3  | Login                    | `screens/LoginScreen`                     | ✅ مكتمل + زر Admin |
+| 4  | Register                 | `screens/RegisterScreen`                  | ✅ مكتمل |
+| 5  | Home Dashboard           | `screens/HomeScreen`                      | ✅ مكتمل |
+| 6  | Upload Screen            | `screens/UploadScreen`                    | ✅ مكتمل |
+| 7  | AI Scanning              | `screens/ScanningScreen`                  | ✅ مكتمل |
+| 8  | Results Screen           | `screens/ResultsScreen`                   | ✅ مكتمل |
+| 9  | Report Screen            | `screens/ReportScreen`                    | ✅ مكتمل |
+| 10 | History Screen           | `screens/HistoryScreen`                   | ✅ مكتمل |
+| 11 | Profile Screen           | `screens/ProfileScreen`                   | ✅ مكتمل |
+| 12 | Settings Screen          | `screens/SettingsScreen`                  | ✅ مكتمل |
+| 13 | Notifications            | `screens/NotificationsScreen`             | ✅ مكتمل |
+| 14 | Marketplace Home         | `screens/marketplace/MarketplaceHome`     | ✅ مكتمل |
+| 15 | Post Project             | `screens/marketplace/PostProject`         | ✅ مكتمل |
+| 16 | Project Details          | `screens/marketplace/ProjectDetails`      | ✅ مكتمل |
+| 17 | My Projects              | `screens/marketplace/MyProjects`          | ✅ مكتمل |
+| 18 | Company Details          | `screens/marketplace/CompanyDetails`      | ✅ مكتمل |
+| 19 | Quote Request            | `screens/marketplace/QuoteRequest`        | ✅ مكتمل |
+| 20 | Contact Company          | `screens/marketplace/ContactCompany`      | ✅ مكتمل |
+| 21 | Help Screen              | `screens/HelpScreen`                      | ✅ مكتمل |
+| 22 | About Screen             | `screens/AboutScreen`                     | ✅ مكتمل |
+| — | **Admin: Dashboard**      | `admin/AdminDashboard`                    | ✅ مكتمل |
+| — | **Admin: Companies**      | `admin/CompanyVerification`               | ✅ مكتمل |
+| — | **Admin: Requests**       | `admin/RequestsManagement`                | ✅ مكتمل |
+| — | **Admin: Bids**           | `admin/BidsMonitoring`                    | ✅ مكتمل |
+| — | **Admin: Contracts**      | `admin/ContractsMonitoring`               | ✅ مكتمل |
+| — | **Admin: Tickets**        | `admin/SupportTickets`                    | ✅ مكتمل |
+| — | **Admin: Users**          | `admin/UsersManagement`                   | ✅ مكتمل |
+| — | **Admin: Notifications**  | `admin/NotificationsCenter`               | ✅ مكتمل |
+| — | **Admin: System**         | `admin/SystemMonitoring`                  | ✅ مكتمل |
 
 ---
 
-## 🧪 Testing Considerations
-
-### Test Data
-```dart
-// Create mock data for testing all states
-class MockData {
-  static List<ScanResult> mockScans = [
-    ScanResult(
-      id: '1',
-      healthScore: 85,
-      riskLevel: RiskLevel.low,
-      // ... other fields
-    ),
-    // More mock scans
-  ];
-  
-  static List<Company> mockCompanies = [
-    // Mock companies
-  ];
-  
-  static List<ProjectListing> mockListings = [
-    // Mock listings
-  ];
-}
-```
-
----
-
-## 🚀 Performance Optimization
-
-### Image Optimization
-```dart
-// Use CachedNetworkImage for remote images
-CachedNetworkImage(
-  imageUrl: imageUrl,
-  placeholder: (context, url) => Shimmer(...),
-  errorWidget: (context, url, error) => Icon(Icons.error),
-  fit: BoxFit.cover,
-)
-
-// Compress images before upload
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-
-Future<File> compressImage(File file) async {
-  final result = await FlutterImageCompress.compressAndGetFile(
-    file.absolute.path,
-    '${file.absolute.path}_compressed.jpg',
-    quality: 85,
-    minWidth: 1024,
-    minHeight: 1024,
-  );
-  return File(result!.path);
-}
-```
-
-### Lazy Loading
-```dart
-// Use ListView.builder for large lists
-ListView.builder(
-  itemCount: items.length,
-  itemBuilder: (context, index) {
-    return ItemCard(item: items[index]);
-  },
-)
-```
-
----
-
-## 📱 Platform-Specific Considerations
-
-### iOS
-- Use SF Symbols where appropriate
-- Follow iOS Human Interface Guidelines
-- Handle safe areas properly
-```dart
-SafeArea(
-  child: Scaffold(...),
-)
-```
-
-### Android
-- Use Material Design 3 components
-- Handle back button properly
-```dart
-WillPopScope(
-  onWillPop: () async {
-    // Custom back button handling
-    return true;
-  },
-  child: Scaffold(...),
-)
-```
-
----
-
-## 🎨 Dark Mode Specifications
-
-### Dark Theme Colors
-```dart
-ThemeData darkTheme = ThemeData(
-  brightness: Brightness.dark,
-  primaryColor: primaryLight,
-  scaffoldBackgroundColor: Color(0xFF111827),
-  cardColor: Color(0xFF1F2937),
-  dividerColor: Color(0xFF374151),
-  
-  colorScheme: ColorScheme.dark(
-    primary: primaryLight,
-    secondary: primaryDark,
-    surface: Color(0xFF1F2937),
-    background: Color(0xFF111827),
-    error: error,
-  ),
-  
-  textTheme: TextTheme(
-    bodyLarge: TextStyle(color: Color(0xFFF9FAFB)),
-    bodyMedium: TextStyle(color: Color(0xFFE5E7EB)),
-  ),
-);
-```
-
----
-
-## 💾 Local Storage
-
-### Shared Preferences for Settings
-```dart
-class SettingsService {
-  static const String _languageKey = 'language';
-  static const String _themeKey = 'theme';
-  
-  Future<void> saveLanguage(String language) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_languageKey, language);
-  }
-  
-  Future<String> getLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_languageKey) ?? 'ar';
-  }
-}
-```
-
-### Hive for Offline Data
-```dart
-// For caching scans, projects, etc.
-@HiveType(typeId: 0)
-class ScanResultHive extends HiveObject {
-  @HiveField(0)
-  String id;
-  
-  @HiveField(1)
-  double healthScore;
-  
-  // ... other fields
-}
-
-// Initialize
-await Hive.initFlutter();
-Hive.registerAdapter(ScanResultHiveAdapter());
-await Hive.openBox<ScanResultHive>('scans');
-```
-
----
-
-## 🔔 Push Notifications
-
-```dart
-// Firebase Cloud Messaging setup
-class NotificationService {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  
-  Future<void> initialize() async {
-    // Request permission
-    await _fcm.requestPermission();
-    
-    // Get FCM token
-    String? token = await _fcm.getToken();
-    
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Show local notification
-    });
-    
-    // Handle background messages
-    FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
-  }
-}
-
-// Notification types:
-// - Scan completed
-// - New offer received
-// - Offer accepted/declined
-// - Project viewed
-// - New message
-```
-
----
-
-## 🎯 User Roles & Permissions
-
-### Building Owner Permissions
-- Upload and scan building images
-- View scan history and reports
-- Create project listings
-- Receive and review offers
-- Accept/decline offers
-- Message with companies
-
-### Engineering Company Permissions
-- Browse repair requests
-- View project details
-- Submit offers/bids
-- Manage company profile
-- View analytics dashboard
-- Message with building owners
-
----
-
-## 📈 Analytics Events to Track
-
-```dart
-// Example analytics events
-class AnalyticsEvents {
-  static const String scanStarted = 'scan_started';
-  static const String scanCompleted = 'scan_completed';
-  static const String reportDownloaded = 'report_downloaded';
-  static const String listingCreated = 'listing_created';
-  static const String offerSubmitted = 'offer_submitted';
-  static const String offerAccepted = 'offer_accepted';
-  static const String companyViewed = 'company_viewed';
-  static const String quoteRequested = 'quote_requested';
-}
-```
-
----
-
-## 🔐 Security Considerations
-
-### Secure API Communication
-```dart
-// Use HTTPS only
-// Implement JWT authentication
-// Store tokens securely
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-final storage = FlutterSecureStorage();
-await storage.write(key: 'jwt_token', value: token);
-String? token = await storage.read(key: 'jwt_token');
-```
-
-### Image Upload Security
-- Validate file types
-- Limit file sizes
-- Scan for malicious content (server-side)
-
----
-
-## 🎓 Conclusion
-
-This Flutter design specification provides a comprehensive guide for developing the CrackDetectX mobile application. All screens, components, colors, typography, and interactions are defined to match the modern, professional, AI-focused aesthetic.
-
-**Key Implementation Notes:**
-1. Use the exact color palette specified
-2. Implement RTL support from the start
-3. Support both light and dark modes
-4. Follow Material Design 3 guidelines
-5. Prioritize smooth animations and transitions
-6. Implement proper error states and loading states
-7. Test on both iOS and Android devices
-8. Use mock data until backend APIs are ready
-9. Follow accessibility guidelines (WCAG)
-10. Optimize images and performance
-
-**Next Steps:**
-1. Set up Flutter project with required packages
-2. Implement design system (colors, typography, components)
-3. Create reusable widget library
-4. Implement authentication flow
-5. Build core scanning functionality with mock AI
-6. Develop marketplace features
-7. Add localization
-8. Implement dark mode
-9. Test and refine
-10. Prepare for backend integration
-
----
-
-**Document Version:** 1.0  
-**Last Updated:** December 16, 2024  
-**Author:** CrackDetectX Design Team
+*هذا الملف يمثل الحالة الفعلية الكاملة لتطبيق CrackDetectX بتاريخ أبريل 2026.*

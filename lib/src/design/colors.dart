@@ -10,7 +10,6 @@ class AppColors {
   static const Color primary500 = Color(0xFF3B82F6);
   static const Color primary300 = Color(0xFF93C5FD);
   static const Color primary100 = Color(0xFFDBEAFE);
-  static const Color primary50 = Color(0xFFEFF6FF);
 
   /// Light Blue (Secondary) - #3B82F6
   static const Color secondary500 = Color(0xFF3B82F6);
@@ -27,6 +26,14 @@ class AppColors {
   static const Color grey700 = Color(0xFF374151);
   static const Color grey800 = Color(0xFF1F2937);
   static const Color grey900 = Color(0xFF111827);
+
+  // Added aliases for "neutral" colors mapping to greyscale
+  static const Color neutral100 = grey100;
+  static const Color neutral300 = grey300;
+  static const Color neutral400 = grey400;
+  static const Color neutral500 = grey500;
+  static const Color neutral600 = grey600;
+  static const Color neutral800 = grey800;
 
   /// White (Background)
   static const Color white = Color(0xFFFFFFFF);
@@ -52,6 +59,11 @@ class AppColors {
   static const Color infoLight = Color(0xFFDBEAFE);
   static const Color infoDark = Color(0xFF1D4ED8);
 
+  // Missing semantic color aliases
+  static const Color errorRed = dangerRed;
+  static const Color warningYellow = warningOrange;
+  static const Color primary50 = Color(0xFFEFF6FF);
+
   // ==================== SEMANTIC ALIASES ====================
   static const Color background = white;
   static const Color textPrimary = grey900;
@@ -69,14 +81,11 @@ class AppColors {
   static const Color mediumRiskBackground = warningLight;
   static const Color lowRisk = successGreen;
   static const Color lowRiskBackground = successLight;
-  static const Color riskCritical = Color(
-    0xFF991B1B,
-  ); // Dark Red for critical risk
+  static const Color riskCritical = Color(0xFF991B1B); // Dark Red for critical risk
 
   // ==================== AI SCANNING COLORS ====================
   /// Bright blue for scanning effect
   static const Color aiScanBlue = Color(0xFF60A5FA);
-
   /// Cyan for gradient effects
   static const Color aiScanCyan = Color(0xFF06B6D4);
 

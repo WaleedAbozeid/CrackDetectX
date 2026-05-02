@@ -6,6 +6,7 @@ import '../store/app_state.dart';
 import '../widgets/app_button.dart';
 import '../widgets/loader.dart';
 import 'reports_list_screen.dart';
+import 'annotate_screen.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
@@ -40,6 +41,7 @@ class _ResultScreenState extends State<ResultScreen> {
     try {
       final pdfPath = await generateReportPDF(report);
       if (mounted) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(pdfPath != null ? 'تم حفظ التقرير: $pdfPath' : 'فشل حفظ التقرير')),
         );
@@ -114,6 +116,11 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Health Score circular indicator
+                        Center(
+                          child: _HealthScoreWidget(score: result.healthScore),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -185,6 +192,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             imagePath: appState.selectedImagePath ?? '',
                             result: result,
                             createdAt: DateTime.now(),
+                            buildingId: appState.selectedBuildingId,
                           );
                           _sharePDFReport(report);
                         },
@@ -204,6 +212,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             imagePath: appState.selectedImagePath ?? '',
                             result: result,
                             createdAt: DateTime.now(),
+                            buildingId: appState.selectedBuildingId,
                           );
                           Provider.of<AppState>(context, listen: false).addReport(report);
                           _savePDFReport(context, report);
@@ -217,6 +226,33 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                // Annotate button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.edit_location_alt,
+                        color: AppColors.primary500),
+                    label: Text('إضافة تعليق على الشق',
+                        style: AppTypography.button
+                            .copyWith(color: AppColors.primary500)),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AnnotateScreen(
+                          reportId: result.id,
+                          imagePath: appState.selectedImagePath ?? '',
+                        ),
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primary500),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 SizedBox(
@@ -234,6 +270,63 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Circular health score indicator (0-100)
+class _HealthScoreWidget extends StatelessWidget {
+  final int score;
+  const _HealthScoreWidget({required this.score});
+
+  Color get _color {
+    if (score >= 70) return AppColors.successGreen;
+    if (score >= 40) return AppColors.warningOrange;
+    return AppColors.dangerRed;
+  }
+
+  String get _label {
+    if (score >= 70) return 'جيد';
+    if (score >= 40) return 'متوسط';
+    return 'خطر';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('مؤشر صحة المبنى', style: AppTypography.h4),
+        const SizedBox(height: AppSpacing.sm),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: CircularProgressIndicator(
+                value: score / 100,
+                strokeWidth: 10,
+                backgroundColor: AppColors.grey100,
+                valueColor: AlwaysStoppedAnimation<Color>(_color),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '$score',
+                  style: AppTypography.h1.copyWith(color: _color),
+                ),
+                Text(
+                  _label,
+                  style: AppTypography.caption.copyWith(color: _color),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

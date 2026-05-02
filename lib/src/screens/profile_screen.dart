@@ -150,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
               _SettingCard(
                 icon: Icons.notifications,
                 label: AppLocalizations.of(context)!.notifications,
-                onTap: () {},
+                onTap: () => Navigator.pushNamed(context, '/notifications'),
                 iconColor:
                     Theme.of(context).iconTheme.color ?? AppColors.primary900,
                 textColor:

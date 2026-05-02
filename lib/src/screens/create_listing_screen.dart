@@ -136,9 +136,12 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
                   icon: const Icon(Icons.warning_amber_rounded),
                   items: RiskLevel.values.map((RiskLevel level) {
                     Color color = AppColors.successGreen;
-                    if (level == RiskLevel.medium)
+                    if (level == RiskLevel.medium) {
                       color = AppColors.warningOrange;
-                    if (level == RiskLevel.high) color = AppColors.dangerRed;
+                    }
+                    if (level == RiskLevel.high) {
+                      color = AppColors.dangerRed;
+                    }
 
                     return DropdownMenuItem<RiskLevel>(
                       value: level,
@@ -346,10 +349,25 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
         aiReportId: _selectedReport,
       );
 
-      Provider.of<AppState>(
+      final appState = Provider.of<AppState>(
         context,
         listen: false,
-      ).createRepairRequest(request);
+      );
+
+      if (!appState.isOnline) {
+        appState.saveOfflineDraft(request);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.listingSuccess,
+            ),
+          ),
+        );
+        Navigator.pop(context);
+        return;
+      }
+
+      appState.createRepairRequest(request);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.listingSuccess)),

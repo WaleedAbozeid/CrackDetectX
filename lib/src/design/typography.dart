@@ -46,6 +46,15 @@ class AppTypography {
     height: 1.4,
   );
 
+  /// H5 (Extra Small Headings): 14px Semibold
+  static const TextStyle h5 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14.0,
+    fontWeight: FontWeight.w600,
+    color: AppColors.grey900,
+    height: 1.4,
+  );
+
   // ==================== BODY TEXT ====================
   /// Body Large: 16px Regular
   static const TextStyle bodyLarge = TextStyle(
@@ -67,6 +76,7 @@ class AppTypography {
 
   /// Body: 14px Regular (alias for bodyMedium)
   static const TextStyle bodyText = bodyMedium;
+  static const TextStyle body = bodyMedium;
 
   /// Body Small: 12px Regular
   static const TextStyle bodySmall = TextStyle(

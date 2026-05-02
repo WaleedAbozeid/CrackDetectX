@@ -332,10 +332,191 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileTitle => 'Profile';
 
   @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get menuTitle => 'Menu';
+
+  @override
+  String get homeWelcomeBack => 'Welcome back';
+
+  @override
+  String get homeBuildingSafety => 'Building Safety';
+
+  @override
+  String get homeAiModelStatus => 'AI Model Status';
+
+  @override
+  String get homeAiReadyToAnalyze => 'Ready to analyze';
+
+  @override
+  String get homeScanWithCamera => 'Scan with Camera';
+
+  @override
+  String get homeUploadImage => 'Upload Image';
+
+  @override
+  String get homePreviousReports => 'Previous Reports';
+
+  @override
+  String get homeQuickStats => 'Quick Stats';
+
+  @override
+  String get homeAll => 'All';
+
+  @override
+  String get homeMonth => 'Month';
+
+  @override
+  String get homeAboutAiModel => 'About AI Model';
+
+  @override
+  String get homeSupportHelp => 'Support & Help';
+
+  @override
+  String inspectionsCount(int count) {
+    return '$count inspections';
+  }
+
+  @override
   String get totalScans => 'Total Scans';
 
   @override
   String get highRisk => 'High Risk';
+
+  @override
+  String get adminDashboardTitle => 'Admin Dashboard';
+
+  @override
+  String get adminQuickActions => 'Quick Actions';
+
+  @override
+  String get adminRecentActions => 'Recent Admin Actions';
+
+  @override
+  String get adminNoRecentActions => 'No recent admin actions';
+
+  @override
+  String get adminKpiPendingVerifications => 'Pending Verifications';
+
+  @override
+  String get adminKpiOpenDisputes => 'Open Disputes';
+
+  @override
+  String get adminKpiActiveContracts => 'Active Contracts';
+
+  @override
+  String get adminActionReviewVerifications => 'Review Verification Requests';
+
+  @override
+  String get adminActionManageDisputes => 'Manage Disputes';
+
+  @override
+  String get adminActionUserManagement => 'User Management';
+
+  @override
+  String get adminActionSystemConfig => 'System Configuration';
+
+  @override
+  String get adminActionSupportTickets => 'Support Tickets';
+
+  @override
+  String get adminActionNotificationsCenter => 'Notifications Center';
+
+  @override
+  String get adminChartRiskDistribution => 'Risk Level Distribution';
+
+  @override
+  String get adminChartWeeklyActivity => 'Weekly Activity';
+
+  @override
+  String get adminChartPlaceholder =>
+      'Charts will be connected to backend analytics later';
+
+  @override
+  String get settingsSectionGeneral => 'General';
+
+  @override
+  String get settingsSectionDataStorage => 'Data & Storage';
+
+  @override
+  String get settingsSectionAiModel => 'AI Model';
+
+  @override
+  String get settingsSectionAbout => 'About';
+
+  @override
+  String get settingsSectionSupport => 'Support';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsAutoSaveReports => 'Auto-save Reports';
+
+  @override
+  String get settingsOfflineMode => 'Offline Mode';
+
+  @override
+  String get settingsOnline => 'Online';
+
+  @override
+  String get settingsOffline => 'Offline';
+
+  @override
+  String get settingsClearCache => 'Clear Cache';
+
+  @override
+  String get settingsStorageUsed => 'Storage Used';
+
+  @override
+  String get settingsModelVersion => 'Model Version';
+
+  @override
+  String get settingsCheckUpdates => 'Check for Updates';
+
+  @override
+  String get settingsAutoUpdate => 'Auto-update';
+
+  @override
+  String get settingsAppVersion => 'App Version';
+
+  @override
+  String get settingsTermsOfService => 'Terms of Service';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsLicenses => 'Licenses';
+
+  @override
+  String get settingsHelpCenter => 'Help Center';
+
+  @override
+  String get settingsContactSupport => 'Contact Support';
+
+  @override
+  String get settingsReportBug => 'Report a Bug';
+
+  @override
+  String get dialogClearCacheTitle => 'Clear Cache';
+
+  @override
+  String get dialogClearCacheBody =>
+      'Are you sure you want to clear the cache?';
+
+  @override
+  String get snackCacheCleared => 'Cache cleared';
+
+  @override
+  String get dialogCheckUpdatesTitle => 'Check for Updates';
+
+  @override
+  String get dialogCheckUpdatesBody => 'You are using the latest version';
 
   @override
   String get editProfile => 'Edit Profile';
@@ -544,4 +725,234 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingSkip => 'Skip';
+
+  @override
+  String get browseCompanies => 'Browse Companies';
+
+  @override
+  String get filterCompanies => 'Filter Companies';
+
+  @override
+  String get filterProjects => 'Filter Projects';
+
+  @override
+  String get availableProjects => 'Available Projects';
+
+  @override
+  String starsPlus(Object count) {
+    return '$count+ Stars';
+  }
+
+  @override
+  String get verifiedOnly => 'Verified Only';
+
+  @override
+  String get topRated => 'Top Rated';
+
+  @override
+  String reviewsCount(Object count) {
+    return '$count reviews';
+  }
+
+  @override
+  String projectsCount(Object count) {
+    return '$count projects';
+  }
+
+  @override
+  String get noProjectsMatch => 'No projects match your search';
+
+  @override
+  String get clearFilters => 'Clear Filters';
+
+  @override
+  String get allLocations => 'All Locations';
+
+  @override
+  String get pleaseLoginBid => 'Please log in to place a bid';
+
+  @override
+  String get openStatus => 'Open';
+
+  @override
+  String get locationTitle => 'Location';
+
+  @override
+  String get ratingTitle => 'Rating';
+
+  @override
+  String get min => 'Min';
+
+  @override
+  String get max => 'Max';
+
+  @override
+  String get searchProjectsHint => 'Search projects...';
+
+  @override
+  String get projectDetails => 'Project Details';
+
+  @override
+  String get requestNotFound => 'Request not found';
+
+  @override
+  String get receivedBids => 'Received Bids';
+
+  @override
+  String get noBidsYet => 'No bids yet';
+
+  @override
+  String get confirmAcceptBidTitle => 'Accept Bid';
+
+  @override
+  String get confirmAcceptBidMessage =>
+      'Are you sure you want to accept this bid? All other bids will be rejected.';
+
+  @override
+  String get actionAccept => 'Accept';
+
+  @override
+  String get bidAcceptedSuccess => 'Bid accepted successfully!';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get contractDetails => 'Contract Details';
+
+  @override
+  String get contractNotFound => 'Contract not found';
+
+  @override
+  String get contractStatus => 'Contract Status';
+
+  @override
+  String get contractInfo => 'Contract Information';
+
+  @override
+  String get paymentDetails => 'Payment Details';
+
+  @override
+  String get agreedPrice => 'Agreed Price';
+
+  @override
+  String get fundsInEscrow => 'Funds held in Escrow';
+
+  @override
+  String get paymentReleased => 'Payment Released';
+
+  @override
+  String get markComplete => 'Mark Project as Complete';
+
+  @override
+  String get approveCompletion => 'Approve Completion';
+
+  @override
+  String get requestRevisions => 'Request Revisions';
+
+  @override
+  String get completionNotes => 'Completion Notes';
+
+  @override
+  String get ownerFeedback => 'Owner Feedback';
+
+  @override
+  String get raiseDispute => 'Raise a Dispute';
+
+  @override
+  String get submitReview => 'Submit Review';
+
+  @override
+  String get reviewSubmitted =>
+      'You have already submitted a review for this project.';
+
+  @override
+  String get markedComplete => 'Marked as complete! Awaiting owner approval.';
+
+  @override
+  String get projectApproved => 'Project approved! Payment released.';
+
+  @override
+  String get revisionRequested => 'Revision request sent to engineer.';
+
+  @override
+  String get reviewSuccess => 'Review submitted successfully!';
+
+  @override
+  String get statusDraft => 'Draft';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusInProgress => 'In Progress';
+
+  @override
+  String get statusPendingCompletion => 'Pending Approval';
+
+  @override
+  String get statusCompleted => 'Completed';
+
+  @override
+  String get statusDisputed => 'Disputed';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get disputeTitle => 'Raise a Dispute';
+
+  @override
+  String get disputeWarning => 'Important Notice';
+
+  @override
+  String get disputeWarningMessage =>
+      'Disputes are reviewed by our admin team. Please provide accurate and detailed information.';
+
+  @override
+  String get disputeReason => 'Reason for Dispute';
+
+  @override
+  String get disputeReasonHint =>
+      'e.g., Quality issues, Delayed completion, Payment dispute...';
+
+  @override
+  String get disputeDescription => 'Detailed Description';
+
+  @override
+  String get disputeDescriptionHint =>
+      'Provide a detailed explanation of the issue...';
+
+  @override
+  String get disputeReasonRequired => 'Please enter a reason';
+
+  @override
+  String get disputeDescriptionRequired =>
+      'Please provide a detailed description';
+
+  @override
+  String get disputeDescriptionTooShort =>
+      'Description must be at least 20 characters';
+
+  @override
+  String get disputeSubmit => 'Submit Dispute';
+
+  @override
+  String get disputeSuccess =>
+      'Dispute submitted successfully. Our team will review it.';
+
+  @override
+  String get reviewTitle => 'Review';
+
+  @override
+  String get reviewRating => 'Rating';
+
+  @override
+  String get reviewComment => 'Comment';
+
+  @override
+  String get reviewCommentHint => 'Share your experience...';
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/app_button.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../models/marketplace_full_models.dart';
 import '../services/auth_service.dart';
+import '../store/app_state.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _hasError = false;
   String _errorMessage = '';
   bool _isLoading = false;
+  UserRole _selectedRole = UserRole.engineer; // default role
 
   @override
   void initState() {
@@ -59,12 +63,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
+      // Set the chosen role in AppState
+      await context.read<AppState>().setUserRole(_selectedRole);
+
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       if (mounted) {
         setState(() {
           _hasError = true;
-          // Show full error text to help debugging (can be refined later)
           _errorMessage = 'Login failed: $e';
         });
       }
@@ -184,6 +191,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xxl),
 
+                // Role Selector
+                const SizedBox(height: AppSpacing.lg),
+                Text('Account Type', style: AppTypography.h4),
+                const SizedBox(height: AppSpacing.sm),
+                _RoleSelector(
+                  selected: _selectedRole,
+                  onChanged: (r) => setState(() => _selectedRole = r),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+
                 // Sign In Button
                 AppButton(
                   title: _isLoading ? 'Signing In...' : 'Sign In',
@@ -191,6 +208,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 56,
                 ),
                 const SizedBox(height: AppSpacing.xl),
+
+                // Demo Admin Entry (per design prompt)
+                SecondaryButton(
+                  title: 'Admin Panel (Demo)',
+                  onPressed: _isLoading
+                      ? null
+                      : () => Navigator.pushReplacementNamed(
+                            context,
+                            '/admin/dashboard',
+                          ),
+                  height: 48,
+                  borderColor: AppColors.primary500,
+                  textColor: AppColors.primary500,
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Sign Up Link
                 Row(
@@ -310,6 +342,66 @@ class _InputField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Role selection widget shown on Login and Signup screens
+class _RoleSelector extends StatelessWidget {
+  final UserRole selected;
+  final ValueChanged<UserRole> onChanged;
+
+  const _RoleSelector({required this.selected, required this.onChanged});
+
+  static const _roles = [
+    (role: UserRole.engineer,     icon: Icons.engineering,    label: 'Field Engineer'),
+    (role: UserRole.owner,        icon: Icons.home_work,      label: 'Building Owner'),
+    (role: UserRole.companyAdmin, icon: Icons.business,       label: 'Repair Company'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _roles.map((item) {
+        final isSelected = selected == item.role;
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => onChanged(item.role),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary500 : AppColors.grey50,
+                borderRadius: BorderRadius.circular(AppRadius.r12),
+                border: Border.all(
+                  color: isSelected ? AppColors.primary500 : AppColors.grey200,
+                  width: isSelected ? 2 : 1,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    item.icon,
+                    color: isSelected ? AppColors.white : AppColors.grey500,
+                    size: 24,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item.label,
+                    style: AppTypography.caption.copyWith(
+                      color: isSelected ? AppColors.white : AppColors.grey700,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

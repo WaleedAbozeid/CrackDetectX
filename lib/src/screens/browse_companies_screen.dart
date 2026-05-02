@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -31,18 +32,25 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
     super.dispose();
   }
 
-  void _updateFilters() {
+  void _updateFilters(AppLocalizations l10n) {
     setState(() {
       _activeFilters.clear();
-      if (_selectedRating != null)
-        _activeFilters.add('Rating: $_selectedRating+');
-      if (_selectedLocation != null) _activeFilters.add('$_selectedLocation');
-      if (_verifiedOnly) _activeFilters.add('Verified Only');
+      if (_selectedRating != null) {
+        _activeFilters.add(l10n.starsPlus(_selectedRating!));
+      }
+      if (_selectedLocation != null) {
+        _activeFilters.add('$_selectedLocation');
+      }
+      if (_verifiedOnly) {
+        _activeFilters.add(l10n.verifiedOnly);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.grey50,
       appBar: AppBar(
@@ -50,7 +58,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
         elevation: 0,
         leading: const BackButton(color: AppColors.primary900),
         title: Text(
-          'Browse Companies',
+          l10n.browseCompanies,
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
@@ -76,7 +84,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                     TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Search companies...',
+                        hintText: l10n.searchHint,
                         prefixIcon: const Icon(
                           Icons.search,
                           color: AppColors.grey400,
@@ -86,7 +94,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                             Icons.tune,
                             color: AppColors.primary500,
                           ),
-                          onPressed: _showFilterSheet,
+                          onPressed: () => _showFilterSheet(context, l10n),
                         ),
                         filled: true,
                         fillColor: AppColors.grey50,
@@ -111,7 +119,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                           itemBuilder: (context, index) {
                             if (index == _activeFilters.length) {
                               return ActionChip(
-                                label: const Text('Clear All'),
+                                label: Text(l10n.actionClear),
                                 onPressed: () {
                                   setState(() {
                                     _selectedRating = null;
@@ -133,13 +141,18 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                               onDeleted: () {
                                 setState(() {
                                   final filter = _activeFilters[index];
-                                  if (filter.startsWith('Rating'))
+                                  if (filter.contains(
+                                    l10n.starsPlus('4.0').replaceAll('4.0', ''),
+                                  )) {
                                     _selectedRating = null;
-                                  if (filter == 'Verified Only')
+                                  }
+                                  if (filter == l10n.verifiedOnly) {
                                     _verifiedOnly = false;
-                                  if (filter == _selectedLocation)
+                                  }
+                                  if (filter == _selectedLocation) {
                                     _selectedLocation = null;
-                                  _updateFilters();
+                                  }
+                                  _updateFilters(l10n);
                                 });
                               },
                             );
@@ -156,7 +169,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                 child: companies.isEmpty
                     ? Center(
                         child: Text(
-                          'No companies found',
+                          l10n.noCompaniesFound,
                           style: AppTypography.bodyText.copyWith(
                             color: AppColors.grey500,
                           ),
@@ -168,7 +181,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                         separatorBuilder: (_, _) =>
                             const SizedBox(height: AppSpacing.md),
                         itemBuilder: (context, index) =>
-                            _buildCompanyCard(companies[index]),
+                            _buildCompanyCard(companies[index], l10n),
                       ),
               ),
             ],
@@ -178,7 +191,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
     );
   }
 
-  Widget _buildCompanyCard(Company company) {
+  Widget _buildCompanyCard(Company company, AppLocalizations l10n) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -187,13 +200,6 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadius.r16),
         onTap: () {
-          // TODO: Using map for now until CompanyProfileScreen is updated to take Company object
-          // For now we map it back or update profile screen. Assuming profile screen takes map still?
-          // Let's check imports. Wait, company_profile_screen was imported.
-          // It expects map or object? The previous code passed map.
-          // I should verify CompanyProfileScreen next turn or fix it by passing map to be safe for now
-          // or ideally update that screen too. Let's pass map for compatibility if needed or object if possible.
-          // Since I can't check other file instantly, I will pass a map to be safe.
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -263,7 +269,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '${company.rating} (${company.reviewCount} reviews)',
+                              '${company.rating} (${l10n.reviewsCount(company.reviewCount)})',
                               style: AppTypography.bodySmall,
                             ),
                           ],
@@ -282,7 +288,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                         borderRadius: BorderRadius.circular(AppRadius.full),
                       ),
                       child: Text(
-                        'Top Rated',
+                        l10n.topRated,
                         style: AppTypography.caption.copyWith(
                           color: AppColors.warningDark,
                         ),
@@ -317,7 +323,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${company.projectsCompleted} projects',
+                    l10n.projectsCount(company.projectsCompleted),
                     style: AppTypography.bodySmall,
                   ),
                 ],
@@ -347,7 +353,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
     );
   }
 
-  void _showFilterSheet() {
+  void _showFilterSheet(BuildContext context, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -368,23 +374,23 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Filter Companies', style: AppTypography.h3),
+                Text(l10n.filterCompanies, style: AppTypography.h3),
                 const SizedBox(height: AppSpacing.xl),
 
-                Text('Rating', style: AppTypography.h4),
+                Text(l10n.ratingTitle, style: AppTypography.h4),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 8,
                   children: [
                     FilterChip(
-                      label: const Text('4.0+ Stars'),
+                      label: Text(l10n.starsPlus('4.0')),
                       selected: _selectedRating == '4.0',
                       onSelected: (selected) => setSheetState(
                         () => _selectedRating = selected ? '4.0' : null,
                       ),
                     ),
                     FilterChip(
-                      label: const Text('4.5+ Stars'),
+                      label: Text(l10n.starsPlus('4.5')),
                       selected: _selectedRating == '4.5',
                       onSelected: (selected) => setSheetState(
                         () => _selectedRating = selected ? '4.5' : null,
@@ -395,7 +401,7 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
 
                 const SizedBox(height: AppSpacing.md),
                 CheckboxListTile(
-                  title: const Text('Verified Only'),
+                  title: Text(l10n.verifiedOnly),
                   value: _verifiedOnly,
                   onChanged: (v) =>
                       setSheetState(() => _verifiedOnly = v ?? false),
@@ -404,10 +410,10 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                 ),
 
                 const SizedBox(height: AppSpacing.md),
-                Text('Location', style: AppTypography.h4),
+                Text(l10n.locationTitle, style: AppTypography.h4),
                 const SizedBox(height: AppSpacing.sm),
                 DropdownButtonFormField<String>(
-                  value: _selectedLocation,
+                  initialValue: _selectedLocation,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.r12),
@@ -417,11 +423,17 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                       vertical: 8,
                     ),
                   ),
-                  items: const [
-                    DropdownMenuItem(value: null, child: Text('All Locations')),
-                    DropdownMenuItem(value: 'Cairo', child: Text('Cairo')),
-                    DropdownMenuItem(value: 'Giza', child: Text('Giza')),
+                  items: [
                     DropdownMenuItem(
+                      value: null,
+                      child: Text(l10n.allLocations),
+                    ),
+                    const DropdownMenuItem(
+                      value: 'Cairo',
+                      child: Text('Cairo'),
+                    ),
+                    const DropdownMenuItem(value: 'Giza', child: Text('Giza')),
+                    const DropdownMenuItem(
                       value: 'Alexandria',
                       child: Text('Alexandria'),
                     ),
@@ -435,14 +447,14 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      _updateFilters();
+                      _updateFilters(l10n);
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary500,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Apply Filters'),
+                    child: Text(l10n.actionApply),
                   ),
                 ),
               ],

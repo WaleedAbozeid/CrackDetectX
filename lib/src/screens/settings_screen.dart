@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../store/app_state.dart';
 import '../widgets/app_top_bar.dart';
 import '../design/typography.dart';
@@ -14,31 +15,32 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) {
+        final l10n = AppLocalizations.of(context)!;
         final isDark = appState.themeMode == ThemeMode.dark;
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppTopBar(
-            title: 'Settings',
+            title: l10n.settingsTitle,
             onBack: () => Navigator.pop(context),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 _SettingsSection(
-                  title: 'General',
+                  title: l10n.settingsSectionGeneral,
                   children: [
                     _SettingsTile(
                       icon: Icons.language,
-                      title: 'Language',
+                      title: l10n.settingsLanguage,
                       subtitle: appState.locale.languageCode == 'ar'
-                          ? 'العربية'
-                          : 'English',
+                          ? l10n.languageAr
+                          : l10n.languageEn,
                       onTap: () => appState.toggleLanguage(),
                     ),
                     _SettingsTile(
                       icon: isDark ? Icons.light_mode : Icons.dark_mode,
-                      title: isDark ? 'Light Mode' : 'Dark Mode',
+                      title: isDark ? l10n.lightMode : l10n.darkMode,
                       trailing: Switch(
                         value: isDark,
                         onChanged: (value) => appState.toggleTheme(),
@@ -46,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     _SettingsTile(
                       icon: Icons.notifications,
-                      title: 'Notifications',
+                      title: l10n.settingsNotifications,
                       trailing: Switch(
                         value: true, // TODO: Implement notifications state
                         onChanged: (value) {},
@@ -55,44 +57,55 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
                 _SettingsSection(
-                  title: 'Data & Storage',
+                  title: l10n.settingsSectionDataStorage,
                   children: [
                     _SettingsTile(
                       icon: Icons.save,
-                      title: 'Auto-save Reports',
+                      title: l10n.settingsAutoSaveReports,
                       trailing: Switch(
                         value: true, // TODO: Implement auto-save state
                         onChanged: (value) {},
                       ),
                     ),
                     _SettingsTile(
+                      icon: Icons.wifi_off,
+                      title: l10n.settingsOfflineMode,
+                      subtitle: appState.isOnline
+                          ? l10n.settingsOnline
+                          : l10n.settingsOffline,
+                      trailing: Switch(
+                        value: !appState.isOnline,
+                        onChanged: (value) => appState.setOnline(!value),
+                      ),
+                    ),
+                    _SettingsTile(
                       icon: Icons.delete_sweep,
-                      title: 'Clear Cache',
+                      title: l10n.settingsClearCache,
                       onTap: () => _showClearCacheDialog(context),
                     ),
                     _SettingsTile(
                       icon: Icons.storage,
-                      title: 'Storage Used',
+                      title: l10n.settingsStorageUsed,
                       subtitle: '124 MB',
                     ),
                   ],
                 ),
                 _SettingsSection(
-                  title: 'AI Model',
+                  title: l10n.settingsSectionAiModel,
                   children: [
                     _SettingsTile(
                       icon: Icons.info_outline,
-                      title: 'Model Version',
+                      title: l10n.settingsModelVersion,
                       subtitle: 'v2.1.0',
                     ),
                     _SettingsTile(
                       icon: Icons.system_update,
-                      title: 'Check for Updates',
+                      title: l10n.settingsCheckUpdates,
                       onTap: () => _showUpdateDialog(context),
                     ),
                     _SettingsTile(
                       icon: Icons.update,
-                      title: 'Auto-update',
+                      title: l10n.settingsAutoUpdate,
                       trailing: Switch(
                         value: false, // TODO: Implement auto-update state
                         onChanged: (value) {},
@@ -101,46 +114,46 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
                 _SettingsSection(
-                  title: 'About',
+                  title: l10n.settingsSectionAbout,
                   children: [
                     _SettingsTile(
                       icon: Icons.help,
-                      title: 'App Version',
+                      title: l10n.settingsAppVersion,
                       subtitle: '1.0.0',
                     ),
                     _SettingsTile(
                       icon: Icons.description,
-                      title: 'Terms of Service',
+                      title: l10n.settingsTermsOfService,
                       onTap: () {},
                     ),
                     _SettingsTile(
                       icon: Icons.privacy_tip,
-                      title: 'Privacy Policy',
+                      title: l10n.settingsPrivacyPolicy,
                       onTap: () {},
                     ),
                     _SettingsTile(
                       icon: Icons.library_books,
-                      title: 'Licenses',
+                      title: l10n.settingsLicenses,
                       onTap: () {},
                     ),
                   ],
                 ),
                 _SettingsSection(
-                  title: 'Support',
+                  title: l10n.settingsSectionSupport,
                   children: [
                     _SettingsTile(
                       icon: Icons.help_center,
-                      title: 'Help Center',
+                      title: l10n.settingsHelpCenter,
                       onTap: () {},
                     ),
                     _SettingsTile(
                       icon: Icons.mail,
-                      title: 'Contact Support',
+                      title: l10n.settingsContactSupport,
                       onTap: () {},
                     ),
                     _SettingsTile(
                       icon: Icons.bug_report,
-                      title: 'Report a Bug',
+                      title: l10n.settingsReportBug,
                       onTap: () {},
                     ),
                   ],
@@ -155,24 +168,27 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showClearCacheDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear Cache'),
-        content: const Text('Are you sure you want to clear the cache?'),
+        title: Text(l10n.dialogClearCacheTitle),
+        content: Text(l10n.dialogClearCacheBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(const SnackBar(content: Text('Cache cleared')));
+              ).showSnackBar(
+                SnackBar(content: Text(l10n.snackCacheCleared)),
+              );
             },
-            child: const Text('Clear'),
+            child: Text(l10n.actionClear),
           ),
         ],
       ),
@@ -180,15 +196,16 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showUpdateDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Check for Updates'),
-        content: const Text('You are using the latest version'),
+        title: Text(l10n.dialogCheckUpdatesTitle),
+        content: Text(l10n.dialogCheckUpdatesBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l10n.ok),
           ),
         ],
       ),

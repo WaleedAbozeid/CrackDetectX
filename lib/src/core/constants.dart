@@ -9,14 +9,18 @@ class AppConstants {
 
   // ==================== ROUTES ====================
   static const String routeSplash = '/';
-  static const String routeOnboarding = '/onboarding';
   static const String routeWelcome = '/welcome';
+  static const String routeOnboarding = '/onboarding';
   static const String routeLogin = '/login';
   static const String routeSignup = '/signup';
   static const String routeHome = '/home';
   static const String routeScan = '/scan';
   static const String routeResult = '/result';
   static const String routeReports = '/reports';
+  static const String routeSelectBuilding = '/select-building';
+  static const String routeAddBuilding = '/add-building';
+  static const String routeProjects = '/projects';
+  static const String routeAnnotate = '/annotate';
 
   // ==================== AI PROCESSING ====================
   static const int minProcessingDelayMs = 1500;
@@ -30,6 +34,10 @@ class AppConstants {
   static const String reportsStorageKey = 'crackdetectx_reports';
   static const String todosStorageKey = 'crackdetectx_todos';
   static const String settingsStorageKey = 'crackdetectx_settings';
+  static const String buildingsStorageKey = 'crackdetectx_buildings';
+  static const String projectsStorageKey = 'crackdetectx_projects';
+  static const String annotationsStorageKey = 'crackdetectx_annotations';
+  static const String userRoleStorageKey = 'crackdetectx_user_role';
 
   // ==================== PDF GENERATION ====================
   static const String pdfFileNamePrefix = 'crack_report_';
@@ -47,10 +55,8 @@ class AppConstants {
 
   // ==================== ERROR MESSAGES ====================
   static const String errorImagePickFailed = 'حدث خطأ أثناء اختيار الصورة';
-  static const String errorImageProcessingFailed =
-      'حدث خطأ أثناء معالجة الصورة';
-  static const String errorReportGenerationFailed =
-      'حدث خطأ أثناء إنشاء التقرير';
+  static const String errorImageProcessingFailed = 'حدث خطأ أثناء معالجة الصورة';
+  static const String errorReportGenerationFailed = 'حدث خطأ أثناء إنشاء التقرير';
   static const String errorReportSaveFailed = 'حدث خطأ أثناء حفظ التقرير';
   static const String errorReportLoadFailed = 'حدث خطأ أثناء تحميل التقارير';
 
@@ -59,3 +65,4 @@ class AppConstants {
   static const String successReportDeleted = 'تم حذف التقرير بنجاح';
   static const String successImageProcessed = 'تم معالجة الصورة بنجاح';
 }
+

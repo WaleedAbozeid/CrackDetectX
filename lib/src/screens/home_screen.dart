@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../store/app_state.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
+import '../widgets/card.dart' as app_card;
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
+import '../design/shadows.dart';
 import 'scan_screen.dart';
 import 'reports_list_screen.dart';
 import 'profile_screen.dart';
+import 'settings_screen.dart';
+import 'about_ai_screen.dart';
+import 'support_screen.dart';
 import 'marketplace_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,631 +27,520 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(
-      builder: (context, appState, child) {
-        final user = FirebaseAuth.instance.currentUser;
-        String userName = user?.displayName ?? '';
-        if (userName.isEmpty && user?.email != null) {
-          userName = user!.email!.split('@')[0];
-        } else if (userName.isEmpty) {
-          userName = 'User';
-        }
-
-        return Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-              switch (index) {
-                case 1:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ScanScreen()),
-                  );
-                  break;
-                case 2:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ReportsListScreen(),
-                    ),
-                  );
-                  break;
-                case 3:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MarketplaceScreen(),
-                    ),
-                  );
-                  break;
-                case 4:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
-                  );
-                  break;
-              }
-            },
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Theme.of(context).cardColor,
-            selectedItemColor: Theme.of(context).primaryColor,
-            unselectedItemColor: Theme.of(context).disabledColor,
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-            items: [
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.home_outlined),
-                activeIcon: const Icon(Icons.home),
-                label: AppLocalizations.of(context)!.navHome,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.scanner_outlined),
-                activeIcon: const Icon(Icons.scanner),
-                label: AppLocalizations.of(context)!.navScan,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.description_outlined),
-                activeIcon: const Icon(Icons.description),
-                label: AppLocalizations.of(context)!.navReports,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.store_outlined),
-                activeIcon: const Icon(Icons.store),
-                label: AppLocalizations.of(context)!.navMarket,
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.person_outline),
-                activeIcon: const Icon(Icons.person),
-                label: AppLocalizations.of(context)!.navProfile,
-              ),
-            ],
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppColors.grey50,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+          // Navigate to different screens based on index
+          switch (index) {
+            case 0:
+              // Already on home
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ScanScreen()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ReportsListScreen()),
+              );
+              break;
+            case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
+              );
+              break;
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
+              break;
+          }
+        },
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.white,
+        selectedItemColor: AppColors.primaryLight,
+        unselectedItemColor: AppColors.textSecondary,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: l10n.navHome,
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Blue Header Section
-                  Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF2563EB), // Figma Blue
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(AppRadius.r32),
-                        bottomRight: Radius.circular(AppRadius.r32),
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Top Row (Lang, Theme, Notif) - Simplified for design match
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.translate,
-                              color: AppColors.white.withValues(alpha: 0.8),
-                              size: 20,
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Icon(
-                              Icons.wb_sunny_outlined,
-                              color: AppColors.white.withValues(alpha: 0.8),
-                              size: 20,
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Icon(
-                              Icons.notifications_none,
-                              color: AppColors.white.withValues(alpha: 0.8),
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-
-                        // Welcome Text
-                        Text(
-                          '${AppLocalizations.of(context)!.welcomeBack} $userName 👋',
-                          style: AppTypography.h2.copyWith(
-                            color: AppColors.white,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.scanBuilding,
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.white.withValues(alpha: 0.8),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Stats Row (Dark Cards)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _DarkStatCard(
-                                icon: Icons.filter_center_focus,
-                                value: '24',
-                                label: AppLocalizations.of(context)!.scans,
-                                color: Colors.blueAccent,
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: _DarkStatCard(
-                                icon: Icons.trending_up,
-                                value: '87%',
-                                label: AppLocalizations.of(context)!.avgHealth,
-                                color: AppColors.successGreen,
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: _DarkStatCard(
-                                icon: Icons.warning_amber_rounded,
-                                value: '3',
-                                label: AppLocalizations.of(
-                                  context,
-                                )!.cracksDetected,
-                                color: AppColors.warningOrange,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.scanner_outlined),
+            activeIcon: Icon(Icons.scanner),
+            label: l10n.navScan,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description_outlined),
+            activeIcon: Icon(Icons.description),
+            label: l10n.navReports,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.store_outlined),
+            activeIcon: Icon(Icons.store),
+            label: l10n.navMarket,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: l10n.navProfile,
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // Header Section with Gradient
+            SliverAppBar(
+              expandedHeight: 220,
+              backgroundColor: AppColors.primary900,
+              elevation: 0,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary900,
+                        AppColors.primary700,
                       ],
                     ),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(AppRadius.r28),
+                      bottomRight: Radius.circular(AppRadius.r28),
+                    ),
                   ),
-
-                  // Body Content
-                  Padding(
+                  child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Start Scan Banner
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF2563EB), Color(0xFF3B82F6)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(AppRadius.r24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF2563EB,
-                                ).withValues(alpha: 0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        // Top Bar with Welcome and Menu
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.startNewScan,
-                                        style: AppTypography.h3.copyWith(
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.scanSubtitle,
-                                        style: AppTypography.bodySmall.copyWith(
-                                          color: AppColors.white.withValues(
-                                            alpha: 0.8,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.r12,
-                                      ),
+                                  Text(
+                                    l10n.homeWelcomeBack,
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: AppColors.primary100,
                                     ),
-                                    child: const Icon(
-                                      Icons.center_focus_strong,
+                                  ),
+                                  Text(
+                                    l10n.homeBuildingSafety,
+                                    style: AppTypography.h3.copyWith(
                                       color: AppColors.white,
-                                      size: 28,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: AppSpacing.lg),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const ScanScreen(),
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(
-                                      0xFF10B981,
-                                    ), // Figma Green
-                                    foregroundColor: AppColors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.r12,
+                            ),
+                        /*   IconButton(
+                              icon: const Icon(
+                                Icons.menu,
+                                color: AppColors.white,
+                                size: 24,
+                              ),
+                              onPressed: () =>
+                                  _scaffoldKey.currentState?.openEndDrawer(),
+                            ),*/
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+
+                        // AI Status Card (Glass effect)
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha((0.1 * 255).toInt()),
+                            borderRadius: BorderRadius.circular(AppRadius.r16),
+                            border: Border.all(
+                              color: Colors.white.withAlpha((0.2 * 255).toInt()),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: AppColors.successGreen,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.check_circle,
+                                  color: AppColors.white,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.md),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.homeAiModelStatus,
+                                      style: AppTypography.bodySmall.copyWith(
+                                        color: AppColors.white,
                                       ),
                                     ),
-                                    elevation: 0,
-                                  ),
-                                  child: Text(
-                                    AppLocalizations.of(context)!.startScanNow,
-                                    style: AppTypography.button,
-                                  ),
+                                    Text(
+                                      l10n.homeAiReadyToAnalyze,
+                                      style: AppTypography.caption.copyWith(
+                                        color: AppColors.primary100,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Icon(
+                                Icons.brightness_1,
+                                color: AppColors.successGreen,
+                                size: 8,
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xl),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
-                        // Recent Scans Header
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.recentScans,
-                              style: AppTypography.h3.copyWith(
-                                color:
-                                    Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? AppColors.white
-                                    : AppColors.primary900,
+            // Content
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Action Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _ActionButton(
+                            icon: Icons.camera_alt,
+                            label: l10n.homeScanWithCamera,
+                            colors: [AppColors.primary900, AppColors.primary700],
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ScanScreen(),
                               ),
                             ),
-                            TextButton(
-                              onPressed: () => Navigator.push(
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: _ActionButton(
+                            icon: Icons.cloud_upload,
+                            label: l10n.homeUploadImage,
+                            colors: [AppColors.primary500, Colors.cyan],
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ScanScreen(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // Previous Reports Card
+                    app_card.AppCard(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary100,
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadius.r12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.history,
+                                    color: AppColors.primary900,
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.md),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.homePreviousReports,
+                                      style: AppTypography.h4,
+                                    ),
+                                    Text(
+                                      l10n.inspectionsCount(23),
+                                      style: AppTypography.caption,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const ReportsListScreen(),
+                                  builder: (_) =>
+                                      const ReportsListScreen(),
                                 ),
                               ),
-                              child: Text(
-                                AppLocalizations.of(context)!.viewAll,
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: const Color(0xFF2563EB),
-                                ),
+                              child: const Icon(
+                                Icons.chevron_right,
+                                color: AppColors.grey500,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.sm),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                        // Recent Scan Item (Mock)
-                        _RecentScanItem(
-                          title: 'Residential Building - Cairo',
-                          date: '2025-12-14',
-                          risk: 'Low',
-                          health: 85,
-                          imagePath:
-                              'assets/images/building_mock.jpg', // Placeholder
+                    // Quick Stats
+                    Text(
+                      l10n.homeQuickStats,
+                      style: AppTypography.h3,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _StatCard(
+                            value: '47',
+                            label: l10n.homeAll,
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
-                        _RecentScanItem(
-                          title: 'Commercial Complex - Giza',
-                          date: '2025-12-13',
-                          risk: 'Moderate',
-                          health: 72,
-                          imagePath:
-                              'assets/images/building_mock_2.jpg', // Placeholder
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: _StatCard(
+                            value: '12',
+                            label: l10n.homeMonth,
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Marketplace Card (White Card at bottom)
-                        const _MarketplaceCard(),
-                        const SizedBox(height: AppSpacing.xl),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: _StatCard(
+                            value: '8',
+                            label: l10n.highRisk,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _DarkStatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _DarkStatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B), // Dark Slate
-        borderRadius: BorderRadius.circular(AppRadius.r20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 18),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: AppTypography.h3.copyWith(
-              color: AppColors.white,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTypography.caption.copyWith(
-              color: AppColors.grey400,
-              fontSize: 10,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RecentScanItem extends StatelessWidget {
-  final String title;
-  final String date;
-  final String risk;
-  final int health;
-  final String imagePath;
-
-  const _RecentScanItem({
-    required this.title,
-    required this.date,
-    required this.risk,
-    required this.health,
-    required this.imagePath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppRadius.r16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: AppColors.grey200,
-              borderRadius: BorderRadius.circular(AppRadius.r12),
-              image: const DecorationImage(
-                // Using a network placeholder if asset not found for demo
-                image: NetworkImage('https://placehold.co/100x100/png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: const Icon(
-              Icons.image_not_supported,
-              color: AppColors.grey500,
-            ), // Fallback
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTypography.bodyLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? AppColors.white : AppColors.primary900,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.access_time,
-                      size: 14,
-                      color: AppColors.grey500,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(date, style: AppTypography.caption),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.verified_user_outlined,
-                      size: 14,
-                      color: const Color(0xFF2563EB),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$health%',
-                      style: AppTypography.caption.copyWith(
-                        color: const Color(0xFF2563EB),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: risk == 'Low'
-                            ? AppColors.successGreen.withValues(alpha: 0.1)
-                            : AppColors.warningOrange.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(AppRadius.r8),
-                      ),
-                      child: Text(
-                        risk,
-                        style: AppTypography.caption.copyWith(
-                          color: risk == 'Low'
-                              ? AppColors.successGreen
-                              : AppColors.warningOrange,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MarketplaceCard extends StatelessWidget {
-  const _MarketplaceCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppRadius.r24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF), // Light Purple
-                  borderRadius: BorderRadius.circular(AppRadius.r16),
-                  border: Border.all(color: const Color(0xFFD8B4FE)),
-                ),
-                child: const Icon(
-                  Icons.shopping_bag_outlined,
-                  color: Color(0xFF9333EA),
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.marketTitle,
-                      style: AppTypography.h3.copyWith(
-                        color: AppColors.grey900,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppLocalizations.of(context)!.marketSubtitle,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.grey600,
-                      ),
-                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
-              ),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF2563EB)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.r12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+          ],
+        ),
+      ),
+
+      // Drawer (Menu)
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: AppColors.primary900,
               ),
               child: Text(
-                AppLocalizations.of(context)!.exploreMarket,
-                style: AppTypography.button.copyWith(
-                  color: const Color(0xFF2563EB),
+                l10n.menuTitle,
+                style: AppTypography.h2.copyWith(
+                  color: AppColors.white,
                 ),
               ),
             ),
+            _DrawerItem(
+              icon: Icons.person,
+              label: l10n.profileTitle,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ProfileScreen(),
+                  ),
+                );
+              },
+            ),
+            _DrawerItem(
+              icon: Icons.settings,
+              label: l10n.settingsTitle,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsScreen(),
+                  ),
+                );
+              },
+            ),
+            _DrawerItem(
+              icon: Icons.psychology,
+              label: l10n.homeAboutAiModel,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AboutAIScreen(),
+                  ),
+                );
+              },
+            ),
+            _DrawerItem(
+              icon: Icons.help_center,
+              label: l10n.homeSupportHelp,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SupportScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final List<Color> colors;
+  final VoidCallback onPressed;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.colors,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: colors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
+          borderRadius: BorderRadius.circular(AppRadius.r20),
+          boxShadow: AppShadows.floating,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: AppColors.white, size: 24),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              label,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String value;
+  final String label;
+
+  const _StatCard({
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return app_card.AppCard(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: AppTypography.h1.copyWith(
+                color: AppColors.primary900,
+                fontSize: 28,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              isArabic ? label : label.toUpperCase(),
+              style: AppTypography.caption,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _DrawerItem({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.primary900),
+      title: Text(label, style: AppTypography.h4),
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
       ),
     );
   }
