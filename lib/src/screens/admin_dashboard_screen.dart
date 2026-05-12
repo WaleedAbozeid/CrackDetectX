@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../store/app_state.dart';
 import '../models/admin_models.dart';
@@ -495,67 +496,48 @@ class _DonutPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CustomPaint(
-        size: const Size(180, 180),
-        painter: _DonutPainter(),
+      child: SizedBox(
+        width: 180,
+        height: 180,
+        child: PieChart(
+          PieChartData(
+            sectionsSpace: 2,
+            centerSpaceRadius: 50,
+            sections: [
+              PieChartSectionData(
+                color: AppColors.successGreen,
+                value: 45,
+                title: '45%',
+                radius: 40,
+                titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              PieChartSectionData(
+                color: AppColors.warningOrange,
+                value: 25,
+                title: '25%',
+                radius: 40,
+                titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              PieChartSectionData(
+                color: AppColors.errorRed,
+                value: 18,
+                title: '18%',
+                radius: 40,
+                titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              PieChartSectionData(
+                color: AppColors.infoBlue,
+                value: 12,
+                title: '12%',
+                radius: 40,
+                titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
-}
-
-class _DonutPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    final center = rect.center;
-    final r = size.shortestSide / 2;
-    final stroke = 22.0;
-
-    final paints = [
-      Paint()
-        ..color = AppColors.successGreen
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
-      Paint()
-        ..color = AppColors.warningOrange
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
-      Paint()
-        ..color = AppColors.errorRed
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
-      Paint()
-        ..color = AppColors.infoBlue
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
-    ];
-
-    final values = [0.45, 0.25, 0.18, 0.12];
-    var start = -1.57; // -pi/2
-    for (var i = 0; i < values.length; i++) {
-      final sweep = values[i] * 6.283185307179586;
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: r - stroke / 2),
-        start,
-        sweep,
-        false,
-        paints[i],
-      );
-      start += sweep + 0.08;
-    }
-
-    final inner = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(center, r - stroke - 10, inner);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _LinePlaceholder extends StatelessWidget {
@@ -563,54 +545,48 @@ class _LinePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _LinePainter(),
-      child: const SizedBox.expand(),
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: 1,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(
+              color: AppColors.grey200,
+              strokeWidth: 1,
+            );
+          },
+        ),
+        titlesData: FlTitlesData(
+          show: false,
+        ),
+        borderData: FlBorderData(show: false),
+        minX: 0,
+        maxX: 5,
+        minY: 0,
+        maxY: 4,
+        lineBarsData: [
+          LineChartBarData(
+            spots: const [
+              FlSpot(0, 1),
+              FlSpot(1, 1.5),
+              FlSpot(2, 2),
+              FlSpot(3, 1.8),
+              FlSpot(4, 2.5),
+              FlSpot(5, 2.2),
+            ],
+            isCurved: false,
+            color: AppColors.primary500,
+            barWidth: 3,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: true),
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
+      ),
     );
   }
-}
-
-class _LinePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final grid = Paint()
-      ..color = AppColors.grey200
-      ..strokeWidth = 1;
-
-    for (var i = 1; i <= 3; i++) {
-      final y = size.height * (i / 4);
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
-    }
-
-    final points = <Offset>[
-      Offset(size.width * 0.05, size.height * 0.72),
-      Offset(size.width * 0.22, size.height * 0.62),
-      Offset(size.width * 0.40, size.height * 0.50),
-      Offset(size.width * 0.60, size.height * 0.56),
-      Offset(size.width * 0.78, size.height * 0.38),
-      Offset(size.width * 0.95, size.height * 0.46),
-    ];
-
-    final line = Paint()
-      ..color = AppColors.primary500
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
-
-    final path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (final p in points.skip(1)) {
-      path.lineTo(p.dx, p.dy);
-    }
-
-    canvas.drawPath(path, line);
-
-    final dot = Paint()..color = AppColors.primary500;
-    for (final p in points) {
-      canvas.drawCircle(p, 4, dot);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _RecentAuditLogs extends StatelessWidget {

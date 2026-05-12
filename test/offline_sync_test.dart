@@ -1,14 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:crackdetectx/src/store/app_state.dart';
 import 'package:crackdetectx/src/models/marketplace_models.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
+
   test('offline draft is queued and synced when back online', () async {
     final appState = AppState();
+    // Let _loadPersistedData settle before operating
+    await Future<void>.delayed(Duration.zero);
 
-    final ownerId = 'offline_owner_test_1';
-    final requestId = 'offline_request_test_1';
+    const ownerId = 'offline_owner_test_1';
+    const requestId = 'offline_request_test_1';
     final request = RepairRequest(
       id: requestId,
       ownerId: ownerId,
@@ -46,9 +55,11 @@ void main() {
 
   test('sync does nothing when offline', () async {
     final appState = AppState();
+    // Let _loadPersistedData settle before operating
+    await Future<void>.delayed(Duration.zero);
 
-    final ownerId = 'offline_owner_test_2';
-    final requestId = 'offline_request_test_2';
+    const ownerId = 'offline_owner_test_2';
+    const requestId = 'offline_request_test_2';
     final request = RepairRequest(
       id: requestId,
       ownerId: ownerId,
@@ -77,4 +88,3 @@ void main() {
     );
   });
 }
-

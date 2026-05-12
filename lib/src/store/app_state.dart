@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ai/types.dart';
 import '../models/todo.dart';
+import '../models/user_model.dart';
 import '../models/marketplace_models.dart';
 import '../models/marketplace_full_models.dart' hide Company;
 import '../models/admin_models.dart';
 import '../models/communication_models.dart';
 import '../models/offline_models.dart';
 import '../models/building_models.dart';
+import '../repositories/marketplace_repository.dart';
 import '../core/constants.dart';
 
 /// Global application state management using Provider pattern
@@ -25,9 +27,39 @@ class AppState extends ChangeNotifier {
   final List<Todo> _todos = [];
 
   // ==================== UI Preferences ====================
-  // These are intentionally in-memory for now (persistence comes later).
   ThemeMode _themeMode = ThemeMode.light;
   Locale _locale = const Locale('ar');
+
+  // ==================== Settings Flags (persisted via SharedPreferences) ====================
+  bool _notificationsEnabled = true;
+  bool _autoSaveReports = true;
+  bool _autoUpdateModel = false;
+
+  bool get notificationsEnabled => _notificationsEnabled;
+  bool get autoSaveReports      => _autoSaveReports;
+  bool get autoUpdateModel      => _autoUpdateModel;
+
+  Future<void> setNotificationsEnabled(bool value) async {
+    _notificationsEnabled = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notificationsEnabled', value);
+  }
+
+  Future<void> setAutoSaveReports(bool value) async {
+    _autoSaveReports = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('autoSaveReports', value);
+  }
+
+  Future<void> setAutoUpdateModel(bool value) async {
+    _autoUpdateModel = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('autoUpdateModel', value);
+  }
+
 
   // ==================== Marketplace (In-Memory API Contract) ====================
   final List<RepairRequest> _marketRequests = [];
@@ -50,8 +82,17 @@ class AppState extends ChangeNotifier {
   bool _isOnline = true;
   final List<OfflineDraft> _offlineDrafts = [];
 
+  // ==================== Authenticated User (from Backend JWT) ====================
+  UserModel? _currentUser;
+
   // ==================== Role-Based Access ====================
-  UserRole _currentUserRole = UserRole.engineer; // default للـ demo
+  // Role is derived from _currentUser.userType when logged in.
+  // Falls back to engineer for unauthenticated / demo states.
+  UserRole _currentUserRole = UserRole.engineer;
+
+  /// Feature flag: when true, seeds in-memory demo data at startup.
+  /// Set to false when backend is fully connected.
+  static const bool useMockData = false;
 
   // ==================== Buildings & Projects ====================
   final List<Building> _buildings = [];
@@ -59,7 +100,7 @@ class AppState extends ChangeNotifier {
   final List<Annotation> _annotations = [];
 
   AppState() {
-    _seedDummyData();
+    if (useMockData) _seedDummyData();
     _loadPersistedData();
   }
 
@@ -89,9 +130,36 @@ class AppState extends ChangeNotifier {
   /// Total number of todos
   int get todosCount => _todos.length;
 
+  // ==================== Authenticated User Getters ====================
+
+  /// The authenticated user loaded from the backend after login.
+  UserModel? get currentUser => _currentUser;
+
+  /// Sets the authenticated user and syncs the local UserRole enum.
+  void setCurrentUser(UserModel? user) {
+    _currentUser = user;
+    if (user != null) {
+      _currentUserRole = _mapUserType(user.userType);
+    } else {
+      _currentUserRole = UserRole.engineer;
+    }
+    notifyListeners();
+  }
+
+  /// Maps backend `user_type` string → local [UserRole] enum.
+  static UserRole _mapUserType(String userType) {
+    switch (userType) {
+      case 'admin':           return UserRole.admin;
+      case 'field_engineer':  return UserRole.engineer;
+      case 'building_owner':  return UserRole.owner;
+      case 'repair_company':  return UserRole.companyAdmin;
+      default:                return UserRole.engineer;
+    }
+  }
+
   // ==================== Role Getters ====================
 
-  /// Current user role (mock until backend JWT is wired)
+  /// Current user role (derived from backend JWT userType).
   UserRole get currentUserRole => _currentUserRole;
 
   bool get isAdmin    => _currentUserRole == UserRole.admin;
@@ -334,6 +402,7 @@ class AppState extends ChangeNotifier {
 
     _offlineDrafts.add(draft);
     notifyListeners();
+    _saveOfflineDraftsLocally();
   }
 
   Future<void> syncOfflineDrafts() async {
@@ -342,12 +411,33 @@ class AppState extends ChangeNotifier {
     final drafts = List<OfflineDraft>.from(_offlineDrafts);
     if (drafts.isEmpty) return;
 
-    for (final d in drafts) {
-      createRepairRequest(d.request);
+    final synced = <String>[]; // ids synced successfully
+
+    for (final draft in drafts) {
+      try {
+        // Try to push to the real backend
+        final request = await MarketplaceRepository.instance.createRequest(
+          title: draft.request.title,
+          description: draft.request.description,
+          location: draft.request.location,
+          budgetMin: draft.request.budgetMin,
+          budgetMax: draft.request.budgetMax,
+          riskLevel: draft.request.riskLevel.name,
+          aiReportId: draft.request.aiReportId,
+        );
+        // Upsert into local state
+        createRepairRequest(request);
+        synced.add(draft.id);
+      } catch (_) {
+        // Keep draft if sync fails — will retry next time
+      }
     }
 
-    _offlineDrafts.clear();
-    notifyListeners();
+    if (synced.isNotEmpty) {
+      _offlineDrafts.removeWhere((d) => synced.contains(d.id));
+      notifyListeners();
+      _saveOfflineDraftsLocally();
+    }
   }
 
   // System config
@@ -860,6 +950,34 @@ class AppState extends ChangeNotifier {
     }).toList();
   }
 
+  /// Adds a company from the backend (upsert by id).
+  void addCompany(Company company) {
+    final idx = _companies.indexWhere((c) => c.id == company.id);
+    if (idx == -1) {
+      _companies.add(company);
+    } else {
+      _companies[idx] = company;
+    }
+    notifyListeners();
+  }
+
+  /// Bulk-upserts a list of companies (e.g. from GET /marketplace/engineers).
+  void addCompanies(List<Company> companies) {
+    bool changed = false;
+    for (final company in companies) {
+      final idx = _companies.indexWhere((c) => c.id == company.id);
+      if (idx == -1) {
+        _companies.add(company);
+        changed = true;
+      } else if (_companies[idx].name != company.name) {
+        _companies[idx] = company;
+        changed = true;
+      }
+    }
+    if (changed) notifyListeners();
+  }
+
+
   void _seedDummyData() {
     if (_marketRequests.isNotEmpty ||
         _pendingVerifications.isNotEmpty ||
@@ -1049,6 +1167,20 @@ class AppState extends ChangeNotifier {
   Future<void> _loadPersistedData() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // Load settings flags
+    _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+    _autoSaveReports = prefs.getBool('autoSaveReports') ?? true;
+    _autoUpdateModel = prefs.getBool('autoUpdateModel') ?? false;
+
+    // Load offline drafts
+    final draftsJson = prefs.getStringList(AppConstants.draftsStorageKey) ?? [];
+    _offlineDrafts.clear();
+    for (final raw in draftsJson) {
+      try {
+        _offlineDrafts.add(OfflineDraft.fromJson(jsonDecode(raw) as Map<String, dynamic>));
+      } catch (_) {}
+    }
+
     // Load user role
     final roleStr = prefs.getString(AppConstants.userRoleStorageKey);
     if (roleStr != null) {
@@ -1109,6 +1241,14 @@ class AppState extends ChangeNotifier {
     await prefs.setStringList(
       AppConstants.annotationsStorageKey,
       _annotations.map((a) => jsonEncode(a.toJson())).toList(),
+    );
+  }
+
+  Future<void> _saveOfflineDraftsLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      AppConstants.draftsStorageKey,
+      _offlineDrafts.map((d) => jsonEncode(d.toJson())).toList(),
     );
   }
 }

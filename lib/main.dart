@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'src/core/api_client.dart';
 import 'src/core/constants.dart';
 import 'src/store/app_state.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
@@ -35,8 +35,8 @@ Future<void> main() async {
   // Ensure Flutter bindings are initialized before using any plugins
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase (uses android/app/google-services.json on Android)
-  await Firebase.initializeApp();
+  // Initialize the HTTP client (Dio + interceptors)
+  await ApiClient.instance.init();
 
   runApp(const MyApp());
 }

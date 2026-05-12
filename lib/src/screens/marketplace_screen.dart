@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../design/shadows.dart';
+
+import '../store/app_state.dart';
+import '../models/marketplace_full_models.dart';
+import '../models/marketplace_models.dart';
+
 import 'create_listing_screen.dart';
 import 'browse_companies_screen.dart';
 import 'my_requests_screen.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import '../store/app_state.dart';
-import '../models/marketplace_models.dart';
 import 'browse_projects_screen.dart';
 import 'place_bid_dialog.dart';
 
@@ -47,6 +49,11 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
 
   @override
   Widget build(BuildContext context) {
+    final role = context.watch<AppState>().currentUserRole;
+    final isOwner = role == UserRole.owner;
+    final isCompany = role == UserRole.companyAdmin;
+    final showTabs = !isOwner && !isCompany;
+
     return Scaffold(
       backgroundColor: AppColors.grey50,
       appBar: AppBar(
@@ -62,7 +69,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
             onPressed: _showFilterSheet,
           ),
         ],
-        bottom: PreferredSize(
+        bottom: showTabs ? PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -77,7 +84,6 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
               ),
               child: TabBar(
                 controller: _tabController,
-
                 indicator: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(AppRadius.r12),
@@ -95,14 +101,15 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
               ),
             ),
           ),
-        ),
+        ) : null,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        physics:
-            const NeverScrollableScrollPhysics(), // Disable swipe to change tabs
-        children: [_buildOwnerView(), _buildCompanyView()],
-      ),
+      body: showTabs
+          ? TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [_buildOwnerView(), _buildCompanyView()],
+            )
+          : (isOwner ? _buildOwnerView() : _buildCompanyView()),
     );
   }
 
@@ -219,17 +226,17 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
   Widget _buildCompanyView() {
     return Consumer<AppState>(
       builder: (context, appState, _) {
-        final user = FirebaseAuth.instance.currentUser;
-        if (user == null) {
+        final currentUser = appState.currentUser;
+        if (currentUser == null) {
           return Center(
             child: Text(AppLocalizations.of(context)!.loginForCompanyView),
           );
         }
-
+        final userId = currentUser.id;
         // Get my active bids
         final myBids = appState.bids
             .where(
-              (b) => b.engineerId == user.uid && b.status == BidStatus.pending,
+              (b) => b.engineerId == userId && b.status == BidStatus.pending,
             )
             .toList();
 
@@ -385,8 +392,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen>
                             MaterialPageRoute(
                               builder: (_) => PlaceBidDialog(
                                 request: request,
-                                engineerId: user.uid,
-                                engineerName: user.displayName ?? 'Engineer',
+                                engineerId: userId,
+                                engineerName: currentUser.fullName,
                               ),
                             ),
                           );

@@ -5,7 +5,7 @@ import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
-import '../models/marketplace_full_models.dart';
+import '../core/api_exception.dart';
 import '../services/auth_service.dart';
 import '../store/app_state.dart';
 import 'login_screen.dart';
@@ -26,7 +26,8 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _showConfirmPassword = false;
   String _passwordError = '';
   bool _isLoading = false;
-  UserRole _selectedRole = UserRole.engineer;
+  // Local role selection for sending user_type to backend during signup
+  String _selectedRole = 'engineer';
 
   @override
   void initState() {
@@ -44,6 +45,16 @@ class _SignupScreenState extends State<SignupScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  // Maps local UserRole selection to backend user_type string
+  static String _roleToUserType(String role) {
+    switch (role) {
+      case 'engineer':     return 'field_engineer';
+      case 'owner':        return 'building_owner';
+      case 'companyAdmin': return 'repair_company';
+      default:             return 'field_engineer';
+    }
   }
 
   Future<void> _handleSignup() async {
@@ -73,40 +84,35 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      await AuthService.instance.signUpWithEmail(
+      final user = await AuthService.instance.signUpWithEmail(
+        fullName: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
+        userType: _roleToUserType(_selectedRole),
       );
 
       if (!mounted) return;
 
+      // Set user in AppState — role comes from backend JWT
+      context.read<AppState>().setCurrentUser(user);
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account created successfully')),
       );
 
-      // Set the chosen role in AppState
-      await context.read<AppState>().setUserRole(_selectedRole);
-      if (!mounted) return;
-
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _passwordError = e.message);
     } catch (e) {
       if (mounted) {
-        setState(() {
-          // Show full error text to help debugging (can be refined later)
-          _passwordError = 'Signup failed: $e';
-        });
+        setState(() => _passwordError = 'Signup failed. Please try again.');
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -361,17 +367,17 @@ class _InputField extends StatelessWidget {
   }
 }
 
-/// Role selection widget — same as in login_screen
+/// Role selection widget used during Signup to send user_type to backend.
 class _RoleSelector extends StatelessWidget {
-  final UserRole selected;
-  final ValueChanged<UserRole> onChanged;
+  final String selected;
+  final ValueChanged<String> onChanged;
 
   const _RoleSelector({required this.selected, required this.onChanged});
 
   static const _roles = [
-    (role: UserRole.engineer,     icon: Icons.engineering, label: 'Field Engineer'),
-    (role: UserRole.owner,        icon: Icons.home_work,   label: 'Building Owner'),
-    (role: UserRole.companyAdmin, icon: Icons.business,    label: 'Repair Company'),
+    (role: 'engineer',     icon: Icons.engineering, label: 'Field Engineer'),
+    (role: 'owner',        icon: Icons.home_work,   label: 'Building Owner'),
+    (role: 'companyAdmin', icon: Icons.business,    label: 'Repair Company'),
   ];
 
   @override
@@ -418,3 +424,4 @@ class _RoleSelector extends StatelessWidget {
     );
   }
 }
+

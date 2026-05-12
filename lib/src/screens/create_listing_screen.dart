@@ -1,13 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import '../repositories/marketplace_repository.dart';
+import '../models/offline_models.dart';
+import '../core/api_exception.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateListingScreen extends StatefulWidget {
   const CreateListingScreen({super.key});
@@ -27,6 +32,8 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
   RiskLevel _riskLevel = RiskLevel.low;
   final Set<String> _selectedServices = {};
   String? _selectedReport;
+  final List<XFile> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
   // Placeholder for reports - in real app, fetch from Reports provider
   final List<String> _availableReports = [
@@ -89,6 +96,15 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
                   ? AppLocalizations.of(context)!.listingDescriptionError
                   : null,
             ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Images Section
+            Text(
+              'Photos',
+              style: AppTypography.h4,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildImagePickerSection(),
             const SizedBox(height: AppSpacing.xl),
 
             // Risk & Report Section
@@ -287,7 +303,7 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
 
             // Publish Button
             ElevatedButton(
-              onPressed: _submitListing,
+              onPressed: _isSubmitting ? null : _submitListing,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary500,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
@@ -296,10 +312,15 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
                 ),
                 elevation: 2,
               ),
-              child: Text(
-                AppLocalizations.of(context)!.listingPublishAction,
-                style: AppTypography.button.copyWith(fontSize: 16),
-              ),
+              child: _isSubmitting
+                  ? const SizedBox(
+                      width: 20, height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: AppColors.white))
+                  : Text(
+                      AppLocalizations.of(context)!.listingPublishAction,
+                      style: AppTypography.button.copyWith(fontSize: 16),
+                    ),
             ),
           ],
         ),
@@ -307,72 +328,88 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
     );
   }
 
-  void _submitListing() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listingLoginError),
-          ),
-        );
-        return;
-      }
+  bool _isSubmitting = false;
 
-      // Calculate deadline
-      DateTime? deadline;
-      final now = DateTime.now();
-      if (_timeline == 'urgent') {
-        deadline = now.add(const Duration(days: 7));
-      } else if (_timeline == '1month') {
-        deadline = now.add(const Duration(days: 30));
-      } else if (_timeline == '3months') {
-        deadline = now.add(const Duration(days: 90));
-      } else {
-        deadline = now.add(const Duration(days: 30)); // Default for flexible
-      }
+  Future<void> _submitListing() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (_isSubmitting) return;
 
-      final request = RepairRequest(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        ownerId: user.uid,
-        title: _titleController.text,
-        description: _descriptionController.text,
-        images: [], // TODO: Add image picker
-        location: 'Cairo, Egypt', // TODO: Add location picker
-        status: RequestStatus.posted,
-        createdAt: now,
-        biddingEndsAt: deadline,
-        // New Fields
-        budgetMin: double.tryParse(_budgetMinController.text),
-        budgetMax: double.tryParse(_budgetMaxController.text),
-        riskLevel: _riskLevel,
-        aiReportId: _selectedReport,
+    final appState = Provider.of<AppState>(context, listen: false);
+    final currentUser = appState.currentUser;
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.listingLoginError)),
       );
+      return;
+    }
 
-      final appState = Provider.of<AppState>(
-        context,
-        listen: false,
-      );
+    setState(() => _isSubmitting = true);
 
+    try {
       if (!appState.isOnline) {
-        appState.saveOfflineDraft(request);
+        // ── Offline: save as draft ────────────────────────────────────────
+        final draft = OfflineDraft(
+          id: const Uuid().v4(),
+          request: RepairRequest(
+            id: const Uuid().v4(),
+            ownerId: currentUser.id,
+            title: _titleController.text.trim(),
+            description: _descriptionController.text.trim(),
+            images: _selectedImages.map((f) => f.path).toList(),
+            location: 'Cairo, Egypt',
+            status: RequestStatus.draft,
+            budgetMin: double.tryParse(_budgetMinController.text),
+            budgetMax: double.tryParse(_budgetMaxController.text),
+            riskLevel: _riskLevel,
+            createdAt: DateTime.now(),
+          ),
+          createdAt: DateTime.now(),
+        );
+        appState.saveOfflineDraft(draft.request);
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context)!.listingSuccess,
-            ),
+          const SnackBar(
+            content: Text('تم الحفظ كمسودة — سيُرسل عند استعادة الإنترنت'),
+            backgroundColor: AppColors.warningOrange,
           ),
         );
         Navigator.pop(context);
         return;
       }
 
+      // ── Online: send to backend ───────────────────────────────────────
+      final request = await MarketplaceRepository.instance.createRequest(
+        title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        location: 'Cairo, Egypt',
+        budgetMin: double.tryParse(_budgetMinController.text),
+        budgetMax: double.tryParse(_budgetMaxController.text),
+        riskLevel: _riskLevel.name,
+        aiReportId: _selectedReport,
+      );
+
       appState.createRepairRequest(request);
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.listingSuccess)),
+        SnackBar(content: Text(AppLocalizations.of(context)!.listingSuccess),
+            backgroundColor: AppColors.successGreen),
       );
       Navigator.pop(context);
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: AppColors.dangerRed),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('حدث خطأ، حاول مرة أخرى')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -476,6 +513,116 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          _selectedImages.add(image);
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick image: $e')),
+      );
+    }
+  }
+
+  Widget _buildImagePickerSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_selectedImages.isNotEmpty) ...[
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _selectedImages.length + 1,
+              itemBuilder: (context, index) {
+                if (index == _selectedImages.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: InkWell(
+                      onTap: _pickImage,
+                      child: Container(
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundLight,
+                          borderRadius: BorderRadius.circular(AppRadius.r12),
+                          border: Border.all(color: AppColors.borderLight, style: BorderStyle.solid),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.add_a_photo, color: AppColors.primary500),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadius.r12),
+                        child: Image.file(
+                          File(_selectedImages[index].path),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _selectedImages.removeAt(index);
+                            });
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(Icons.close, size: 16, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ] else ...[
+          InkWell(
+            onTap: _pickImage,
+            child: Container(
+              width: double.infinity,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppColors.backgroundLight,
+                borderRadius: BorderRadius.circular(AppRadius.r12),
+                border: Border.all(color: AppColors.borderLight, style: BorderStyle.solid),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.add_photo_alternate, size: 40, color: AppColors.grey400),
+                  const SizedBox(height: 8),
+                  Text('Add Photos', style: AppTypography.bodyText.copyWith(color: AppColors.grey500)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

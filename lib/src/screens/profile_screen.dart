@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import '../store/app_state.dart';
+import '../services/auth_service.dart';
 import '../widgets/app_button.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -15,14 +15,12 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    var displayName = user?.displayName ?? '';
-    if (displayName.isEmpty && user?.email != null) {
-      displayName = user!.email!.split('@')[0];
-    } else if (displayName.isEmpty) {
-      displayName = AppLocalizations.of(context)!.defaultUser;
-    }
-    final email = user?.email ?? AppLocalizations.of(context)!.noEmail;
+    final appState = context.watch<AppState>();
+    final currentUser = appState.currentUser;
+    final displayName = currentUser?.fullName.isNotEmpty == true
+        ? currentUser!.fullName
+        : (currentUser?.email.split('@').firstOrNull ?? AppLocalizations.of(context)!.defaultUser);
+    final email = currentUser?.email ?? AppLocalizations.of(context)!.noEmail;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -107,31 +105,31 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxl),
 
               // Statistics Grid
-              GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: AppSpacing.md,
-                mainAxisSpacing: AppSpacing.md,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _StatBox(
-                    value: '0', // TODO: Fetch real stats
-                    label: AppLocalizations.of(context)!.totalScans,
-                    textColor:
-                        Theme.of(context).textTheme.bodyLarge?.color ??
-                        AppColors.primary900,
-                    backgroundColor: Theme.of(context).cardColor,
-                  ),
-                  _StatBox(
-                    value: '0', // TODO: Fetch real stats
-                    label: AppLocalizations.of(context)!.highRisk,
-                    textColor:
-                        Theme.of(context).textTheme.bodyLarge?.color ??
-                        AppColors.primary900,
-                    backgroundColor: Theme.of(context).cardColor,
-                  ),
-                ],
-              ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: AppSpacing.md,
+                  mainAxisSpacing: AppSpacing.md,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _StatBox(
+                      value: '${appState.reportsCount}',
+                      label: AppLocalizations.of(context)!.totalScans,
+                      textColor:
+                          Theme.of(context).textTheme.bodyLarge?.color ??
+                          AppColors.primary900,
+                      backgroundColor: Theme.of(context).cardColor,
+                    ),
+                    _StatBox(
+                      value: '${appState.reports.where((r) => r.result.healthScore < 50).length}',
+                      label: AppLocalizations.of(context)!.highRisk,
+                      textColor:
+                          Theme.of(context).textTheme.bodyLarge?.color ??
+                          AppColors.primary900,
+                      backgroundColor: Theme.of(context).cardColor,
+                    ),
+                  ],
+                ),
               const SizedBox(height: AppSpacing.xxl),
 
               // Account Settings
@@ -226,7 +224,7 @@ class ProfileScreen extends StatelessWidget {
                     AppColors.primary900,
                 useGradient: false,
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.instance.logout();
                   if (context.mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       AppConstants.routeOnboarding,

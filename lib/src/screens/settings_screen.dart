@@ -50,8 +50,8 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.notifications,
                       title: l10n.settingsNotifications,
                       trailing: Switch(
-                        value: true, // TODO: Implement notifications state
-                        onChanged: (value) {},
+                        value: appState.notificationsEnabled,
+                        onChanged: (value) => appState.setNotificationsEnabled(value),
                       ),
                     ),
                   ],
@@ -63,8 +63,8 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.save,
                       title: l10n.settingsAutoSaveReports,
                       trailing: Switch(
-                        value: true, // TODO: Implement auto-save state
-                        onChanged: (value) {},
+                        value: appState.autoSaveReports,
+                        onChanged: (value) => appState.setAutoSaveReports(value),
                       ),
                     ),
                     _SettingsTile(
@@ -107,8 +107,8 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.update,
                       title: l10n.settingsAutoUpdate,
                       trailing: Switch(
-                        value: false, // TODO: Implement auto-update state
-                        onChanged: (value) {},
+                        value: appState.autoUpdateModel,
+                        onChanged: (value) => appState.setAutoUpdateModel(value),
                       ),
                     ),
                   ],

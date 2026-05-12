@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/token_storage_service.dart';
 import '../screens/welcome_screen.dart';
 
-/// Widget that protects routes requiring authentication
-/// 
-/// If user is not logged in, redirects to WelcomeScreen
-/// If user is logged in, shows the protected child widget
+/// Guards routes that require authentication.
+///
+/// Checks for a valid access token in [TokenStorageService].
+/// If no token is found, redirects to [WelcomeScreen].
+///
+/// Note: Token validity is enforced at the API layer via
+/// [RefreshInterceptor] — this guard only checks presence.
 class AuthGuard extends StatelessWidget {
   final Widget child;
 
@@ -16,27 +19,30 @@ class AuthGuard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    return FutureBuilder<String?>(
+      future: TokenStorageService.instance.accessToken(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    // If user is not logged in, redirect to WelcomeScreen
-    if (user == null) {
-      // Use Future.microtask to avoid build-time navigation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-          (route) => false,
-        );
-      });
-      // Show loading while redirecting
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+        final token = snapshot.data;
+        if (token == null || token.isEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              (route) => false,
+            );
+          });
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    // User is logged in, show protected content
-    return child;
+        return child;
+      },
+    );
   }
 }
-

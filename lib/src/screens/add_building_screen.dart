@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../store/app_state.dart';
-import '../models/building_models.dart';
+import '../repositories/building_repository.dart';
+import '../core/api_exception.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/radius.dart';
 
-/// Form screen to add a new building
+/// Form screen to add a new building via the backend API.
 class AddBuildingScreen extends StatefulWidget {
   const AddBuildingScreen({super.key});
 
@@ -21,6 +22,7 @@ class _AddBuildingScreenState extends State<AddBuildingScreen> {
   final _addressController = TextEditingController();
   final _yearController = TextEditingController();
   bool _isSaving = false;
+  String? _errorMsg;
 
   @override
   void dispose() {
@@ -32,31 +34,37 @@ class _AddBuildingScreenState extends State<AddBuildingScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    setState(() { _isSaving = true; _errorMsg = null; });
 
-    setState(() => _isSaving = true);
+    try {
+      final building = await BuildingRepository.instance.createBuilding(
+        name: _nameController.text.trim(),
+        address: _addressController.text.trim(),
+        yearBuilt: _yearController.text.isNotEmpty
+            ? int.tryParse(_yearController.text.trim())
+            : null,
+      );
 
-    final appState = context.read<AppState>();
-    final building = Building.create(
-      name: _nameController.text.trim(),
-      address: _addressController.text.trim(),
-      yearBuilt: _yearController.text.isNotEmpty
-          ? int.tryParse(_yearController.text.trim())
-          : null,
-      ownerId: 'current_user', // سيتم استبداله بـ JWT user_id من الباك
-    );
+      if (!mounted) return;
 
-    appState.addBuilding(building);
+      // Add the server-confirmed building to local AppState
+      context.read<AppState>().addBuilding(building);
 
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم إضافة "${building.name}" بنجاح'),
-        backgroundColor: AppColors.successGreen,
-      ),
-    );
-    Navigator.pop(context);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم إضافة "${building.name}" بنجاح'),
+          backgroundColor: AppColors.successGreen,
+        ),
+      );
+      Navigator.pop(context);
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _errorMsg = e.message);
+    } catch (_) {
+      if (mounted) setState(() => _errorMsg = 'حدث خطأ، حاول مرة أخرى');
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -75,6 +83,28 @@ class _AddBuildingScreenState extends State<AddBuildingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── API Error Banner ──────────────────────────────────────
+              if (_errorMsg != null)
+                Container(
+                  margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.dangerRed.withAlpha(20),
+                    borderRadius: BorderRadius.circular(AppRadius.r8),
+                    border: Border.all(color: AppColors.dangerRed),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline, color: AppColors.dangerRed, size: 18),
+                      const SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(_errorMsg!,
+                            style: AppTypography.bodySmall
+                                .copyWith(color: AppColors.dangerRed)),
+                      ),
+                    ],
+                  ),
+                ),
               _FieldLabel('اسم المبنى *'),
               _FormField(
                 controller: _nameController,

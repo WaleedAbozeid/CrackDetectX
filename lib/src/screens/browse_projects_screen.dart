@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
@@ -8,6 +7,8 @@ import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import '../repositories/marketplace_repository.dart';
+import '../core/api_exception.dart';
 import 'place_bid_dialog.dart';
 
 class BrowseProjectsScreen extends StatefulWidget {
@@ -25,6 +26,39 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
   double? _minBudget;
   double? _maxBudget;
   String? _location;
+
+  // API State
+  bool _isLoading = false;
+  String? _errorMsg;
+  List<RepairRequest> _apiRequests = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRequests();
+  }
+
+  Future<void> _loadRequests() async {
+    setState(() { _isLoading = true; _errorMsg = null; });
+    try {
+      final requests = await MarketplaceRepository.instance.getRequests();
+      if (!mounted) return;
+      setState(() => _apiRequests = requests);
+      // Also sync into AppState so other screens benefit
+      final appState = context.read<AppState>();
+      for (final r in requests) {
+        if (!appState.marketRequests.any((e) => e.id == r.id)) {
+          appState.createRepairRequest(r);
+        }
+      }
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _errorMsg = e.message);
+    } catch (_) {
+      // Silently fall back to AppState cache
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -50,14 +84,29 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
-      body: Consumer<AppState>(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Consumer<AppState>(
         builder: (context, appState, _) {
-          final availableRequests = appState.getPublicRequests(
-            query: _searchQuery,
-            minBudget: _minBudget,
-            maxBudget: _maxBudget,
-            location: _location,
-          );
+          // Merge API results + local AppState
+          final allRequests = {
+            for (final r in _apiRequests) r.id: r,
+            for (final r in appState.marketRequests) r.id: r,
+          }.values.toList();
+
+          final availableRequests = allRequests.where((r) {
+            if (_searchQuery != null && _searchQuery!.isNotEmpty) {
+              final q = _searchQuery!.toLowerCase();
+              if (!r.title.toLowerCase().contains(q) &&
+                  !r.description.toLowerCase().contains(q)) {
+                return false;
+              }
+            }
+            if (_minBudget != null && (r.budgetMax ?? 0) < _minBudget!) return false;
+            if (_maxBudget != null && (r.budgetMin ?? double.infinity) > _maxBudget!) return false;
+            if (_location != null && !r.location.contains(_location!)) return false;
+            return true;
+          }).toList();
 
           return Column(
             children: [
@@ -120,6 +169,24 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                 ),
               ),
 
+              if (_errorMsg != null)
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  color: AppColors.dangerRed.withValues(alpha: 0.1),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning_amber, color: AppColors.dangerRed, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                          child: Text(_errorMsg!, style: AppTypography.caption.copyWith(color: AppColors.dangerRed))),
+                      TextButton(
+                        onPressed: _loadRequests,
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
+                  ),
+                ),
+
               Expanded(
                 child: availableRequests.isEmpty
                     ? Center(
@@ -154,18 +221,21 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
                           ],
                         ),
                       )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(AppSpacing.lg),
-                        itemCount: availableRequests.length,
-                        itemBuilder: (context, index) {
-                          final request = availableRequests[index];
-                          return _ProjectCard(
-                            request: request,
-                            onTap: () =>
-                                _showPlaceBidDialog(context, request, l10n),
-                            l10n: l10n,
-                          );
-                        },
+                    : RefreshIndicator(
+                        onRefresh: _loadRequests,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          itemCount: availableRequests.length,
+                          itemBuilder: (context, index) {
+                            final request = availableRequests[index];
+                            return _ProjectCard(
+                              request: request,
+                              onTap: () =>
+                                  _showPlaceBidDialog(context, request, l10n),
+                              l10n: l10n,
+                            );
+                          },
+                        ),
                       ),
               ),
             ],
@@ -314,7 +384,8 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
     RepairRequest request,
     AppLocalizations l10n,
   ) {
-    final user = FirebaseAuth.instance.currentUser;
+    final appState = Provider.of<AppState>(context, listen: false);
+    final user = appState.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(
         context,
@@ -326,9 +397,9 @@ class _BrowseProjectsScreenState extends State<BrowseProjectsScreen> {
       context: context,
       builder: (ctx) => PlaceBidDialog(
         request: request,
-        engineerId: user.uid,
+        engineerId: user.id,
         engineerName:
-            user.displayName ?? user.email?.split('@')[0] ?? 'Engineer',
+            user.fullName,
       ),
     );
   }

@@ -1,26 +1,42 @@
-// This is a basic Flutter widget test.
+// Widget smoke test for CrackDetectX.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Verifies that the app starts without crashing and that the Splash screen
+// renders its key elements correctly.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:crackdetectx/main.dart';
 
 void main() {
-  testWidgets('App smoke test - shows Welcome', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Only validate the initial Splash frame.
-    // We intentionally avoid `pumpAndSettle()` because the app auto-navigates
-    // to Onboarding after a delay, and Onboarding currently overflows in tests.
-    await tester.pump();
-
-    expect(find.text('CrackDetectX'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  setUp(() {
+    // No saved tokens → restoreSession will find nothing → onboarding.
+    SharedPreferences.setMockInitialValues({});
   });
+
+  testWidgets(
+    'Splash screen renders app name and loading indicator',
+    (WidgetTester tester) async {
+      // Set a realistic phone screen size to prevent overflow assertions.
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      // Build the app — only the Splash screen renders initially.
+      await tester.pumpWidget(const MyApp());
+      await tester.pump(); // one frame: Splash is visible
+
+      // ── Splash assertions ──────────────────────────────────────────────
+      expect(find.text('CrackDetectX'), findsOneWidget,
+          reason: 'Splash should show app name');
+      expect(find.byType(CircularProgressIndicator), findsOneWidget,
+          reason: 'Splash should show loading indicator');
+
+      // Allow the 2-second timer + session restore to complete cleanly.
+      // This prevents "A Timer is still pending" assertion failures.
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    },
+  );
 }

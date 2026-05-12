@@ -54,6 +54,33 @@ class SupportTicket {
       resolutionNote: resolutionNote ?? this.resolutionNote,
     );
   }
+
+  factory SupportTicket.fromJson(Map<String, dynamic> json) {
+    return SupportTicket(
+      id: (json['id'] ?? json['_id'] ?? json['ticket_id'] ?? '').toString(),
+      userId: (json['user_id'] ?? json['userId'] ?? '').toString(),
+      userName: (json['user_name'] ?? json['userName'] ?? '').toString(),
+      subject: (json['subject'] ?? '').toString(),
+      description: (json['description'] ?? json['message'] ?? '').toString(),
+      status: SupportTicketStatus.values.firstWhere(
+        (e) => e.name == (json['status'] ?? 'open'),
+        orElse: () => SupportTicketStatus.open,
+      ),
+      priority: NotificationPriority.values.firstWhere(
+        (e) => e.name == (json['priority'] ?? 'medium'),
+        orElse: () => NotificationPriority.medium,
+      ),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'].toString())
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'].toString())
+              : DateTime.now(),
+      resolvedAt: json['resolved_at'] != null
+          ? DateTime.parse(json['resolved_at'].toString())
+          : null,
+      resolutionNote: json['resolution_note']?.toString(),
+    );
+  }
 }
 
 class AppNotification {
@@ -86,6 +113,25 @@ class AppNotification {
       isRead: isRead ?? this.isRead,
       createdAt: createdAt,
       priority: priority,
+    );
+  }
+
+  factory AppNotification.fromJson(Map<String, dynamic> json) {
+    return AppNotification(
+      id: (json['id'] ?? json['_id'] ?? json['notification_id'] ?? '').toString(),
+      userId: (json['user_id'] ?? json['userId'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      body: (json['body'] ?? json['message'] ?? json['content'] ?? '').toString(),
+      isRead: json['is_read'] ?? json['isRead'] ?? json['read'] ?? false,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'].toString())
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'].toString())
+              : DateTime.now(),
+      priority: NotificationPriority.values.firstWhere(
+        (e) => e.name == (json['priority'] ?? 'medium'),
+        orElse: () => NotificationPriority.medium,
+      ),
     );
   }
 }

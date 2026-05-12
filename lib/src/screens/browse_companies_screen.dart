@@ -7,6 +7,8 @@ import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import '../repositories/marketplace_repository.dart';
+import '../core/api_exception.dart';
 import 'company_profile_screen.dart';
 
 class BrowseCompaniesScreen extends StatefulWidget {
@@ -22,14 +24,34 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
 
   // Filter State
   String? _searchQuery;
-  String? _selectedRating; // "4", "4.5"
+  String? _selectedRating;
   String? _selectedLocation;
   bool _verifiedOnly = false;
 
+  // API State
+  bool _isLoading = false;
+  String? _errorMsg;
+
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadEngineers();
+  }
+
+  Future<void> _loadEngineers() async {
+    setState(() { _isLoading = true; _errorMsg = null; });
+    try {
+      final engineers = await MarketplaceRepository.instance.getEngineers();
+      if (!mounted) return;
+      // Sync into AppState so getCompanies() filter works
+      context.read<AppState>().addCompanies(engineers);
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _errorMsg = e.message);
+    } catch (_) {
+      // Silently fall back to seeded/cached data
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   void _updateFilters(AppLocalizations l10n) {
@@ -62,7 +84,9 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
-      body: Consumer<AppState>(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Consumer<AppState>(
         builder: (context, appState, _) {
           final companies = appState.getCompanies(
             query: _searchQuery,
@@ -164,6 +188,24 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                 ),
               ),
 
+              if (_errorMsg != null)
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  color: AppColors.dangerRed.withValues(alpha: 0.1),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning_amber, color: AppColors.dangerRed, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(child: Text(_errorMsg!,
+                          style: AppTypography.caption.copyWith(color: AppColors.dangerRed))),
+                      TextButton(
+                        onPressed: _loadEngineers,
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
+                  ),
+                ),
+
               // Company List
               Expanded(
                 child: companies.isEmpty
@@ -175,13 +217,16 @@ class _BrowseCompaniesScreenState extends State<BrowseCompaniesScreen> {
                           ),
                         ),
                       )
-                    : ListView.separated(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        itemCount: companies.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: AppSpacing.md),
-                        itemBuilder: (context, index) =>
-                            _buildCompanyCard(companies[index], l10n),
+                    : RefreshIndicator(
+                        onRefresh: _loadEngineers,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          itemCount: companies.length,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: AppSpacing.md),
+                          itemBuilder: (context, index) =>
+                              _buildCompanyCard(companies[index], l10n),
+                        ),
                       ),
               ),
             ],

@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../store/app_state.dart';
 import '../ai/model_stub.dart';
 import '../ai/types.dart';
+import '../repositories/scan_repository.dart';
+import '../models/scan_model.dart';
+import '../core/api_exception.dart';
 import 'result_screen.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/scanner_overlay.dart';
@@ -22,7 +25,6 @@ class AIProcessingScreen extends StatefulWidget {
 class _AIProcessingScreenState extends State<AIProcessingScreen> {
   ScanStatus _currentStatus = ScanStatus.queued;
 
-  // Maps each status to its display label
   String get _statusLabel => switch (_currentStatus) {
         ScanStatus.queued    => 'في انتظار المعالجة...',
         ScanStatus.analyzing => 'جاري تحليل الصورة...',
@@ -39,13 +41,13 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
     _runStatusAnimation();
   }
 
-  /// Animated status progression matching the backend's real stages
+  /// Visual progress animation — runs in parallel with the backend call.
   Future<void> _runStatusAnimation() async {
     final stages = [
       (ScanStatus.queued,    500),
-      (ScanStatus.analyzing, 1200),
-      (ScanStatus.detecting, 1200),
-      (ScanStatus.reporting, 800),
+      (ScanStatus.analyzing, 1500),
+      (ScanStatus.detecting, 1500),
+      (ScanStatus.reporting, 1000),
     ];
     for (final (status, delay) in stages) {
       await Future.delayed(Duration(milliseconds: delay));
@@ -55,10 +57,34 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
 
   Future<void> _runProcessing() async {
     final appState = Provider.of<AppState>(context, listen: false);
-    final img = appState.selectedImagePath;
+    final imagePath  = appState.selectedImagePath;   // single (legacy)
+    final buildingId = appState.selectedBuildingId;
+
+    // Build the list — use multi-image list when available, otherwise wrap single
+    final imagePaths = (imagePath != null && imagePath.isNotEmpty)
+        ? [imagePath]
+        : <String>[];
+
     try {
-      await Future.delayed(const Duration(seconds: 4));
-      final result = await processImageStub(img ?? '');
+      DetectionResult result;
+
+      if (!AppState.useMockData && imagePaths.isNotEmpty) {
+        // ── Live backend path ──────────────────────────────────────────
+        final ScanModel scan = await ScanRepository.instance.createScan(
+          imagePaths: imagePaths,   // plural — required by Postman / 2 AI Models
+          buildingId: buildingId,
+        );
+        final ScanModel completed = await ScanRepository.instance.pollUntilDone(
+          scan.id,
+          intervalSeconds: 3,
+        );
+        result = _toDetectionResult(completed);
+      } else {
+        // ── Demo / mock fallback (AppState.useMockData = true) ─────────
+        await Future.delayed(const Duration(seconds: 4));
+        result = await processImageStub(imagePath ?? '');
+      }
+
       appState.setDetectionResult(result);
       if (!mounted) return;
       setState(() => _currentStatus = ScanStatus.done);
@@ -68,12 +94,51 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
         context,
         MaterialPageRoute(builder: (_) => const ResultScreen()),
       );
-    } catch (e) {
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), backgroundColor: AppColors.dangerRed),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const ResultScreen(error: true)),
+      );
+    } catch (_) {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const ResultScreen(error: true)),
       );
+    }
+  }
+
+  /// Converts [ScanModel] + [AiResultModel] → [DetectionResult]
+  /// for backward compatibility with ResultScreen.
+  DetectionResult _toDetectionResult(ScanModel scan) {
+    final ai = scan.result;
+    return DetectionResult(
+      id: scan.id,
+      mask: DetectionMask(
+        base64Data: '',
+        overlayPath: ai?.maskImageUrl,
+      ),
+      metrics: DetectionMetrics(
+        confidence:    ai?.confidence ?? 0.0,
+        severity:      _mapSeverity(ai?.severity ?? 'low'),
+        lengthMeters:  (ai?.crackAreaPercent ?? 0.0) / 10,
+        maxWidthMeters: 0.0,
+      ),
+      timestamp: scan.completedAt ?? DateTime.now(),
+      healthScore: ai?.healthScore ?? 100,
+    );
+  }
+
+  Severity _mapSeverity(String s) {
+    switch (s) {
+      case 'critical':
+      case 'high':   return Severity.high;
+      case 'medium': return Severity.medium;
+      default:       return Severity.low;
     }
   }
 
@@ -90,7 +155,6 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image with scanner overlay
               if (imagePath != null)
                 Expanded(
                   flex: 3,
@@ -124,7 +188,6 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // Status pipeline indicator
               Expanded(
                 flex: 1,
                 child: Column(
@@ -133,17 +196,14 @@ class _AIProcessingScreenState extends State<AIProcessingScreen> {
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       _statusLabel,
-                      style: AppTypography.h3.copyWith(
-                        color: AppColors.primary900,
-                      ),
+                      style: AppTypography.h3.copyWith(color: AppColors.primary900),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'يرجى الانتظار بينما يفحص الذكاء الاصطناعي الصورة.',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                          color: AppColors.textSecondary),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -180,7 +240,6 @@ class _ScanStatusStepper extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(_steps.length * 2 - 1, (i) {
         if (i.isOdd) {
-          // Connector line
           final stepIdx = i ~/ 2;
           final passed = stepIdx < _currentIndex;
           return Expanded(
@@ -190,10 +249,9 @@ class _ScanStatusStepper extends StatelessWidget {
             ),
           );
         }
-        // Step circle
         final stepIdx = i ~/ 2;
         final step = _steps[stepIdx];
-        final isDone = stepIdx < _currentIndex;
+        final isDone   = stepIdx < _currentIndex;
         final isActive = stepIdx == _currentIndex;
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -204,19 +262,14 @@ class _ScanStatusStepper extends StatelessWidget {
               height: 28,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isDone
-                    ? AppColors.primary500
-                    : isActive
-                        ? AppColors.primary500
-                        : AppColors.grey200,
+                color: (isDone || isActive) ? AppColors.primary500 : AppColors.grey200,
               ),
               child: Center(
                 child: isDone
                     ? const Icon(Icons.check, color: AppColors.white, size: 14)
                     : isActive
                         ? const SizedBox(
-                            width: 12,
-                            height: 12,
+                            width: 12, height: 12,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               color: AppColors.white,
@@ -229,9 +282,7 @@ class _ScanStatusStepper extends StatelessWidget {
             Text(
               step.label,
               style: AppTypography.caption.copyWith(
-                color: (isDone || isActive)
-                    ? AppColors.primary500
-                    : AppColors.grey400,
+                color: (isDone || isActive) ? AppColors.primary500 : AppColors.grey400,
                 fontSize: 9,
               ),
             ),

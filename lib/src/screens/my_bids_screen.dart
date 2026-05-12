@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -13,9 +12,10 @@ class MyBidsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    final appState = context.watch<AppState>();
+    final currentUser = appState.currentUser;
 
-    if (user == null) {
+    if (currentUser == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('My Bids')),
         body: const Center(child: Text('Please log in to view your bids')),
@@ -39,7 +39,7 @@ class MyBidsScreen extends StatelessWidget {
       body: Consumer<AppState>(
         builder: (context, appState, _) {
           final allBids = appState.bids
-              .where((bid) => bid.engineerId == user.uid)
+              .where((bid) => bid.engineerId == currentUser.id)
               .toList();
 
           if (allBids.isEmpty) {

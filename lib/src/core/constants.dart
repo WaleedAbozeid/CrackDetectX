@@ -1,3 +1,5 @@
+import 'env.dart';
+
 /// Application-wide constants for CrackDetectX
 class AppConstants {
   AppConstants._(); // Private constructor to prevent instantiation
@@ -38,6 +40,12 @@ class AppConstants {
   static const String projectsStorageKey = 'crackdetectx_projects';
   static const String annotationsStorageKey = 'crackdetectx_annotations';
   static const String userRoleStorageKey = 'crackdetectx_user_role';
+  static const String authTokensStorageKey = 'crackdetectx_auth_tokens';
+  static const String draftsStorageKey = 'crackdetectx_drafts';
+
+  // ==================== BACKEND API ====================
+  /// ⚠️  لا تغير هذا السطر — غيّر الـ URL في lib/src/core/env.dart
+  static String get apiBaseUrl => AppEnv.baseUrl;
 
   // ==================== PDF GENERATION ====================
   static const String pdfFileNamePrefix = 'crack_report_';

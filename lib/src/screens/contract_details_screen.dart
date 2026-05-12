@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
 import '../design/colors.dart';
@@ -28,7 +27,7 @@ class ContractDetailsScreen extends StatelessWidget {
             return const Center(child: Text('Contract not found'));
           }
 
-          final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+          final currentUserId = appState.currentUser?.id ?? '';
           final isOwner = contract.ownerId == currentUserId;
           final isEngineer = contract.engineerId == currentUserId;
 

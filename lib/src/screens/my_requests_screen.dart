@@ -1,22 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../design/colors.dart';
 import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import '../repositories/marketplace_repository.dart';
+import '../core/api_exception.dart';
 import 'request_details_screen.dart';
 
-class MyRequestsScreen extends StatelessWidget {
+class MyRequestsScreen extends StatefulWidget {
   const MyRequestsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+  State<MyRequestsScreen> createState() => _MyRequestsScreenState();
+}
 
-    if (user == null) {
+class _MyRequestsScreenState extends State<MyRequestsScreen> {
+  bool _isLoading = false;
+  String? _errorMsg;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMyRequests();
+  }
+
+  Future<void> _loadMyRequests() async {
+    setState(() { _isLoading = true; _errorMsg = null; });
+    try {
+      final requests = await MarketplaceRepository.instance.getMyRequests();
+      if (!mounted) return;
+      final appState = context.read<AppState>();
+      for (final r in requests) {
+        if (!appState.marketRequests.any((e) => e.id == r.id)) {
+          appState.createRepairRequest(r);
+        }
+      }
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _errorMsg = e.message);
+    } catch (_) {
+      // fall back to local cache silently
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    final currentUser = appState.currentUser;
+
+    if (currentUser == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('My Requests')),
         body: const Center(child: Text('Please log in to view your requests')),
@@ -37,60 +73,72 @@ class MyRequestsScreen extends StatelessWidget {
           style: AppTypography.h3.copyWith(color: AppColors.primary900),
         ),
       ),
-      body: Consumer<AppState>(
-        builder: (context, appState, _) {
-          final myRequests = appState.getRequestsForOwner(user.uid);
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Consumer<AppState>(
+              builder: (context, appState, _) {
+                final myRequests = appState.getRequestsForOwner(currentUser.id);
 
-          if (myRequests.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.folder_open, size: 80, color: AppColors.grey400),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    'No projects yet',
-                    style: AppTypography.h4.copyWith(color: AppColors.grey600),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Create your first repair request',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.grey500,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            itemCount: myRequests.length,
-            itemBuilder: (context, index) {
-              final request = myRequests[index];
-              final bidsCount = appState.getBidsForRequest(request.id).length;
-
-              return _RequestCard(
-                request: request,
-                bidsCount: bidsCount,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          RequestDetailsScreen(requestId: request.id),
+                if (myRequests.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.folder_open, size: 80, color: AppColors.grey400),
+                        const SizedBox(height: AppSpacing.lg),
+                        Text(
+                          'No projects yet',
+                          style: AppTypography.h4.copyWith(color: AppColors.grey600),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Create your first repair request',
+                          style: AppTypography.bodySmall.copyWith(color: AppColors.grey500),
+                        ),
+                        if (_errorMsg != null) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          Text(_errorMsg!,
+                              style: AppTypography.caption.copyWith(color: AppColors.dangerRed)),
+                          TextButton(
+                            onPressed: _loadMyRequests,
+                            child: const Text('إعادة المحاولة'),
+                          ),
+                        ],
+                      ],
                     ),
                   );
-                },
-              );
-            },
-          );
-        },
-      ),
+                }
+
+                return RefreshIndicator(
+                  onRefresh: _loadMyRequests,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    itemCount: myRequests.length,
+                    itemBuilder: (context, index) {
+                      final request = myRequests[index];
+                      final bidsCount = appState.getBidsForRequest(request.id).length;
+
+                      return _RequestCard(
+                        request: request,
+                        bidsCount: bidsCount,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RequestDetailsScreen(requestId: request.id),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
     );
   }
 }
+
 
 class _RequestCard extends StatelessWidget {
   final RepairRequest request;

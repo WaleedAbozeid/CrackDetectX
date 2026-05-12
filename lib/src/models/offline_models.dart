@@ -37,5 +37,28 @@ class OfflineDraft {
       syncedAt: syncedAt ?? this.syncedAt,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'request': request.toJson(),
+      'status': status.name,
+      'createdAt': createdAt.toIso8601String(),
+      'syncedAt': syncedAt?.toIso8601String(),
+    };
+  }
+
+  factory OfflineDraft.fromJson(Map<String, dynamic> json) {
+    return OfflineDraft(
+      id: json['id'] as String,
+      request: RepairRequest.fromJson(json['request'] as Map<String, dynamic>),
+      status: OfflineDraftStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => OfflineDraftStatus.pendingSync,
+      ),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      syncedAt: json['syncedAt'] != null ? DateTime.parse(json['syncedAt'] as String) : null,
+    );
+  }
 }
 

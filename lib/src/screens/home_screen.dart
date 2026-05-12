@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:crackdetectx/l10n/app_localizations.dart';
+import '../store/app_state.dart';
+import '../models/marketplace_full_models.dart';
 import '../widgets/card.dart' as app_card;
 import '../design/typography.dart';
 import '../design/spacing.dart';
@@ -28,78 +31,54 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final role = context.watch<AppState>().currentUserRole;
+    final isCompany = role == UserRole.companyAdmin;
+    final isOwner = role == UserRole.owner;
+    final isEngineer = role == UserRole.engineer;
+
+    // Define tabs based on role
+    final List<_NavigationTab> tabs = [];
+    if (isCompany) {
+      tabs.add(_NavigationTab(l10n.navHome, Icons.home_outlined, Icons.home, () {}));
+      tabs.add(_NavigationTab(l10n.navMarket, Icons.store_outlined, Icons.store, () => _nav(const MarketplaceScreen())));
+      tabs.add(_NavigationTab(l10n.navProfile, Icons.person_outline, Icons.person, () => _nav(const ProfileScreen())));
+    } else if (isOwner) {
+      tabs.add(_NavigationTab(l10n.navHome, Icons.home_outlined, Icons.home, () {}));
+      tabs.add(_NavigationTab(l10n.navReports, Icons.description_outlined, Icons.description, () => _nav(const ReportsListScreen())));
+      tabs.add(_NavigationTab(l10n.navMarket, Icons.store_outlined, Icons.store, () => _nav(const MarketplaceScreen())));
+      tabs.add(_NavigationTab(l10n.navProfile, Icons.person_outline, Icons.person, () => _nav(const ProfileScreen())));
+    } else {
+      // Engineer (default)
+      tabs.add(_NavigationTab(l10n.navHome, Icons.home_outlined, Icons.home, () {}));
+      tabs.add(_NavigationTab(l10n.navScan, Icons.scanner_outlined, Icons.scanner, () => _nav(const ScanScreen())));
+      tabs.add(_NavigationTab(l10n.navReports, Icons.description_outlined, Icons.description, () => _nav(const ReportsListScreen())));
+      tabs.add(_NavigationTab(l10n.navMarket, Icons.store_outlined, Icons.store, () => _nav(const MarketplaceScreen())));
+      tabs.add(_NavigationTab(l10n.navProfile, Icons.person_outline, Icons.person, () => _nav(const ProfileScreen())));
+    }
+
+    if (_currentIndex >= tabs.length) {
+      _currentIndex = 0;
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.grey50,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          // Navigate to different screens based on index
-          switch (index) {
-            case 0:
-              // Already on home
-              break;
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ScanScreen()),
-              );
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ReportsListScreen()),
-              );
-              break;
-            case 3:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
-              );
-              break;
-            case 4:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfileScreen()),
-              );
-              break;
-          }
+          if (index == 0) return; // Already on home
+          tabs[index].onTap();
         },
         type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.primaryLight,
         unselectedItemColor: AppColors.textSecondary,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: l10n.navHome,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.scanner_outlined),
-            activeIcon: Icon(Icons.scanner),
-            label: l10n.navScan,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description_outlined),
-            activeIcon: Icon(Icons.description),
-            label: l10n.navReports,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store_outlined),
-            activeIcon: Icon(Icons.store),
-            label: l10n.navMarket,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: l10n.navProfile,
-          ),
-        ],
+        items: tabs.map((tab) => BottomNavigationBarItem(
+          icon: Icon(tab.icon),
+          activeIcon: Icon(tab.activeIcon),
+          label: tab.label,
+        )).toList(),
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -166,60 +145,61 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: AppSpacing.lg),
 
-                        // AI Status Card (Glass effect)
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withAlpha((0.1 * 255).toInt()),
-                            borderRadius: BorderRadius.circular(AppRadius.r16),
-                            border: Border.all(
-                              color: Colors.white.withAlpha((0.2 * 255).toInt()),
+                        // AI Status Card (Glass effect) - ONLY for Engineer
+                        if (isEngineer)
+                          Container(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha((0.1 * 255).toInt()),
+                              borderRadius: BorderRadius.circular(AppRadius.r16),
+                              border: Border.all(
+                                color: Colors.white.withAlpha((0.2 * 255).toInt()),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.successGreen,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        l10n.homeAiModelStatus,
+                                        style: AppTypography.bodySmall.copyWith(
+                                          color: AppColors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        l10n.homeAiReadyToAnalyze,
+                                        style: AppTypography.caption.copyWith(
+                                          color: AppColors.primary100,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                Icon(
+                                  Icons.brightness_1,
+                                  color: AppColors.successGreen,
+                                  size: 8,
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: AppColors.successGreen,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check_circle,
-                                  color: AppColors.white,
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      l10n.homeAiModelStatus,
-                                      style: AppTypography.bodySmall.copyWith(
-                                        color: AppColors.white,
-                                      ),
-                                    ),
-                                    Text(
-                                      l10n.homeAiReadyToAnalyze,
-                                      style: AppTypography.caption.copyWith(
-                                        color: AppColors.primary100,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Icon(
-                                Icons.brightness_1,
-                                color: AppColors.successGreen,
-                                size: 8,
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -234,38 +214,74 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Action Buttons
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _ActionButton(
-                            icon: Icons.camera_alt,
-                            label: l10n.homeScanWithCamera,
-                            colors: [AppColors.primary900, AppColors.primary700],
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const ScanScreen(),
-                              ),
+                    // Action Buttons (Role-specific)
+                    if (isEngineer) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.camera_alt,
+                              label: l10n.homeScanWithCamera,
+                              colors: [AppColors.primary900, AppColors.primary700],
+                              onPressed: () => _nav(const ScanScreen()),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: _ActionButton(
-                            icon: Icons.cloud_upload,
-                            label: l10n.homeUploadImage,
-                            colors: [AppColors.primary500, Colors.cyan],
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const ScanScreen(),
-                              ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.cloud_upload,
+                              label: l10n.homeUploadImage,
+                              colors: [AppColors.primary500, Colors.cyan],
+                              onPressed: () => _nav(const ScanScreen()),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ] else if (isOwner) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.add_business,
+                              label: 'New Request',
+                              colors: [AppColors.primary900, AppColors.primary700],
+                              onPressed: () => _nav(const MarketplaceScreen()),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.description,
+                              label: 'My Reports',
+                              colors: [AppColors.primary500, Colors.cyan],
+                              onPressed: () => _nav(const ReportsListScreen()),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else if (isCompany) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.store,
+                              label: 'Browse Market',
+                              colors: [AppColors.primary900, AppColors.primary700],
+                              onPressed: () => _nav(const MarketplaceScreen()),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: _ActionButton(
+                              icon: Icons.gavel,
+                              label: 'My Bids',
+                              colors: [AppColors.primary500, Colors.cyan],
+                              onPressed: () => _nav(const MarketplaceScreen()),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.xxl),
 
                     // Previous Reports Card
@@ -436,6 +452,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  void _nav(Widget screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => screen),
+    );
+  }
+}
+
+class _NavigationTab {
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
+  final VoidCallback onTap;
+
+  _NavigationTab(this.label, this.icon, this.activeIcon, this.onTap);
 }
 
 class _ActionButton extends StatelessWidget {

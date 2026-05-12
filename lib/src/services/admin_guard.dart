@@ -1,29 +1,22 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import '../models/admin_models.dart';
 import '../store/app_state.dart';
 
-/// Admin Permission Guard Service
+/// Admin Permission Guard Service.
 ///
-/// Checks admin permissions before allowing access to admin-only features.
-/// Uses [AppState.isAdmin] as the primary source of truth.
-/// Firebase email is kept as a secondary fallback for the demo.
+/// Uses `currentUser.userType` from [AppState] (sourced from the backend JWT)
+/// as the single source of truth. No Firebase fallback.
 class AdminGuard {
-  /// Check if current user has admin permissions
+  /// Returns true if the logged-in user has admin privileges.
   static bool isAdmin(AppState appState) {
-    // Primary: check role in AppState (set at login)
-    if (appState.isAdmin) return true;
-
-    // Fallback demo: allow email containing 'admin' (remove after backend RBAC)
-    final email = FirebaseAuth.instance.currentUser?.email?.toLowerCase() ?? '';
-    return email.contains('admin');
+    return appState.isAdmin;
   }
 
-  /// Check if current user has a specific permission
+  /// Checks if user has a specific permission.
+  /// Currently all admins have all permissions (can be extended per role).
   static bool hasPermission(AppState appState, AdminPermission permission) {
     return isAdmin(appState);
   }
 
-  /// Check if current user has any of the specified permissions
   static bool hasAnyPermission(
     AppState appState,
     List<AdminPermission> permissions,
@@ -31,7 +24,6 @@ class AdminGuard {
     return isAdmin(appState);
   }
 
-  /// Check if current user has all of the specified permissions
   static bool hasAllPermissions(
     AppState appState,
     List<AdminPermission> permissions,
@@ -39,42 +31,24 @@ class AdminGuard {
     return isAdmin(appState);
   }
 
-  /// Check if current user has a specific admin role
   static bool hasRole(AppState appState, AdminRole role) {
     return isAdmin(appState);
   }
 
-  /// Check if current user is a Super Admin
   static bool isSuperAdmin(AppState appState) {
-    return hasRole(appState, AdminRole.superAdmin);
+    return isAdmin(appState);
   }
 
-  // ==================== Feature Permission Checks ====================
+  // ─── Feature permission checks ─────────────────────────────────────────
 
-  static bool canManageVerifications(AppState appState) =>
-      hasPermission(appState, AdminPermission.approveVerification);
+  static bool canManageVerifications(AppState appState) => isAdmin(appState);
+  static bool canResolveDisputes(AppState appState) => isAdmin(appState);
+  static bool canEditSystemConfig(AppState appState) => isAdmin(appState);
+  static bool canViewAuditLogs(AppState appState) => isAdmin(appState);
+  static bool canManageUsers(AppState appState) => isAdmin(appState);
+  static bool canManagePayments(AppState appState) => isAdmin(appState);
 
-  static bool canResolveDisputes(AppState appState) =>
-      hasPermission(appState, AdminPermission.resolveDisputes);
-
-  static bool canEditSystemConfig(AppState appState) =>
-      hasPermission(appState, AdminPermission.editSystemConfig);
-
-  static bool canViewAuditLogs(AppState appState) => hasAnyPermission(appState, [
-        AdminPermission.viewAllUsers,
-        AdminPermission.viewAnalytics,
-      ]);
-
-  static bool canManageUsers(AppState appState) =>
-      hasPermission(appState, AdminPermission.manageUsers);
-
-  static bool canManagePayments(AppState appState) =>
-      hasAnyPermission(appState, [
-        AdminPermission.viewAllTransactions,
-        AdminPermission.controlEscrow,
-      ]);
-
-  // ==================== Guard Helpers ====================
+  // ─── Guard helpers ─────────────────────────────────────────────────────
 
   static void requirePermission(
     AppState appState,
@@ -95,7 +69,7 @@ class AdminGuard {
   }
 }
 
-/// Exception thrown when admin permission is insufficient
+/// Exception thrown when admin permission is insufficient.
 class AdminPermissionException implements Exception {
   final String message;
   AdminPermissionException(this.message);

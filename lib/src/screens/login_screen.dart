@@ -5,9 +5,10 @@ import '../design/typography.dart';
 import '../design/spacing.dart';
 import '../design/colors.dart';
 import '../design/radius.dart';
-import '../models/marketplace_full_models.dart';
+import '../core/api_exception.dart';
 import '../services/auth_service.dart';
 import '../store/app_state.dart';
+import '../models/marketplace_full_models.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _hasError = false;
   String _errorMessage = '';
   bool _isLoading = false;
-  UserRole _selectedRole = UserRole.engineer; // default role
 
   @override
   void initState() {
@@ -56,31 +56,40 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await AuthService.instance.signInWithEmail(
+      final user = await AuthService.instance.signInWithEmail(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
       if (!mounted) return;
 
-      // Set the chosen role in AppState
-      await context.read<AppState>().setUserRole(_selectedRole);
+      // Set user in AppState — role comes from backend JWT
+      context.read<AppState>().setCurrentUser(user);
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/home');
+      
+      final role = context.read<AppState>().currentUserRole;
+      if (role == UserRole.admin) {
+        Navigator.pushReplacementNamed(context, '/admin/dashboard');
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = e.message;
+        });
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
           _hasError = true;
-          _errorMessage = 'Login failed: $e';
+          _errorMessage = 'Login failed. Please try again.';
         });
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -188,16 +197,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-
-                // Role Selector
-                const SizedBox(height: AppSpacing.lg),
-                Text('Account Type', style: AppTypography.h4),
-                const SizedBox(height: AppSpacing.sm),
-                _RoleSelector(
-                  selected: _selectedRole,
-                  onChanged: (r) => setState(() => _selectedRole = r),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
 
@@ -346,62 +345,3 @@ class _InputField extends StatelessWidget {
   }
 }
 
-/// Role selection widget shown on Login and Signup screens
-class _RoleSelector extends StatelessWidget {
-  final UserRole selected;
-  final ValueChanged<UserRole> onChanged;
-
-  const _RoleSelector({required this.selected, required this.onChanged});
-
-  static const _roles = [
-    (role: UserRole.engineer,     icon: Icons.engineering,    label: 'Field Engineer'),
-    (role: UserRole.owner,        icon: Icons.home_work,      label: 'Building Owner'),
-    (role: UserRole.companyAdmin, icon: Icons.business,       label: 'Repair Company'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: _roles.map((item) {
-        final isSelected = selected == item.role;
-        return Expanded(
-          child: GestureDetector(
-            onTap: () => onChanged(item.role),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary500 : AppColors.grey50,
-                borderRadius: BorderRadius.circular(AppRadius.r12),
-                border: Border.all(
-                  color: isSelected ? AppColors.primary500 : AppColors.grey200,
-                  width: isSelected ? 2 : 1,
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    item.icon,
-                    color: isSelected ? AppColors.white : AppColors.grey500,
-                    size: 24,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.label,
-                    style: AppTypography.caption.copyWith(
-                      color: isSelected ? AppColors.white : AppColors.grey700,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-}

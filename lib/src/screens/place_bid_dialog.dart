@@ -7,6 +7,8 @@ import '../design/spacing.dart';
 import '../design/radius.dart';
 import '../store/app_state.dart';
 import '../models/marketplace_models.dart';
+import '../repositories/marketplace_repository.dart';
+import '../core/api_exception.dart';
 
 class PlaceBidDialog extends StatefulWidget {
   final RepairRequest request;
@@ -46,36 +48,38 @@ class _PlaceBidDialogState extends State<PlaceBidDialog> {
 
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isSubmitting = true);
 
     try {
-      final bid = Bid(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      // ── Live API call ──────────────────────────────────────────────────
+      final bid = await MarketplaceRepository.instance.submitBid(
         requestId: widget.request.id,
-        engineerId: widget.engineerId,
-        engineerName: widget.engineerName,
         price: double.parse(_priceController.text),
         durationDays: int.parse(_durationController.text),
         proposal: _proposalController.text,
         warrantyMonths: int.tryParse(_warrantyController.text) ?? 0,
-        methodDescription: _methodController.text,
-        createdAt: DateTime.now(),
+        methodDescription: _methodController.text.isNotEmpty
+            ? _methodController.text
+            : null,
       );
 
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 1));
-
       if (!mounted) return;
-
+      // Keep local AppState in sync
       Provider.of<AppState>(context, listen: false).placeBid(bid);
 
       Navigator.pop(context);
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.bidSuccess),
           backgroundColor: AppColors.successGreen,
+        ),
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message),
+          backgroundColor: AppColors.dangerRed,
         ),
       );
     } catch (e) {
@@ -87,9 +91,7 @@ class _PlaceBidDialogState extends State<PlaceBidDialog> {
         ),
       );
     } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 

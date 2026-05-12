@@ -66,6 +66,24 @@ class Company {
       phoneNumber: '+201000000000',
     );
   }
+
+  factory Company.fromJson(Map<String, dynamic> json) {
+    return Company(
+      id: (json['id'] ?? json['_id'] ?? '').toString(),
+      name: (json['name'] ?? json['company_name'] ?? '').toString(),
+      logoUrl: (json['logo_url'] ?? json['logoUrl'] ?? '').toString(),
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: (json['review_count'] ?? json['reviewCount'] ?? 0) as int,
+      isVerified: json['is_verified'] ?? json['isVerified'] ?? false,
+      isTopRated: json['is_top_rated'] ?? json['isTopRated'] ?? false,
+      description: (json['description'] ?? '').toString(),
+      location: (json['location'] ?? '').toString(),
+      projectsCompleted: (json['projects_completed'] ?? json['projectsCompleted'] ?? 0) as int,
+      specializations: [],
+      email: (json['email'] ?? '').toString(),
+      phoneNumber: (json['phone'] ?? json['phoneNumber'] ?? '').toString(),
+    );
+  }
 }
 
 enum RequestStatus {
@@ -148,6 +166,50 @@ class RepairRequest {
       completedAt: completedAt ?? this.completedAt,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'ownerId': ownerId,
+      'title': title,
+      'description': description,
+      'images': images,
+      'location': location,
+      'status': status.name,
+      'budgetMin': budgetMin,
+      'budgetMax': budgetMax,
+      'riskLevel': riskLevel.name,
+      'aiReportId': aiReportId,
+      'createdAt': createdAt.toIso8601String(),
+      'biddingEndsAt': biddingEndsAt?.toIso8601String(),
+      'completedAt': completedAt?.toIso8601String(),
+    };
+  }
+
+  factory RepairRequest.fromJson(Map<String, dynamic> json) {
+    return RepairRequest(
+      id: json['id'] as String,
+      ownerId: json['ownerId'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+      location: json['location'] as String,
+      status: RequestStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => RequestStatus.draft,
+      ),
+      budgetMin: (json['budgetMin'] as num?)?.toDouble(),
+      budgetMax: (json['budgetMax'] as num?)?.toDouble(),
+      riskLevel: RiskLevel.values.firstWhere(
+        (e) => e.name == json['riskLevel'],
+        orElse: () => RiskLevel.low,
+      ),
+      aiReportId: json['aiReportId'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      biddingEndsAt: json['biddingEndsAt'] != null ? DateTime.parse(json['biddingEndsAt'] as String) : null,
+      completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt'] as String) : null,
+    );
+  }
 }
 
 enum BidStatus { pending, accepted, rejected, withdrawn }
@@ -195,6 +257,29 @@ class Bid {
       methodDescription: methodDescription,
       status: status ?? this.status,
       createdAt: createdAt,
+    );
+  }
+
+  factory Bid.fromJson(Map<String, dynamic> json) {
+    return Bid(
+      id: (json['id'] ?? json['_id'] ?? json['bid_id'] ?? '').toString(),
+      requestId: (json['request_id'] ?? json['requestId'] ?? '').toString(),
+      engineerId: (json['engineer_id'] ?? json['engineerId'] ?? json['company_id'] ?? '').toString(),
+      engineerName: (json['engineer_name'] ?? json['engineerName'] ?? json['company_name'] ?? '').toString(),
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      durationDays: (json['duration_days'] ?? json['durationDays'] ?? 0) as int,
+      proposal: (json['proposal'] ?? '').toString(),
+      warrantyMonths: (json['warranty_months'] ?? json['warrantyMonths'] ?? 0) as int,
+      methodDescription: json['method_description']?.toString() ?? json['methodDescription']?.toString(),
+      status: BidStatus.values.firstWhere(
+        (e) => e.name == (json['status'] ?? 'pending'),
+        orElse: () => BidStatus.pending,
+      ),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'].toString())
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'].toString())
+              : DateTime.now(),
     );
   }
 }
@@ -283,6 +368,36 @@ class Contract {
           engineerMarkedComplete ?? this.engineerMarkedComplete,
       ownerApproved: ownerApproved ?? this.ownerApproved,
       ownerFeedback: ownerFeedback ?? this.ownerFeedback,
+    );
+  }
+
+  factory Contract.fromJson(Map<String, dynamic> json) {
+    return Contract(
+      id: (json['id'] ?? json['_id'] ?? json['contract_id'] ?? '').toString(),
+      requestId: (json['request_id'] ?? json['requestId'] ?? '').toString(),
+      ownerId: (json['owner_id'] ?? json['ownerId'] ?? '').toString(),
+      engineerId: (json['engineer_id'] ?? json['engineerId'] ?? '').toString(),
+      engineerName: (json['engineer_name'] ?? json['engineerName'] ?? '').toString(),
+      bidId: (json['bid_id'] ?? json['bidId'] ?? '').toString(),
+      agreedPrice: (json['agreed_price'] ?? json['agreedPrice'] ?? json['amount'] ?? 0.0) is num
+          ? ((json['agreed_price'] ?? json['agreedPrice'] ?? json['amount']) as num).toDouble()
+          : 0.0,
+      agreedDuration: (json['agreed_duration'] ?? json['agreedDuration'] ?? 0) as int,
+      warrantyMonths: (json['warranty_months'] ?? json['warrantyMonths'] ?? 0) as int,
+      methodology: json['methodology']?.toString(),
+      status: ContractStatus.values.firstWhere(
+        (e) => e.name == (json['status'] ?? 'draft'),
+        orElse: () => ContractStatus.draft,
+      ),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'].toString())
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'].toString())
+              : DateTime.now(),
+      startedAt: json['started_at'] != null ? DateTime.parse(json['started_at'].toString()) : null,
+      completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at'].toString()) : null,
+      engineerMarkedComplete: json['engineer_marked_complete'] ?? false,
+      ownerApproved: json['owner_approved'] ?? false,
     );
   }
 }

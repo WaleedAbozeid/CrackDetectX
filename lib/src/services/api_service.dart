@@ -1,5 +1,6 @@
 import '../ai/model_stub.dart';
 import '../ai/types.dart';
+import '../core/constants.dart';
 import '../models/building_models.dart';
 import '../services/local_db.dart';
 
@@ -17,8 +18,44 @@ class ApiService {
   ApiService._();
   static final ApiService instance = ApiService._();
 
-  // TODO: Replace with real backend URL when ready
-  static const String baseUrl = 'http://localhost:8000/api/v1';
+  static String get baseUrl => AppConstants.apiBaseUrl;
+
+  // ==================== Endpoint Map (Postman Collection v5) ====================
+  // Auth
+  static const String epAuthRegister = '/auth/register';
+  static const String epAuthLogin = '/auth/login';
+  static const String epAuthLogout = '/auth/logout';
+  static const String epAuthRefresh = '/auth/refresh';
+  static const String epAuthForgotPassword = '/auth/forgot-password';
+  static const String epAuthResetPassword = '/auth/reset-password';
+
+  // User
+  static const String epUserMe = '/users/me';
+
+  // Buildings
+  static const String epBuildings = '/buildings';
+
+  // Scans
+  static const String epScans = '/scans';
+
+  // Reports
+  static const String epReports = '/reports';
+
+  // Marketplace
+  static const String epMarketplaceEngineers = '/marketplace/engineers';
+  static const String epMarketplaceRequests = '/marketplace/requests';
+  static const String epMarketplaceContracts = '/marketplace/contracts';
+
+  // Notifications
+  static const String epNotifications = '/notifications';
+  static const String epNotificationsRead = '/notifications/read';
+
+  // Support
+  static const String epSupport = '/support';
+
+  // Drafts (offline sync)
+  static const String epDrafts = '/drafts';
+  static const String epDraftsPending = '/drafts/pending';
 
   // ==================== AI Detection ====================
 

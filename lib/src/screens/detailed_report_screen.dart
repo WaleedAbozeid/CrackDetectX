@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/card.dart';
 import '../widgets/health_score_ring.dart';
@@ -95,33 +96,58 @@ class DetailedReportScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // 3. Analysis Charts (Simulated with Bars)
-              Text('Crack Depth Distibution', style: AppTypography.h3),
+              Text('Crack Depth Distribution', style: AppTypography.h3),
               const SizedBox(height: AppSpacing.md),
               AppCard(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Column(
-                    children: [
-                      _ChartBar(
-                        label: '< 1mm',
-                        percent: 0.6,
-                        color: AppColors.successGreen,
+                  child: SizedBox(
+                    height: 200,
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                        sections: [
+                          PieChartSectionData(
+                            color: AppColors.successGreen,
+                            value: 60,
+                            title: '60%',
+                            radius: 50,
+                            titleStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          PieChartSectionData(
+                            color: AppColors.warningOrange,
+                            value: 30,
+                            title: '30%',
+                            radius: 50,
+                            titleStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          PieChartSectionData(
+                            color: AppColors.dangerRed,
+                            value: 10,
+                            title: '10%',
+                            radius: 50,
+                            titleStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppSpacing.md),
-                      _ChartBar(
-                        label: '1mm - 3mm',
-                        percent: 0.3,
-                        color: AppColors.warningOrange,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      _ChartBar(
-                        label: '> 3mm',
-                        percent: 0.1,
-                        color: AppColors.dangerRed,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildLegendItem('< 1mm', AppColors.successGreen),
+                  const SizedBox(width: AppSpacing.md),
+                  _buildLegendItem('1-3mm', AppColors.warningOrange),
+                  const SizedBox(width: AppSpacing.md),
+                  _buildLegendItem('> 3mm', AppColors.dangerRed),
+                ],
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -198,53 +224,18 @@ class _MetricCard extends StatelessWidget {
   }
 }
 
-class _ChartBar extends StatelessWidget {
-  final String label;
-  final double percent;
-  final Color color;
-
-  const _ChartBar({
-    required this.label,
-    required this.percent,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(width: 80, child: Text(label, style: AppTypography.bodySmall)),
-        Expanded(
-          child: Stack(
-            children: [
-              Container(
-                height: 10,
-                decoration: BoxDecoration(
-                  color: AppColors.grey100,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              FractionallySizedBox(
-                widthFactor: percent,
-                child: Container(
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Text(
-          '${(percent * 100).toInt()}%',
-          style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
+Widget _buildLegendItem(String title, Color color) {
+  return Row(
+    children: [
+      Container(
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      ),
+      const SizedBox(width: 4),
+      Text(title, style: AppTypography.caption),
+    ],
+  );
 }
 
 class _RecommendationItem extends StatelessWidget {
